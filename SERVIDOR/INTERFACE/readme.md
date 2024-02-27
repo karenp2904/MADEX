@@ -1,0 +1,1 @@
+Anexar las interface con los metodos necesarios para la implementación del desarollo
