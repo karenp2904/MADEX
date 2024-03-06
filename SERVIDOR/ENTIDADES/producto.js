@@ -14,7 +14,7 @@ class producto{
     }
 
 
-      // Método para reponer stock
+  // Método para reponer stock
     reponer(cantidad) {
     this.stock += cantidad;
     console.log(`Se han añadido ${cantidad} unidades de ${this.nombre} al stock. Nuevo stock: ${this.stock}`);
