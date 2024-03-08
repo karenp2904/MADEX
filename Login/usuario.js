@@ -4,7 +4,7 @@ const readline = require('readline');
 const usuarios = [
   { id: 1, correo: 'miguel.luna@gmail.com', contrasena: 'contrasena1234' },
   { id: 2, correo: 'carlos777@gmail.com', contrasena: 'contrasena2' },
-  
+  { id: 3, correo: 'maria@gmail.com', contrasena: 'contrasena3' },
 ];
 
 const rl = readline.createInterface({

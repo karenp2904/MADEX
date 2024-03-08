@@ -17,14 +17,14 @@ const productos = [
   {
     id: 2,
     nombre: "SillaTerra",
-    descripcion: "",
+    descripcion: "odifsodf",
     precio: 2500000,
-    estado: "",
-    color: "",
+    estado: "fdsfdsf",
+    color: "lkdjsajd",
     stock: 25,
-    descuento: "",
-    id_proveedores:"",
-    categoria: ""
+    descuento: "xx",
+    id_proveedores:"x",
+    categoria: "x"
   },
   {
     id: 3,
