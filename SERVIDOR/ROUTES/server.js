@@ -1,12 +1,12 @@
 const express = require('express');
+const router = express.Router();
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const app = express();
 const PORT = 3000;
 
-const {autorizarRol, manejarInicioSesion,manejarRegistro,listaDeProductos,
-    autenticarUsuario} = require('../CONTROLADOR/controllerServer');
+const controladorServer = require('../CONTROLADOR/controllerServer');
 
 
 // Middleware para parsear el cuerpo de las solicitudes
@@ -35,21 +35,21 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, '..', 'cliente')));
 
 // Ruta de inicio de sesión
-//app.post('/login', autenticarUsuario)
+//app.post('/login', controladorServer.autenticarUsuario)
 
 // Ruta protegida para usuarios
-//app.get('/usuario', autorizarRol('usuario'));
+//app.get('/usuario', controladorServer.autorizarRol('usuario'));
 
 // Ruta protegida para administradores
-//app.get('/admin', autorizarRol('administrador'));
+//app.get('/admin', controladorServer.autorizarRol('administrador'));
 
 // Rutas de inicio de sesión y registro
-//app.post('/login', manejarInicioSesion(null));
-//app.post('/registro', manejarRegistro);
+//app.post('/login', controladorServer.manejarInicioSesion(null));
+//app.post('/registro', controladorServer.manejarRegistro);
 
 
 //obtener todos los productos
-app.get('/products', (req, res) => listaDeProductos(req, res));
+app.get('/products', (req, res) => controladorServer.listaDeProductos(req, res));
 
 
 //manejo de errores
@@ -58,3 +58,39 @@ app.use((err, req, res, next) => {
     res.status(500).send('Error en el servidor');
 });
 
+
+// Rutas para usuarios
+router.post('/usuario/añadir', controladorServer.s_añadirUsuario);
+router.post('/usuario/eliminar', controladorServer.s_eliminarUsuario);
+router.post('/usuario/actualizar', controladorServer.s_actualizarUsuario);
+//router.post('/empresa/añadir', controladorServer.añadirEmpresa);
+
+/*
+// Rutas para autenticación y autorización
+router.post('/usuario/verificar-credencial', controladorServer.verificarCredencialUsuario);
+router.get('/usuario/:id', controladorServer.obtenerUsuario);
+router.get('/usuarios', controladorServer.obtenerTodosUsuarios);
+
+// Rutas para productos
+router.post('/producto/añadir', controladorServer.añadirProducto);
+router.post('/producto/eliminar', controladorServer.eliminarProducto);
+router.post('/producto/descontinuar', controladorServer.descontinuarProducto);
+router.post('/producto/actualizar', controladorServer.actualizarProducto);
+router.get('/producto/:id', controladorServer.obtenerProducto);
+router.get('/productos', controladorServer.obtenerListaProductos);
+
+// Rutas para inventario
+router.post('/inventario/editar-stock', controladorServer.editarStock);
+router.post('/inventario/log', controladorServer.logInventario);
+
+// Rutas para facturas
+router.post('/facturas/log', controladorServer.logFacturas);
+
+// Rutas para registros de usuarios
+router.post('/usuarios/log', controladorServer.logUsuarios);
+
+// Rutas para carrito de compras
+router.post('/carrito/añadir-producto', controladorServer.añadirProductosCarrito);
+router.post('/carrito/editar', controladorServer.editarCarrito);
+*/
+module.exports = router;

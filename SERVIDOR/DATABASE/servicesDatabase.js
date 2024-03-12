@@ -136,7 +136,7 @@ async function db_guardarDireccionEnvio(){
 }
 
 
-module.exports = {
+module.exports = { db_añadirUsuario,
   db_obtenerTodosLosProductos,
   db_crearProducto,
   db_obtenerProductoPorId,
