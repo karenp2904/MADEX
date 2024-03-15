@@ -5,7 +5,7 @@ const usuarios = [
   { id: 1, correo: 'miguel.luna@gmail.com', contrasena: 'contrasena1234' },
   { id: 2, correo: 'carlos777@gmail.com', contrasena: 'contrasena2' },
   { id: 3, correo: 'maria@gmail.com', contrasena: 'contrasena3' },
-  { id: 4, correo: 'daniel@gmail.com', contrasena: 'contrasena4' },
+  { id: 4, correo: 'daniel12@gmail.com', contrasena: 'contrasena4' },
 ];
 
 const rl = readline.createInterface({
