@@ -31,7 +31,7 @@ function escribirProductos(productos) {
     });
 }
 
-// Ejemplo de cómo usar la función escribirProductos
+// Ejemplo función escribirProductos
 const productos = [
     {
         id: "M001",
