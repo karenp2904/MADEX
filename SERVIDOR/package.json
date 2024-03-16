@@ -1,0 +1,19 @@
+{
+  "name": "SERVIDOR",
+  "version": "1.0.0",
+  "description": "PROYECTO DE MADERA",
+  "main": "ROUTES/server.js",
+  "scripts": {
+    "start": "nodemon SERVIDOR/ROUTES/server.js"
+  }
+  ,
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "express": "^4.18.3",
+    "helmet": "^7.1.0",
+    "pg": "^8.11.3"
+  }
+}
+
