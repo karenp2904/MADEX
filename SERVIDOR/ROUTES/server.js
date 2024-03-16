@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.Router();
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
@@ -7,7 +6,8 @@ const app = express();
 const PORT = 3000;
 
 const controladorServer = require('../CONTROLADOR/controllerServer');
-
+//MANEJO DE API
+const archivos = require('../API/api');
 
 // Middleware para parsear el cuerpo de las solicitudes
 app.use(express.json());
@@ -49,7 +49,10 @@ app.use(express.static(path.join(__dirname, '..', 'cliente')));
 
 
 //obtener todos los productos
-app.get('/products', (req, res) => controladorServer.listaDeProductos(req, res));
+ // Recibir productos
+
+app.get('/products', controladorServer.listaDeProductos);
+// Guardar productos (si la recepción es exitosa)
 
 
 //manejo de errores
@@ -60,37 +63,62 @@ app.use((err, req, res, next) => {
 
 
 // Rutas para usuarios
-router.post('/usuario/añadir', controladorServer.s_añadirUsuario);
-router.post('/usuario/eliminar', controladorServer.s_eliminarUsuario);
-router.post('/usuario/actualizar', controladorServer.s_actualizarUsuario);
-//router.post('/empresa/añadir', controladorServer.añadirEmpresa);
+app.post('/usuario/añadir', controladorServer.s_añadirUsuario);
+app.post('/usuario/eliminar', controladorServer.s_eliminarUsuario);
+app.post('/usuario/actualizar', controladorServer.s_actualizarUsuario);
+//app.post('/empresa/añadir', controladorServer.añadirEmpresa);
 
 /*
 // Rutas para autenticación y autorización
-router.post('/usuario/verificar-credencial', controladorServer.verificarCredencialUsuario);
-router.get('/usuario/:id', controladorServer.obtenerUsuario);
-router.get('/usuarios', controladorServer.obtenerTodosUsuarios);
+app.post('/usuario/verificar-credencial', controladorServer.verificarCredencialUsuario);
+app.get('/usuario/:id', controladorServer.obtenerUsuario);
+app.get('/usuarios', controladorServer.obtenerTodosUsuarios);
 
 // Rutas para productos
-router.post('/producto/añadir', controladorServer.añadirProducto);
-router.post('/producto/eliminar', controladorServer.eliminarProducto);
-router.post('/producto/descontinuar', controladorServer.descontinuarProducto);
-router.post('/producto/actualizar', controladorServer.actualizarProducto);
-router.get('/producto/:id', controladorServer.obtenerProducto);
-router.get('/productos', controladorServer.obtenerListaProductos);
+app.post('/producto/añadir', controladorServer.añadirProducto);
+app.post('/producto/eliminar', controladorServer.eliminarProducto);
+app.post('/producto/descontinuar', controladorServer.descontinuarProducto);
+app.post('/producto/actualizar', controladorServer.actualizarProducto);
+app.get('/producto/:id', controladorServer.obtenerProducto);
+app.get('/productos', controladorServer.obtenerListaProductos);
 
 // Rutas para inventario
-router.post('/inventario/editar-stock', controladorServer.editarStock);
-router.post('/inventario/log', controladorServer.logInventario);
+app.post('/inventario/editar-stock', controladorServer.editarStock);
+app.post('/inventario/log', controladorServer.logInventario);
 
 // Rutas para facturas
-router.post('/facturas/log', controladorServer.logFacturas);
+app.post('/facturas/log', controladorServer.logFacturas);
 
 // Rutas para registros de usuarios
-router.post('/usuarios/log', controladorServer.logUsuarios);
+app.post('/usuarios/log', controladorServer.logUsuarios);
 
 // Rutas para carrito de compras
-router.post('/carrito/añadir-producto', controladorServer.añadirProductosCarrito);
-router.post('/carrito/editar', controladorServer.editarCarrito);
+app.post('/carrito/añadir-producto', controladorServer.añadirProductosCarrito);
+app.post('/carrito/editar', controladorServer.editarCarrito);
 */
-module.exports = router;
+
+
+
+
+// Llamar al método recibirProductos para almacenar los productos
+
+
+
+//app.get('/catalogo',archivos.leerProductos());
+
+app.get('/generarCatalogo', async function() {
+    try {
+        let nuevosProductos = await controladorServer.listaDeProductos();
+        archivos.recibirProductos(nuevosProductos);
+        return 'Catálogo generado correctamente.';
+    } catch (error) {
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.get('/obtenerCatalogo', archivos.leerProductos);
+
+
+
+

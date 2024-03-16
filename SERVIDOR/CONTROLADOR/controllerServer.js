@@ -24,18 +24,28 @@ const controllerDB = require('./controllerDatabase.js');
     }
 
 
-
     // listaDeProductos como una función asíncrona
     async function listaDeProductos(req, res) {
         try {
             const listaProductos = await controllerDB.obtenerTodosLosProductos();
+            if (!listaProductos || listaProductos.length === 0) {
+                // Si no se encontraron productos, devuelve una respuesta 404
+                res.status(404).json({ message: 'No se encontraron productos' });
+                return ;
+            }
+            // Si se encontraron productos, devuelve una respuesta JSON con la lista de productos
+            console.log(listaProductos);
             res.json(listaProductos);
+            return listaDeProductos;
         } catch (error) {
             console.error('Error al obtener los productos:', error);
             res.status(500).send('Error en el servidor');
         }
     }
 
+   
+    
+    
     async function s_añadirUsuario(req, res) {
         try {
             // Implementación para añadir un usuario en la base de datos
@@ -64,7 +74,7 @@ const controllerDB = require('./controllerDatabase.js');
     async function s_actualizarUsuario(req, res) {
         try {
             // Implementación para actualizar un usuario en la base de datos
-            // Ejemplo:
+        
             const usuarioActualizado = await controllerDB.actualizarUsuario(req.params.id, req.body);
             // res.json(usuarioActualizado);
             res.status(501).send('Función no implementada');
