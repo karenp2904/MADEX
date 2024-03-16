@@ -1,6 +1,6 @@
 const readline = require('readline');
 
-// Simulación de base de datos de productos
+// Simulación de base de datos de productos.
 const productos = [
   { id: "M001", nombre: "Estante entretenimiento", descripcion: " ", precio: 490000, estado: "", color: "Natural Claro", stock: 25, descuento: "", id_proveedores: "", categoria: "Muebles" },
   { id: "M002", nombre: "Sofá de cuero", descripcion: "Un sofá cómodo y elegante, perfecto para relajarse después de un largo día de trabajo. Este sofá de cuero de alta calidad agregará un toque de lujo a tu sala de estar.", precio: 850000, estado: "", color: "Negro", stock: 15, descuento: "", id_proveedores: "", categoria: "Muebles" },
