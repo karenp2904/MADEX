@@ -32,7 +32,7 @@ async function obtenerTodosLosProductos() {
     // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
     const productosCompletos = await Promise.all(productosCompletosPromises);
 
-    console.log('Lista de productos:', productosCompletos);
+    console.log('Productos:', productosCompletos);
 
     return productosCompletos;
   } catch (error) {

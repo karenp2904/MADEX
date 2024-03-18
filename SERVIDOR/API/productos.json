@@ -1,0 +1,44 @@
+[
+  {
+    "id": 3,
+    "nombre": "Estante de madera",
+    "descripcion": "Estante de pared con varios niveles de almacenamiento",
+    "precio": 149.99,
+    "estado": "Disponible",
+    "color": "Marr¢n",
+    "stock": 30,
+    "descuento": null,
+    "idProveedor": "",
+    "proveedor": "",
+    "idCategoria": 1,
+    "categoria": "Electr¢nica"
+  },
+  {
+    "id": 1,
+    "nombre": "Mesa de madera",
+    "descripcion": "Mesa de comedor hecha de madera de roble resistente",
+    "precio": 299.99,
+    "estado": "Disponible",
+    "color": "Marr¢n",
+    "stock": 20,
+    "descuento": null,
+    "idProveedor": "",
+    "proveedor": "",
+    "idCategoria": 1,
+    "categoria": "Electr¢nica"
+  },
+  {
+    "id": 2,
+    "nombre": "Silla de madera",
+    "descripcion": "Silla de madera maciza con respaldo alto",
+    "precio": 79.99,
+    "estado": "Disponible",
+    "color": "Marr¢n",
+    "stock": 50,
+    "descuento": 5,
+    "idProveedor": "",
+    "proveedor": "",
+    "idCategoria": 1,
+    "categoria": "Electr¢nica"
+  }
+]
