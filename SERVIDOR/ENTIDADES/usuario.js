@@ -1,5 +1,6 @@
+const readline = require('readline');
 class Usuario {
-    constructor(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono) {
+    constructor(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono,idRol) {
         this.id_usuario = id_usuario;
         this.nombre_usuario = nombre_usuario;
         this.apellido_usuario = apellido_usuario;
@@ -7,8 +8,18 @@ class Usuario {
         this.tipo_documento = tipo_documento;
         this.contraseña = contraseña;
         this.telefono = telefono;
-    }
+        this.idRol=idRol;
 
+        this.rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+            });
+
+        }
+
+    actualizarUsuarioConId(id_usuario){
+        this.id_usuario = id_usuario;
+    }
     // Método para actualizar la información del usuario
     actualizarUsuario(nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono) {
         // Verificar si los nuevos valores no son nulos o indefinidos antes de actualizar
@@ -19,28 +30,39 @@ class Usuario {
         if (contraseña) this.contraseña = contraseña;
         if (telefono) this.telefono = telefono;
     }
-}
 
-// Ejemplo 
-const usuario = new Usuario(1, 'Juan', 'Manzana', 'juan@example.com', 'DNI', 'contraseña123', '123456789');
-console.log(usuario);
+    eliminarUsuario(id_usuario){
+        this.id_usuario = id_usuario;
+    }
 
+    iniciarSesion() {
+    this.rl.question('Ingrese su correo electrónico: ', (correo) => {
+        this.rl.question('Ingrese su contraseña: ', (contrasena) => {
+        const usuarioAutenticado = autenticarUsuario(correo, contrasena);
 
-class Rol {
-    constructor(idRol, descripcion) {
-    this.idRol = idRol;
-    this.descripcion = descripcion;
+        if (usuarioAutenticado) {
+            console.log(`¡Inicio de sesión exitoso para ${correo}!`);
+        } else {
+            console.log('Correo electrónico o contraseña incorrectos. Inicio de sesión fallido.');
+        }
+
+        this.rl.close();
+            });
+        });
+    }
+
+    asignarRol(idRol){
+        this.idRol=idRol;
     }
 }
 
 class Rol_has_Usuario {
-    constructor(Rol_idRol, Usuario_id_usuario) {
-    this.Rol_idRol = Rol_idRol;
+    constructor(idRol, Usuario_id_usuario,descripcion) {
+    his.idRol = idRol;
     this.Usuario_id_usuario = Usuario_id_usuario;
+    this.descripcion = descripcion;
     }
 }
 
 
-  // Ejemplo 
-const rol = new Rol(1, 'Descripción del rol');
-console.log(rol);
+module.exports = Usuario,Rol_has_Usuario;

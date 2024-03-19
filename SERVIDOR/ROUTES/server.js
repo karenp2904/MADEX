@@ -8,6 +8,11 @@ const PORT = 3000;
 const controladorServer = require('../CONTROLADOR/controllerServer');
 //MANEJO DE API
 const archivos = require('../API/api');
+//INVENTARIO -LISTA DE PRODUCTOS
+const Inventario = require('../ENTIDADES/inventario'); 
+ //  instancia de la clase Inventario
+
+
 
 // Middleware para parsear el cuerpo de las solicitudes
 app.use(express.json());
@@ -20,9 +25,16 @@ app.use(helmet());
 
 
 // Iniciar el servidor
-app.listen(PORT, () => {
-    console.log(`Servidor escuchando en el puerto ${PORT}`);
+app.listen(PORT, async () => {
+    try {
+        console.log(`Servidor escuchando en el puerto ${PORT}`);
+    } catch (error) {
+        console.error('Error al iniciar el servidor:', error);
+        // Aquí puedes manejar el error de la forma que desees, por ejemplo, finalizar el proceso
+        process.exit(1);
+    }
 });
+
 
 app.get('/api', (req, res) => {
     res.send('SERVER LISTENING');
@@ -34,8 +46,9 @@ app.set('view engine', 'ejs');
 // Ruta para servir archivos estáticos
 app.use(express.static(path.join(__dirname, '..', 'cliente')));
 
-// Ruta de inicio de sesión
-//app.post('/login', controladorServer.autenticarUsuario)
+
+
+
 
 // Ruta protegida para usuarios
 //app.get('/usuario', controladorServer.autorizarRol('usuario'));
@@ -51,7 +64,7 @@ app.use(express.static(path.join(__dirname, '..', 'cliente')));
 //obtener todos los productos
  // Recibir productos
 
-app.get('/products', controladorServer.listaDeProductos);
+app.get('/productos',controladorServer.listaDeProductos);
 // Guardar productos (si la recepción es exitosa)
 
 
@@ -63,10 +76,10 @@ app.use((err, req, res, next) => {
 
 
 // Rutas para usuarios
-app.post('/usuario/añadir', controladorServer.s_añadirUsuario);
-app.post('/usuario/eliminar', controladorServer.s_eliminarUsuario);
-app.post('/usuario/actualizar', controladorServer.s_actualizarUsuario);
-//app.post('/empresa/añadir', controladorServer.añadirEmpresa);
+//app.post('/usuario/añadir', controladorServer.s_añadirUsuario);
+//app.delete('/usuario/eliminar', controladorServer.s_eliminarUsuario);
+//app.put('/usuario/actualizar', controladorServer.s_actualizarUsuario);
+//app.post('/empresa/añadir', controladorServer.s_añadirEmpresa);
 
 /*
 // Rutas para autenticación y autorización
@@ -74,7 +87,7 @@ app.post('/usuario/verificar-credencial', controladorServer.verificarCredencialU
 app.get('/usuario/:id', controladorServer.obtenerUsuario);
 app.get('/usuarios', controladorServer.obtenerTodosUsuarios);
 
-// Rutas para productos
+//Rutas para productos
 app.post('/producto/añadir', controladorServer.añadirProducto);
 app.post('/producto/eliminar', controladorServer.eliminarProducto);
 app.post('/producto/descontinuar', controladorServer.descontinuarProducto);
@@ -102,23 +115,54 @@ app.post('/carrito/editar', controladorServer.editarCarrito);
 
 // Llamar al método recibirProductos para almacenar los productos
 
-
-
-//app.get('/catalogo',archivos.leerProductos());
-
-app.get('/generarCatalogo', async function() {
+async function obtenerProductosConInventario(req, res) {
     try {
-        let nuevosProductos = await controladorServer.listaDeProductos();
-        archivos.recibirProductos(nuevosProductos);
-        return 'Catálogo generado correctamente.';
+        // Llama a listaDeProductos para obtener la lista de productos desde la base de datos
+        const listaProductos = await controladorServer.listaDeProductos(req, res);
+
+        // Verificar si listaProductos es un array
+        if (!Array.isArray(listaProductos)) {
+            throw new Error('La lista de productos no es un array');
+        }
+
+        // Crear una instancia de Inventario
+        const inventario = new Inventario();
+
+        // Agregar los productos al inventario
+        listaProductos.forEach(producto => inventario.agregarProducto(producto));
+
+        // Retorna el inventario
+        return inventario;
     } catch (error) {
+        console.error('Error al obtener los productos y crear el inventario:', error);
+        throw error;
+    }
+}
+
+
+// Ruta para generar el catálogo
+app.get('/generarCatalogo', async function(req, res) {
+    try {
+        // Obtener el inventario
+        const inventario = await obtenerProductosConInventario(req, res);
+        
+        // Enviar el inventario a archivos.recibirProductos
+        archivos.recibirProductos(inventario);
+
+        // Enviar respuesta al cliente
+        res.send('Catálogo generado correctamente.');
+    } catch (error) {
+        // Manejo de errores
         console.error('Error al generar el catálogo:', error);
         res.status(500).send('Error en el servidor');
     }
 });
 
+
+
 app.get('/obtenerCatalogo', archivos.leerProductos);
 
+app.get('/leerCotizacion', archivos.leerCotizacion);
 
 
 

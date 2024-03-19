@@ -1,18 +1,7 @@
 const pool = require('./databaseConexion');
 
 
-async function db_crearProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria){
-  try {
-    const newProducto = await pool.query(
-      'INSERT INTO Productos (nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-      [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
-    );
-  
-    return newProducto.rows[0];
-  } catch (error) {
-    throw error;
-  }
-};
+
 
 async function db_obtenerTodosLosProductos () {
   try {
@@ -71,9 +60,6 @@ async function db_obtenerCategoriaPorId (id) {
   }
 };
 
-
-
-
 async function db_obtenerListaCategorias(){
   try {
     const categoria = await pool.query('SELECT * FROM categoria');
@@ -95,8 +81,11 @@ async function db_obtenerProductoPorId (id) {
 };
 
 
-
 async function db_añadirUsuario(){
+
+}
+
+async function db_verificarCredencialUsuario(){
 
 }
 
@@ -112,9 +101,6 @@ async function db_añadirEmpresa(){
 
 }
 
-async function db_verificarCredencialUsuario(){
-
-}
 
 async function db_obtenerUsuario(){
 
@@ -124,9 +110,19 @@ async function db_obtenerTodosUsuarios(){
 
 }
 
-async function db_añadirProducto(){
 
-}
+async function db_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria){
+  try {
+    const newProducto = await pool.query(
+      'INSERT INTO Productos (nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
+    );
+  
+    return newProducto.rows[0];
+  } catch (error) {
+    throw error;
+  }
+};
 
 async function db_eliminarProducto(){
     
@@ -136,14 +132,6 @@ async function db_descontinuarProducto(){
 }
 
 async function db_actualizarProducto(){
-    
-}
-
-async function db_obtenerProducto(){
-    
-}
-
-async function db_obtenerListaProductos(){
     
 }
 
@@ -200,8 +188,7 @@ async function db_guardarDireccionEnvio(){
 
 
 module.exports = { db_añadirUsuario,
-  db_obtenerTodosLosProductos,
-  db_crearProducto, db_obtenerCategoriaPorId,
+  db_obtenerTodosLosProductos, db_obtenerCategoriaPorId,
   db_obtenerProductoPorId, db_obtenerNombreProveedorPorId,
   db_obtenerListaProveedores,
   db_obtenerListaCategorias,
@@ -216,8 +203,6 @@ module.exports = { db_añadirUsuario,
   db_eliminarProducto,
   db_descontinuarProducto,
   db_actualizarProducto,
-  db_obtenerProducto,
-  db_obtenerListaProductos,
   db_editarStock,
   db_logInventario,
   db_logFacturas,

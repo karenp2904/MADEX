@@ -49,7 +49,7 @@ class producto{
     descontinuarProducto() {
       this.estado_producto = 'Descontinuado';
   }
-
-
 }    
+
+
 module.exports=producto;
