@@ -4,16 +4,7 @@
 const services = require('../DATABASE/servicesDatabase.js');
 const Producto = require('../ENTIDADES/producto');
 
-async function crearProducto(req, res) {
-  try {
-    const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
-    const newProducto = await services.db_crearProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria);
-    res.json(newProducto);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send('Error en el servidor');
-  }
-};
+
 
 async function obtenerTodosLosProductos() {
   try {
@@ -109,53 +100,22 @@ async function obtenerCategoriaID(id){
 async function obtenerProveedorId(id){
   try {
     let proveedor = await services.db_obtenerNombreProveedorPorId(id); //buscaporid
-   return proveedor;
+    return proveedor;
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Error en el servidor');
   }
 };
 
-//  obtener la descripción del proveedor según su ID
-async function obtenerProveedor(idProveedor) {
 
-  let proveedores = await services.db_obtenerListaProveedores();
-
-  // Buscar el proveedor con el ID 
-  const proveedorEncontrado = proveedores.find(proveedor => proveedor.id === idProveedor);
-
-  //  retornar  nombre de empresa
-  if (proveedorEncontrado) {
-      return proveedorEncontrado.nombreEmpresa;
-  } else {
-      return 'Proveedor no encontrado'; // O manejar el caso en que el proveedor no exista
-  }
-}
-
-
-
-// Otorga categoria al producto segun el id que acompañe
-async function obtenerCategoria(idCategoria) {
- 
-  let categorias = await services.db_obtenerListaCategorias();
-  // Buscar la categoría con el ID proporcionado
-  const categoriaEncontrada = categorias.find(categoria => categoria.id === idCategoria);
-        
-  // Si se encuentra la categoría, retornar su descripción
-  if (categoriaEncontrada) {
-      return categoriaEncontrada;
-  } else {
-      return 'Categoría no encontrada'; // O manejar el caso en que la categoría no exista
-  }
-}
 
 // Función para añadir un usuario
 async function  añadirUsuario (req, res)  {
   try {
     // Extrae los datos del usuario del cuerpo de la solicitud
-    const { username, email, password } = req.body;
+    const {documento, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono } = req.body;
     //  para añadir el usuario
-    const usuario= await services.db_añadirUsuario(username, email, password);
+    const usuario= await services.db_añadirUsuario(nombre_usuario, apellido_usuario, correo, tipo_documento,documento, contraseña, telefono);
     res.send(usuario);
     //  respuesta de éxito
     res.status(201).json({ message: 'Usuario añadido correctamente' });
@@ -200,60 +160,182 @@ async function actualizarUsuario(req, res) {
 }
 
 
-async function eliminarUsuario(){
-
-}
-
-async function actualizarUsuario(){
-
-}
-
-async function añadirEmpresa(){
-
+async function añadirEmpresa(req, res){
+  try {
+    // Extrae los datos de la empresa
+    const {documento, correo, tipo_documento, contraseña, telefono } = req.body;
+    //  para añadir el usuario
+    const empresa= await services.db_añadirEmpresa(documento, correo, tipo_documento, contraseña, telefono);
+    res.send(empresa);
+    //  respuesta de éxito
+    res.status(201).json({ message: 'Empresa añadido correctamente' });
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al añadir empresa:', error.message);
+    res.status(500).json({ error: 'Error al añadir empresa' });
+  }
 }
 
 async function verificarCredencialUsuario(){
 
 }
 
-async function obtenerUsuario(){
+async function obtenerUsuario(id){
+  try {
+    let usuario = await services.db_obtenerUsuario(id); //buscaporid
+    return producto;
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Error en el servidor');
+  }
 
 }
 
 async function obtenerTodosUsuarios(){
+  try {
+    // Consulta el servicio de los usuaios
+    let allUsers = await services.db_obtenerTodosUsuarios();
+    
+    // Verifica si se obtuvieron productos
+    if (!Array.isArray(allUsers)) {
+      throw new Error('El servicio db_obtenerTodosLosProductos no devolvió una lista de productos.');
+    }
+    
+    const usuariosInfo = allUsers.map(usuario =>
+      obtenerDatosUsuario(usuario)
+    );
 
+    // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
+    const usuariosCompletos = await Promise.all(usuariosInfo);
+
+    console.log('Usuarios:', usuariosCompletos);
+
+    return usuariosCompletos;
+  } catch (error) {
+    // Propaga el error para que sea manejado por la función que llama a obtenerTodosLosProductos
+    throw error;
+  }
 }
 
-async function añadirProducto(){
+async function obtenerDatosUsuario(){
+// se agrega el rol al toda la informacion del usuario
 
+};
+
+async function añadirProducto(req, res) {
+  try {
+    const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
+    const newProducto = await services.db_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria);
+    res.json(newProducto);
+    res.status(201).json({ message: 'producto añadido correctamente' });
+  } catch (error) {
+    console.error('Error al añadir producto:', error.message);
+    res.status(500).send('Error al añadir producto');
+  }
+};
+
+//  obtener la descripción del proveedor según su ID
+async function obtenerProveedor(nombre) {
+
+  let proveedores = await services.db_obtenerListaProveedores();
+
+  // Buscar el proveedor con el ID 
+  const proveedorEncontrado = proveedores.find(proveedor => proveedor.id === idProveedor);
+
+  //  retornar  nombre de empresa
+  if (proveedorEncontrado) {
+      return proveedorEncontrado.nombreEmpresa;
+  } else {
+      return 'Proveedor no encontrado'; // O manejar el caso en que el proveedor no exista
+  }
 }
 
-async function eliminarProducto(){
+
+
+// Otorga categoria al producto segun el id que acompañe
+async function obtenerCategoria(idCategoria) {
+ 
+  let categorias = await services.db_obtenerListaCategorias();
+  // Buscar la categoría con el ID proporcionado
+  const categoriaEncontrada = categorias.find(categoria => categoria.id === idCategoria);
+        
+  // Si se encuentra la categoría, retornar su descripción
+  if (categoriaEncontrada) {
+      return categoriaEncontrada;
+  } else {
+      return 'Categoría no encontrada'; // O manejar el caso en que la categoría no exista
+  }
+}
+
+async function eliminarProducto(req, res){
+  try {
+    const productId = req.params.productId;
+    const producto=await services.db_eliminarProducto(productId);
+    // Envía una respuesta de éxito
+    res.json({ message: 'Producto eliminado correctamente '+ producto });
+  } catch (error) {
+    console.error('Error al eliminar Producto:', error.message);
+    res.status(500).json({ error: 'Error al eliminar Producto' });
+  }
     
 }
-async function descontinuarProducto(){
+async function descontinuarProducto(req, res){
+  try {
+    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
+    const productId = req.params.productId;
+    //const newData = req.body;
+    const estado= "descontinuado";
+    const producto= await services.db_descontinuarProducto(productId, estado);
+
+    res.json({ message: 'Producto actualizado correctamente '+producto });
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al actualizar producto:', error.message);
+    res.status(500).json({ error: 'Error al actualizar producto' });
+  }
     
 }
 
-async function actualizarProducto(){
-    
-}
-
-async function obtenerProducto(){
-    
-}
-
-async function obtenerListaProductos(){
-    
+async function actualizarProducto(req, res){
+  try {
+    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
+    const productId = req.params.productId;
+    const newData = req.body;
+    // Llama al servicio para actualizar el producto
+    const producto= await services.db_actualizarProducto(productId, newData);
+    // Envía una respuesta de éxito
+    res.json({ message: 'Producto actualizado correctamente '+producto });
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al actualizar producto:', error.message);
+    res.status(500).json({ error: 'Error al actualizar producto' });
+  }
 }
 
 async function editarStock(){
-
+  try {
+    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
+    const productId = req.params.productId;
+    const stock = req.body;
+    // Llama al servicio para actualizar el producto
+    const producto= await services.db_actualizarProducto(productId, stock);
+    // Envía una respuesta de éxito
+    res.json({ message: 'Producto actualizado correctamente '+producto });
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al actualizar producto:', error.message);
+    res.status(500).json({ error: 'Error al actualizar producto' });
+  }
 }
 
 
 async function logInventario(){
+  try{
 
+  }catch (error) {
+    console.error('Error al obtener el log inventario:', error.message);
+    res.status(500).json({ error: 'Error al obtener el log inventarioo' });
+  }
 }
 
 
@@ -299,7 +381,6 @@ async function guardarDireccionEnvio(){
 }
 
 module.exports = {
-  crearProducto,
   obtenerTodosLosProductos,
   obtenerProductoDatos, obtenerProductoPorId,
   actualizarUsuario,
@@ -315,7 +396,6 @@ module.exports = {
   eliminarProducto,
   descontinuarProducto,
   actualizarProducto,
-  obtenerProducto,
   editarStock,
   logInventario,
   logFacturas,

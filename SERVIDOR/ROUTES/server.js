@@ -64,7 +64,7 @@ app.use(express.static(path.join(__dirname, '..', 'cliente')));
 //obtener todos los productos
  // Recibir productos
 
-app.get('/products',controladorServer.listaDeProductos);
+app.get('/productos',controladorServer.listaDeProductos);
 // Guardar productos (si la recepción es exitosa)
 
 
@@ -162,7 +162,7 @@ app.get('/generarCatalogo', async function(req, res) {
 
 app.get('/obtenerCatalogo', archivos.leerProductos);
 
-app.get('/leerCotizacion', archivos.observarCambios);
+app.get('/leerCotizacion', archivos.leerCotizacion);
 
 
 

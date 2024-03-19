@@ -14,8 +14,7 @@ class Inventario {
         this.productos.push(producto);
         }
 
-       
-    
+
         //miguel 
         /*
             // Simulación de base de datos de productos
@@ -26,7 +25,6 @@ class Inventario {
             ];
         */
             
-       
             
             // Función para buscar productos por su categoría
         buscarProductosPorCategoria(categoria) {

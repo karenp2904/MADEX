@@ -2,7 +2,7 @@ const fs = require('fs'); // Importa fs.promises para usar readFile como una pro
 const producto = require('../ENTIDADES/producto');
 
 // Caché de productos para almacenar los productos leídos del archivo
-let productosCache = null;
+let productosCache = [];
 
     function obtenerProductos() {
         return productos;
@@ -24,6 +24,8 @@ let productosCache = null;
         const { id, nombre, descripcion, precio, estado, color, stock, descuento, id_proveedores, categoria } = producto;
     
         // Verificar y asignar valores predeterminados si alguno de los campos está vacío
+        descuento=0.15;
+
         const productoDesglosado = {
         id: id || '',
         nombre: nombre || '',
@@ -57,7 +59,7 @@ function guardarProductos(productos) {
 async function leerProductos(req,res) {
     if (productosCache!=null) {
         // Si los productos ya están en caché, devolverlos directamente
-        return productosCache;
+        res.json(productosCache);
     } else {
         try {
             // Leer el archivo de productos de manera asíncrona
@@ -103,17 +105,30 @@ async function leerProductos(req,res) {
 // Rutas a los archivos
 const archivoCotizacion = './SERVIDOR/API/cotizacion.json';
 
+// Controlador para leer la cotización y calcular el presupuesto si hay cambios
+async function leerCotizacion(req, res) {
+    try {
+        // Llama a la función observarCambios para detectar cambios en la cotización
+        observarCambios();
+
+        // Devuelve una respuesta indicando que se está observando la cotización
+        res.status(200).send('Observando cambios en la cotización...');
+    } catch (error) {
+        console.error('Error al leer la cotización:', error);
+        res.status(500).send('Error al leer la cotización');
+    }
+}
+
 // Función para observar cambios en el archivo original
 function observarCambios() {
     fs.watchFile(archivoCotizacion, (curr, prev) => {
         console.log('El archivo original ha sido modificado.');
-        // Leer el archivo y detectar cambios
-        calcularCostoPresupuesto(archivoCotizacion); //calcula el costo
-
+        // Leer el archivo y calcular el presupuesto
+        calcularCostoPresupuesto(archivoCotizacion); // Calcula el presupuesto
     });
 }
 
-
+/*
 // Ejecutar la rutina cada 10 horas
 setInterval(() => {
     console.log('Ejecutando rutina cada 10 horas...');
@@ -121,7 +136,7 @@ setInterval(() => {
 }, 10 * 60 * 60 * 1000); // 10 horas en milisegundos
 
 
-
+*/
 
 async function calcularCostoPresupuesto(archivoCotizacion) {
     try {
@@ -141,12 +156,11 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
 
                 // Obtener el precio del producto de manera asíncrona
                 const precio = await obtenerPrecioProducto(idProducto);
-
                 // Calcular el costo total 
                 costoTotal += precio * cantidad;
             }
 
-            return costoTotal;
+          return costoTotal;
         } else {
             console.error('El contenido del archivo de cotización no es un array.');
             return null;
@@ -159,18 +173,18 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
 
 async function obtenerPrecioProducto(idProducto) {
     try {
-        
         const productos = await leerProductos();
 
         // Encuentra el producto con el ID especificado
-        const producto = productos.find(producto => producto.id_producto === idProducto);
+        const producto = productos.find(producto => producto.id === idProducto);
 
-        
         if (producto) {
+           // let precioFinal=producto.precio-(producto.precio*0.15);
             return producto.precio;
         } else {
             // Si no se encuentra el producto, lanza un error
             throw new Error('El producto con el ID especificado no existe');
+            return null;
         }
     } catch (error) { 
         console.error('Error al obtener el precio del producto:', error);
@@ -179,7 +193,30 @@ async function obtenerPrecioProducto(idProducto) {
 }
 
 
-module.exports = {leerProductos,guardarProductos,obtenerProductos,recibirProductos, observarCambios};
+//-------------------------------------------------------------------------------------
+
+//escribir
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = {leerProductos,guardarProductos,obtenerProductos,recibirProductos, leerCotizacion};
 
 
 /*
