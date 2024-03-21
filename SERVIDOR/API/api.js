@@ -1,8 +1,9 @@
 const fs = require('fs'); // Importa fs.promises para usar readFile como una promesa
 const producto = require('../ENTIDADES/producto');
 
+
 // Caché de productos para almacenar los productos leídos del archivo
-let productosCache = [];
+let productosCache = null;
 
     function obtenerProductos() {
         return productos;
@@ -24,8 +25,6 @@ let productosCache = [];
         const { id, nombre, descripcion, precio, estado, color, stock, descuento, id_proveedores, categoria } = producto;
     
         // Verificar y asignar valores predeterminados si alguno de los campos está vacío
-        descuento=0.15;
-
         const productoDesglosado = {
         id: id || '',
         nombre: nombre || '',
@@ -59,7 +58,7 @@ function guardarProductos(productos) {
 async function leerProductos(req,res) {
     if (productosCache!=null) {
         // Si los productos ya están en caché, devolverlos directamente
-        res.json(productosCache);
+        return productosCache;
     } else {
         try {
             // Leer el archivo de productos de manera asíncrona
@@ -95,7 +94,6 @@ async function leerProductos(req,res) {
         }
     }
 }
-
 
 
 //--------------------------------------------------------------------------------------
@@ -160,7 +158,7 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
                 costoTotal += precio * cantidad;
             }
 
-          return costoTotal;
+        return costoTotal;
         } else {
             console.error('El contenido del archivo de cotización no es un array.');
             return null;

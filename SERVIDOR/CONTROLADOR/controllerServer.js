@@ -48,6 +48,7 @@ async function manejarInicioSesion(datosSolicitud) {
     }
     */
 
+    
     async function listaDeProductos(req, res) {
         try {
             const listaProductos = await controllerDB.obtenerTodosLosProductos();
@@ -84,6 +85,8 @@ async function manejarInicioSesion(datosSolicitud) {
             throw error;
         }
     }
+    
+    
     
     
     async function s_añadirUsuario(req, res) {
