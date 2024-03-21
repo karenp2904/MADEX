@@ -13,6 +13,7 @@ async function db_obtenerTodosLosProductos () {
     throw new Error("Error al obtener los productos");
   }
 }
+
 async function db_obtenerListaProveedores(){
   try {
     let proveedor = await pool.query('SELECT * FROM proveedor');
