@@ -181,7 +181,7 @@ app.get('/generarCatalogo', async function(req, res) {
 
 app.get('/obtenerCatalogo', archivos.leerProductos);
 
-//app.get('/leerCotizacion', archivos.observarCambios);
+//pp.get('/leerCotizacion', archivos.observarCambios);
 
 
 
