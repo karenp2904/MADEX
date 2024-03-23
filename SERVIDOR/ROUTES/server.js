@@ -112,6 +112,26 @@ app.post('/carrito/editar', controladorServer.editarCarrito);
 
 
 // Llamar al método recibirProductos para almacenar los productos
+let inventario = new Inventario();
+
+// Ruta asincrónica para buscar un producto por nombre
+app.get('/buscar-producto/:nombre', async (req, res) => {
+    const nombreProducto = req.params.nombre;
+
+    try {
+        // Realizar la búsqueda del producto en el inventario
+        console.log(nombreProducto);
+        inventario = await obtenerProductosConInventario(req, res);
+        const resultados = await inventario.buscarProducto(nombreProducto);
+
+        // Devolver los resultados como respuesta
+        res.json(resultados);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda del producto:', error);
+        res.status(500).send('Error en la búsqueda del producto');
+    }
+});
 
 async function obtenerProductosConInventario(req, res) {
     try {
@@ -123,11 +143,9 @@ async function obtenerProductosConInventario(req, res) {
             throw new Error('La lista de productos no es un array');
         }
 
-        // Crear una instancia de Inventario
-        const inventario = new Inventario();
-
         // Agregar los productos al inventario
         listaProductos.forEach(producto => inventario.agregarProducto(producto));
+
 
         // Retorna el inventario
         return inventario;
@@ -138,15 +156,18 @@ async function obtenerProductosConInventario(req, res) {
 }
 
 
+
+
 // Ruta para generar el catálogo
 app.get('/generarCatalogo', async function(req, res) {
     try {
         // Obtener el inventario
-        const inventario = await obtenerProductosConInventario(req, res);
+        inventario = await obtenerProductosConInventario(req, res);
         
         // Enviar el inventario a archivos.recibirProductos
         archivos.recibirProductos(inventario);
 
+        console.log("Productos en inventario:", inventario.productos);
         // Enviar respuesta al cliente
         res.send('Catálogo generado correctamente.');
     } catch (error) {

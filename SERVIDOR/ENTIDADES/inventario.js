@@ -1,4 +1,5 @@
 const readline = require('readline');
+const Producto = require('../ENTIDADES/producto'); 
 class Inventario {
         constructor() {
         this.productos = [];
@@ -10,9 +11,11 @@ class Inventario {
 
         }
     
-        agregarProducto(producto) {
-        this.productos.push(producto);
+        agregarProducto(productoData) {
+            const producto = new Producto(productoData);
+            this.productos.push(producto);
         }
+
 
 
         //miguel 
@@ -48,7 +51,7 @@ class Inventario {
             });
         }
             
-            // Función para buscar un producto por su nombre
+        // Función para buscar un producto por su nombre
         buscarProductoPorNombre(nombre) {
             const productoEncontrado = productos.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
             return productoEncontrado || null;
@@ -69,6 +72,75 @@ class Inventario {
             this.rl.close();
             });
         }
+
+        //algortimo de busqueda - barra de busqueda
+        levenshteinDistance(s, t) {
+            const d = [];
+            const n = s.length;
+            const m = t.length;
+        
+            // Crear una matriz (n + 1) x (m + 1) e inicializarla con ceros
+            for (let i = 0; i <= n; i++) {
+                d[i] = [];
+                d[i][0] = i;
+            }
+            for (let j = 0; j <= m; j++) {
+                d[0][j] = j;
+            }
+        
+            // Calcular la distancia de Levenshtein
+            for (let j = 1; j <= m; j++) {
+                for (let i = 1; i <= n; i++) {
+                    if (s[i - 1] === t[j - 1]) {
+                        d[i][j] = d[i - 1][j - 1];
+                    } else {
+                        const substitutionCost = d[i - 1][j - 1] !== undefined ? d[i - 1][j - 1] : Infinity;
+                        const insertionCost = d[i][j - 1] !== undefined ? d[i][j - 1] : Infinity;
+                        const deletionCost = d[i - 1][j] !== undefined ? d[i - 1][j] : Infinity;
+                        d[i][j] = Math.min(substitutionCost + 1, insertionCost + 1, deletionCost + 1);
+                    }
+                }
+            }
+        
+            // Devolver la distancia entre las cadenas s y t
+            return d[n][m];
+        }
+        
+
+        buscarProducto(nombreBusqueda) {
+            return new Promise((resolve, reject) => {
+                const resultados = [];
+        
+                for (const producto of this.productos) {
+                    const palabrasProducto = producto.nombre.toLowerCase().split(' ');
+                    const terminoBusqueda = nombreBusqueda.toLowerCase();
+        
+                    let coincide = false;
+                    for (const palabra of palabrasProducto) {
+                        const distancia = this.levenshteinDistance(palabra, terminoBusqueda);
+                        if (distancia <= 3) { //  ajustar el límite de distancia según tus necesidades
+                            coincide = true;
+                            break;
+                        }
+                    }
+        
+                    if (coincide) {
+                        //  objeto producto y su nombre original a los resultados
+                        resultados.push({
+                            producto: producto,
+                            nombreOriginal: producto.nombre
+                        });
+                    }
+                }
+        
+                resolve(resultados);
+            });
+        }
+        
+        
+        
+        
+        
         
         
         // Ejecutar la búsqueda de productos por categoría

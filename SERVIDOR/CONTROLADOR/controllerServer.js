@@ -61,7 +61,7 @@ async function manejarInicioSesion(datosSolicitud) {
             // Mapea los productos para convertirlos en objetos "producto"
             const productos = listaProductos.map(producto => {
                 return {
-                    id: producto.id_producto,
+                    id_producto: producto.id_producto,
                     nombre: producto.nombre,
                     descripcion: producto.descripcion,
                     precio: parseFloat(producto.precio),
@@ -77,7 +77,7 @@ async function manejarInicioSesion(datosSolicitud) {
             });
     
             // Devuelve el array de objetos "producto"
-            console.log("En server" +productos);
+            console.log("En server" + productos);
             return productos;
         } catch (error) {
             console.error('Error al obtener los productos:', error);

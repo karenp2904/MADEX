@@ -65,8 +65,9 @@ async function obtenerProductoDatos(producto) {
     };
 
     // Asignar el nombre del proveedor y la descripción de la categoría al objeto del producto
-    producto.proveedor = nombreProveedor;
-    producto.categoria = descripcionCategoria;
+    Producto.proveedor = proveedor;
+    Producto.categoria = categoria;
+
 
     // Devolver el producto con la información extra
     return Producto;

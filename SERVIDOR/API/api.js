@@ -71,7 +71,7 @@ async function leerProductos(req,res) {
 
             // Itera sobre cada producto y muestra su información
             productos.forEach(producto => {
-                console.log('ID:', producto.id);
+                console.log('ID:', producto.id_producto);
                 console.log('Nombre:', producto.nombre);
                 console.log('Descripción:', producto.descripcion);
                 console.log('Precio:', producto.precio);
