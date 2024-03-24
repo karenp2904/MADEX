@@ -4,5 +4,7 @@ export const Router = {
     "login": "/login",
     "register": "/register",
     "registeEmpresa": "/register-empresa",
-    "dashboard": "/dashboard"
+    "dashboard": "/dashboard",
+    "catalogo": "/catalogo"
+    //"AdminInventario": "/admin-inventario"
 }
