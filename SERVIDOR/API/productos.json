@@ -1,25 +1,14 @@
 [
   {
-    "id_producto": 3,
-    "nombre": "Estante de madera",
-    "descripcion": "Estante de pared con varios niveles de almacenamiento",
-    "precio": 149.99,
-    "color": "Marr¢n",
-    "stock": 30,
-    "descuento": null,
-    "proveedor": "",
-    "categoria": "Electr¢nica"
-  },
-  {
     "id_producto": 1,
     "nombre": "Mesa de madera",
     "descripcion": "Mesa de comedor hecha de madera de roble resistente",
     "precio": 299.99,
     "color": "Marr¢n",
     "stock": 20,
-    "descuento": null,
+    "descuento": 0,
     "proveedor": "",
-    "categoria": "Electr¢nica"
+    "categoria": "Pisos"
   },
   {
     "id_producto": 2,
@@ -30,18 +19,29 @@
     "stock": 50,
     "descuento": 5,
     "proveedor": "",
-    "categoria": "Electr¢nica"
+    "categoria": "Pisos"
   },
   {
-    "id_producto": 9,
+    "id_producto": 3,
+    "nombre": "Estante de madera",
+    "descripcion": "Estante de pared con varios niveles de almacenamiento",
+    "precio": 149.99,
+    "color": "Marr¢n",
+    "stock": 30,
+    "descuento": 0,
+    "proveedor": "",
+    "categoria": "Pisos"
+  },
+  {
+    "id_producto": 4,
     "nombre": "Cama de madera",
     "descripcion": "Cama doble de madera de pino con cabecero y pie de cama",
     "precio": 349.99,
     "color": "Marr¢n",
     "stock": 10,
-    "descuento": null,
+    "descuento": 0,
     "proveedor": "",
-    "categoria": "Electr¢nica"
+    "categoria": "Techos"
   },
   {
     "id_producto": 5,
@@ -50,8 +50,8 @@
     "precio": 59.99,
     "color": "Marr¢n",
     "stock": 20,
-    "descuento": null,
+    "descuento": 0,
     "proveedor": "",
-    "categoria": "Electr¢nica"
+    "categoria": "Techos"
   }
 ]

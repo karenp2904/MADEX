@@ -319,13 +319,9 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
 
-    async function busquedaPorNombre(){
 
-    }
+    
 
-    async function busquedaPorCategoria(){
-        
-    }
 
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,

@@ -114,24 +114,7 @@ app.post('/carrito/editar', controladorServer.editarCarrito);
 // Llamar al método recibirProductos para almacenar los productos
 let inventario = new Inventario();
 
-// Ruta asincrónica para buscar un producto por nombre
-app.get('/buscar-producto/:nombre', async (req, res) => {
-    const nombreProducto = req.params.nombre;
-
-    try {
-        // Realizar la búsqueda del producto en el inventario
-        console.log(nombreProducto);
-        inventario = await obtenerProductosConInventario(req, res);
-        const resultados = await inventario.buscarProducto(nombreProducto);
-
-        // Devolver los resultados como respuesta
-        res.json(resultados);
-    } catch (error) {
-        // Manejar cualquier error que ocurra durante la búsqueda
-        console.error('Error en la búsqueda del producto:', error);
-        res.status(500).send('Error en la búsqueda del producto');
-    }
-});
+const productosProcesados = new Set();
 
 async function obtenerProductosConInventario(req, res) {
     try {
@@ -143,9 +126,13 @@ async function obtenerProductosConInventario(req, res) {
             throw new Error('La lista de productos no es un array');
         }
 
-        // Agregar los productos al inventario
-        listaProductos.forEach(producto => inventario.agregarProducto(producto));
-
+        // Agregar solo los productos que no han sido procesados previamente
+        listaProductos.forEach(producto => {
+            if (!productosProcesados.has(producto.id_producto)) {
+                inventario.agregarProducto(producto);
+                productosProcesados.add(producto.id_producto);
+            }
+        });
 
         // Retorna el inventario
         return inventario;
@@ -178,10 +165,93 @@ app.get('/generarCatalogo', async function(req, res) {
 });
 
 
-
 app.get('/obtenerCatalogo', archivos.leerProductos);
 
-//pp.get('/leerCotizacion', archivos.observarCambios);
+
+// Ruta  para buscar un producto por nombre
+app.get('/buscar-producto/:nombre', async (req, res) => {
+    const nombreProducto = req.params.nombre;
+
+    try {
+        // Realizar la búsqueda del producto en el inventario
+        console.log(nombreProducto);
+        inventario = await obtenerProductosConInventario(req, res);
+        const resultados = await inventario.buscarProducto(nombreProducto);
+
+        // Devolver los resultados como respuesta
+        res.json(resultados);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda del producto:', error);
+        res.status(500).send('Error en la búsqueda del producto');
+    }
+});
+
+app.get('/filtrarCategoria/:categoria', async (req, res) => {
+    const categoriaAbuscar = req.params.categoria;
+    console.log('Categoría a buscar:', categoriaAbuscar);
+
+    try {
+        const lista = await inventario.productosPorCategoria(categoriaAbuscar);
+        console.log('Lista de productos:', lista);
+
+        res.json(lista);
+        
+    } catch (error) {
+        console.error('Error en la búsqueda del producto:', error);
+        res.status(500).send('Error en la búsqueda del producto');
+    }
+});
+
+
+app.get('/obtenerRutaImagenPorNombre/:nombre', async (req, res) => {
+    const nombre = req.params.nombre; 
+
+    try {
+        // Realizar la búsqueda del producto en el inventario
+        console.log(nombre);
+        inventario =  await obtenerProductosConInventario(req, res);
+        const lista = await inventario.obtenerRutaImagenPorNombre(nombre);
+
+        // Devolver los resultados como respuesta
+        res.json(lista);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda del producto:', error);
+        res.status(500).send('Error en la búsqueda del producto');
+    }
+});
+
+
+//app.get('/leerCotizacion', archivos.observarCambios);
 
 
 
+
+
+//metodos que han funcionado pero los he renovado - posible copia
+
+
+/*
+async function obtenerProductosConInventario(req, res) {
+    try {
+        // Llama a listaDeProductos para obtener la lista de productos desde la base de datos
+        const listaProductos = await controladorServer.listaDeProductos(req, res);
+
+        // Verificar si listaProductos es un array
+        if (!Array.isArray(listaProductos)) {
+            throw new Error('La lista de productos no es un array');
+        }
+
+        // Agregar los productos al inventario
+        listaProductos.forEach(producto => inventario.agregarProducto(producto));
+
+
+        // Retorna el inventario
+        return inventario;
+    } catch (error) {
+        console.error('Error al obtener los productos y crear el inventario:', error);
+        throw error;
+    }
+}
+*/

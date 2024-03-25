@@ -2,8 +2,7 @@ const readline = require('readline');
 const Producto = require('../ENTIDADES/producto'); 
 class Inventario {
         constructor() {
-        this.productos = [];
-
+        this.productos = []; // Supongamos que aquí tienes tu lista de productos
         this.rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
@@ -15,6 +14,16 @@ class Inventario {
             const producto = new Producto(productoData);
             this.productos.push(producto);
         }
+
+        obtenerRutaImagenPorNombre(nombreProducto) {
+            const path = require('path');
+            const nombreArchivoImagen = `${nombreProducto }.png`; // Ajusta la extensión según tus imágenes (jpg, png, etc.)
+            const rutaImagen = path.join(__dirname, '..', 'IMAGENES', nombreArchivoImagen);
+            console.log(rutaImagen);
+            return rutaImagen;
+        }
+
+
 
 
 
@@ -31,7 +40,7 @@ class Inventario {
             
             // Función para buscar productos por su categoría
         buscarProductosPorCategoria(categoria) {
-            const productosEncontrados = productos.filter(p => p.categoria.toLowerCase() === categoria.toLowerCase());
+            const productosEncontrados = this.productos.filter(p => p.categoria.toLowerCase() === categoria.toLowerCase());
             return productosEncontrados.length ? productosEncontrados : null;
         }
         
@@ -118,14 +127,14 @@ class Inventario {
                     let coincide = false;
                     for (const palabra of palabrasProducto) {
                         const distancia = this.levenshteinDistance(palabra, terminoBusqueda);
-                        if (distancia <= 3) { //  ajustar el límite de distancia según tus necesidades
+                        if (distancia <= 3) { 
                             coincide = true;
                             break;
                         }
                     }
         
                     if (coincide) {
-                        //  objeto producto y su nombre original a los resultados
+                        
                         resultados.push({
                             producto: producto,
                             nombreOriginal: producto.nombre
@@ -136,14 +145,40 @@ class Inventario {
                 resolve(resultados);
             });
         }
+
+        productosPorCategoria(categoria) {
+            return new Promise((resolve, reject) => {
+                
+                let productosSegunCategoria = []; 
+                const categoriaABuscar = categoria.toLowerCase();
+                // Iterar sobre la lista de productos
+                for (const producto of this.productos) {
+                    const palabrasProducto = producto.categoria.toLowerCase().split(' ');
+                    
+                    let coincide = false;
+                
+                    for (const palabra of palabrasProducto) {
+                        const distancia = this.levenshteinDistance(palabra, categoriaABuscar);
+                        if (distancia <= 3) { 
+                            coincide = true;
+                            break;
+                        }
+                    }
         
-        
-        
-        
-        
-        
-        
+                    if (coincide) {
+                        //  objeto producto 
+                        productosSegunCategoria.push({ producto,
+
+                        });
+                    }
+                }
+                resolve(productosSegunCategoria);
+            });
+        }
+
+
         // Ejecutar la búsqueda de productos por categoría
         //iniciarBusquedaPorCategoria();
 }
+
 module.exports = Inventario;
