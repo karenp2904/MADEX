@@ -133,7 +133,6 @@ async function obtenerProductosConInventario(req, res) {
                 productosProcesados.add(producto.id_producto);
             }
         });
-
         // Retorna el inventario
         return inventario;
     } catch (error) {
@@ -141,7 +140,6 @@ async function obtenerProductosConInventario(req, res) {
         throw error;
     }
 }
-
 
 
 
@@ -166,6 +164,7 @@ app.get('/generarCatalogo', async function(req, res) {
 
 
 app.get('/obtenerCatalogo', archivos.leerProductos);
+
 
 
 // Ruta  para buscar un producto por nombre
@@ -204,28 +203,28 @@ app.get('/filtrarCategoria/:categoria', async (req, res) => {
 });
 
 
-app.get('/obtenerRutaImagenPorNombre/:nombre', async (req, res) => {
+app.get('/obtenerRutasImagenesPorNombreProducto/:nombre', async (req, res) => {
     const nombre = req.params.nombre; 
 
     try {
         // Realizar la búsqueda del producto en el inventario
-        console.log(nombre);
         inventario =  await obtenerProductosConInventario(req, res);
-        const lista = await inventario.obtenerRutaImagenPorNombre(nombre);
+        console.log(nombre);
+        const lista = await inventario.obtenerRutasImagenesPorNombreProducto(nombre);
 
         // Devolver los resultados como respuesta
         res.json(lista);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
-        console.error('Error en la búsqueda del producto:', error);
-        res.status(500).send('Error en la búsqueda del producto');
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
     }
 });
 
 
 //app.get('/leerCotizacion', archivos.observarCambios);
 
-
+app.get('/presupuestoCotizacion', archivos.calcularCotizacion);
 
 
 

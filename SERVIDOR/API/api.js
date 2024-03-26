@@ -75,19 +75,16 @@ async function leerProductos(req,res) {
                 console.log('Nombre:', producto.nombre);
                 console.log('Descripción:', producto.descripcion);
                 console.log('Precio:', producto.precio);
-                console.log('Estado:', producto.estado);
                 console.log('Color:', producto.color);
                 console.log('Stock:', producto.stock);
                 console.log('Descuento:', producto.descuento);
-                console.log('ID Proveedor:', producto.idProveedor);
                 console.log('Proveedor:', producto.proveedor);
-                console.log('ID Categoría:', producto.idCategoria);
                 console.log('Categoría:', producto.categoria);
                 console.log('------------------------');
             });
               // Actualizar la caché de productos
             productosCache = productos;
-            res.json(productosCache)
+            res.json(productos);
         } catch (error) {
             console.error('Error al leer los productos:', error);
             throw error;
@@ -136,6 +133,11 @@ setInterval(() => {
 
 */
 
+function calcularCotizacion(){
+    const archivoCotizacion = './SERVIDOR/API/cotizacion.json';
+    calcularCostoPresupuesto(archivoCotizacion);
+}
+
 async function calcularCostoPresupuesto(archivoCotizacion) {
     try {
         const data = await fs.promises.readFile(archivoCotizacion, 'utf8');
@@ -151,7 +153,7 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
             for (const item of cotizacion) {
                 const idProducto = item.id_producto;
                 const cantidad = item.cantidad;
-
+                console.log(idProducto,' ', cantidad);
                 // Obtener el precio del producto de manera asíncrona
                 const precio = await obtenerPrecioProducto(idProducto);
                 // Calcular el costo total 
@@ -174,10 +176,11 @@ async function obtenerPrecioProducto(idProducto) {
         const productos = await leerProductos();
 
         // Encuentra el producto con el ID especificado
-        const producto = productos.find(producto => producto.id === idProducto);
+        const producto = productos.find(producto => producto.id_producto === idProducto);
 
         if (producto) {
            // let precioFinal=producto.precio-(producto.precio*0.15);
+           console.error('Precio');
             return producto.precio;
         } else {
             // Si no se encuentra el producto, lanza un error
@@ -214,7 +217,7 @@ async function obtenerPrecioProducto(idProducto) {
 
 
 
-module.exports = {leerProductos,guardarProductos,obtenerProductos,recibirProductos, leerCotizacion};
+module.exports = {leerProductos,guardarProductos,obtenerProductos,recibirProductos,calcularCotizacion, leerCotizacion};
 
 
 /*

@@ -1,5 +1,7 @@
 const readline = require('readline');
 const Producto = require('../ENTIDADES/producto'); 
+const fs = require('fs');
+const path = require('path');
 class Inventario {
         constructor() {
         this.productos = []; // Supongamos que aquí tienes tu lista de productos
@@ -14,13 +16,48 @@ class Inventario {
             const producto = new Producto(productoData);
             this.productos.push(producto);
         }
-
+/*
         obtenerRutaImagenPorNombre(nombreProducto) {
             const path = require('path');
             const nombreArchivoImagen = `${nombreProducto }.png`; // Ajusta la extensión según tus imágenes (jpg, png, etc.)
             const rutaImagen = path.join(__dirname, '..', 'IMAGENES', nombreArchivoImagen);
             console.log(rutaImagen);
             return rutaImagen;
+        }
+*/
+        async obtenerRutasImagenesPorNombreProducto(nombreProducto) {
+            const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
+            const rutasImagenes = [];
+            console.log(directorioImagenes);
+
+            // Leer el contenido del directorio de imágenes
+            try {
+                const archivos = fs.readdirSync(directorioImagenes);
+                console.log(archivos);
+                
+                // Filtrar los archivos para obtener solo las imágenes que contienen el nombre del producto
+                archivos.forEach(archivo => {
+                    console.log(archivo + ' imagenENServidor');
+                    const nombreProductoLimpio = nombreProducto.trim(); // Eliminar espacios en blanco al principio y al final del nombre del producto
+                    const archivoLimpio = archivo.trim(); // Eliminar espacios en blanco al principio y al final del nombre del archivo
+                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+                    console.log(regex + ' lectura');
+                    if (regex.test(archivoLimpio)) {
+                        console.log(nombreProductoLimpio + " prueba ruta");
+                        const rutaImagen = path.join(__dirname, '../IMAGENES', archivo); // Ruta relativa de la imagen
+                        rutasImagenes.push(rutaImagen);
+                        
+                        // Salir del bucle si se han encontrado 5 imágenes
+                        if (rutasImagenes.length == 5) {
+                            return;
+                        }
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error al leer el directorio de imágenes:', error);
+            }
+            return rutasImagenes;
         }
 
 

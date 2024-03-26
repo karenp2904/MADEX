@@ -7,7 +7,7 @@
     "color": "Marr¢n",
     "stock": 20,
     "descuento": 0,
-    "proveedor": "",
+    "proveedor": "Proveedor A",
     "categoria": "Pisos"
   },
   {
@@ -18,7 +18,7 @@
     "color": "Marr¢n",
     "stock": 50,
     "descuento": 5,
-    "proveedor": "",
+    "proveedor": "Proveedor A",
     "categoria": "Pisos"
   },
   {
@@ -29,7 +29,7 @@
     "color": "Marr¢n",
     "stock": 30,
     "descuento": 0,
-    "proveedor": "",
+    "proveedor": "Proveedor A",
     "categoria": "Pisos"
   },
   {
@@ -40,7 +40,7 @@
     "color": "Marr¢n",
     "stock": 10,
     "descuento": 0,
-    "proveedor": "",
+    "proveedor": "Proveedor A",
     "categoria": "Techos"
   },
   {
@@ -51,7 +51,7 @@
     "color": "Marr¢n",
     "stock": 20,
     "descuento": 0,
-    "proveedor": "",
+    "proveedor": "Proveedor A",
     "categoria": "Techos"
   }
 ]

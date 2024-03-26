@@ -41,11 +41,14 @@ async function obtenerProductoDatos(producto) {
       return null;
     }
   
+    console.log(producto.categoria_idcategoria + " c");
     const descripcionCategoria = await services.db_obtenerCategoriaPorId(producto.categoria_idcategoria);
     const categoria = descripcionCategoria ? descripcionCategoria.nombre : '' ;
 
-    let nombreProveedor = await services.db_obtenerNombreProveedorPorId(producto.Proveedores_id_Proveedores);
+    console.log(producto.proveedores_id_proveedores + " p");
+    let nombreProveedor = await services.db_obtenerNombreProveedorPorId(producto.proveedores_id_proveedores);
     const proveedor = nombreProveedor ? nombreProveedor.nombreempresa : '';
+    
 
     //let descripcionCategoria = await services.db_obtenerCategoriaPorId(producto.categoria);
     // Construir el objeto
