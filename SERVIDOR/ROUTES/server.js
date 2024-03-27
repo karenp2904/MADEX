@@ -206,7 +206,25 @@ app.get('/filtrarCategoria/:categoria', async (req, res) => {
     console.log('Categoría a buscar:', categoriaAbuscar);
 
     try {
+        inventario = await obtenerProductosConInventario(req, res);
         const lista = await inventario.productosPorCategoria(categoriaAbuscar);
+        console.log('Lista de productos:', lista);
+
+        res.json(lista);
+        
+    } catch (error) {
+        console.error('Error en la búsqueda del producto:', error);
+        res.status(500).send('Error en la búsqueda del producto');
+    }
+});
+
+app.get('/producto/filtrarColor/:color', async (req, res) => {
+    const color = req.params.color;
+    console.log('Color a buscar:', color);
+
+    try {
+        inventario = await obtenerProductosConInventario(req, res);
+        const lista = await inventario.productosPorColor(color);
         console.log('Lista de productos:', lista);
 
         res.json(lista);
@@ -236,6 +254,7 @@ app.get('/producto/Imagenes/:nombre', async (req, res) => {
     }
 });
 
+/*
 app.get('/producto/rutas/:nombre', async (req, res) => {
     const nombre = req.params.nombre; 
 
@@ -253,12 +272,12 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
         res.status(500).send('Error en la búsqueda de la ruta');
     }
 });
+*/
 
 //app.get('/leerCotizacion', archivos.observarCambios);
 
 app.get('/presupuestoCotizacion/Alianza', async (req, res) => {
     try {
-
         const costo = await archivos.calcularCotizacion();
 
         // Devolver los resultados como respuesta
@@ -274,9 +293,25 @@ app.get('/Alianza/respuesta', async (req, res) => {
     try {
 
         const respuesta = await archivos.guardarRespuesta();
-
         // Devolver los resultados como respuesta
         res.json(respuesta);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
+
+
+app.get('/Alianza/actualizarInventario', async (req, res) => {
+    try {
+
+        inventario = await archivos.actualizarInventario();
+
+        // enviar esa actualización a la base de datos
+        
+        // Devolver los resultados como respuesta
+        res.json(inventario);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error en la búsqueda de la ruta:', error);

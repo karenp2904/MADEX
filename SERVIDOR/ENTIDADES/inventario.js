@@ -247,6 +247,59 @@ class Inventario {
             });
         }
 
+        productosPorColor (color){
+            return new Promise((resolve, reject) => {
+                
+                let productosConColor = []; 
+                const colorABuscar = color.toLowerCase(); 
+                console.log(colorABuscar + " color a buscar");
+                // Iterar sobre la lista de productos
+                for (const producto of this.productos) {
+                    const palabrasProducto = producto.color.toLowerCase().split(' ');
+                    console.log(palabrasProducto);
+                    let coincide = false;
+                    for (const palabra of palabrasProducto) {
+                        const distancia = this.levenshteinDistance(palabra, colorABuscar);
+                        if (distancia <= 2) { 
+                            coincide = true;
+                            break;
+                        }
+                    }
+        
+                    if (coincide) {
+                        //  objeto producto 
+                        productosConColor.push( producto);
+                    }
+                }
+                resolve(productosConColor);
+            });
+        }
+
+        
+        // Método que verifica la cantidad de unidades de stock
+        verificarStock(idProducto, cantidad) {
+            const producto = this.productos.find(producto => producto.id_producto === idProducto);
+            
+            if (!producto) {
+                throw new Error('El producto no se encuentra en el inventario.');
+            }
+            return producto.stock >= cantidad; //rertorna true si es mayor y false si es menor
+        }
+
+        // Método que descuenta el stock de cada producto
+        descontarStock(idProducto, cantidad) {
+            const producto = this.productos.find(producto => producto.id_producto === idProducto);
+            if (!producto) {
+                throw new Error('El producto no se encuentra en el inventario.');
+            }
+            if (producto.stock < cantidad) {
+                throw new Error('No hay suficiente stock disponible para realizar la operación.');
+            }
+            producto.stock -= cantidad;
+            console.log(`Stock descontado correctamente para el producto con ID ${idProducto}. Nuevo stock: ${producto.stock}`);
+            return true;
+        }
+
 
         // Ejecutar la búsqueda de productos por categoría
         //iniciarBusquedaPorCategoria();

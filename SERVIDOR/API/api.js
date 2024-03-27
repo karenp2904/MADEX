@@ -1,47 +1,25 @@
 const fs = require('fs'); // Importa fs.promises para usar readFile como una promesa
-const producto = require('../ENTIDADES/producto');
-
+const Inventario = require('../ENTIDADES/inventario');
+let inventario = new Inventario();
 
 // Caché de productos para almacenar los productos leídos del archivo
+
 let productosCache = null;
 
-    function obtenerProductos() {
-        return productos;
-    }
+// Método para recibir los productos
+function recibirProductos(nuevosProductos) {
+    obtenerInventario();
+    guardarProductos(nuevosProductos); // Supongo que esta función guarda los productos en algún lugar
+    console.log('EN JSON:', JSON.stringify(nuevosProductos));
+}
 
-    // Método para recibir los productos
-    function recibirProductos(nuevosProductos) {
-        productos = nuevosProductos;
-        guardarProductos(nuevosProductos);
-        console.log('EN JSON:', JSON.stringify(nuevosProductos));
-        // productos = nuevosProductos.map(producto => desglosarProducto(producto));
-    }
+// Método para obtener el inventario
+async function obtenerInventario() {
+    console.log("obtener "+inventario.productos)
+    return inventario;
+}
 
 
-
-    
-      // Método para desglosar un producto y asegurar que tenga todos los campos requeridos
-    function desglosarProducto(producto) {
-        const { id, nombre, descripcion, precio, estado, color, stock, descuento, id_proveedores, categoria } = producto;
-    
-        // Verificar y asignar valores predeterminados si alguno de los campos está vacío
-        const productoDesglosado = {
-        id: id || '',
-        nombre: nombre || '',
-        descripcion: descripcion || '',
-        precio: precio || 0,
-        estado: estado || '',
-        color: color || '',
-        stock: stock || 0,
-        descuento: descuento || '',
-        id_proveedores: id_proveedores || '',
-        categoria: categoria || ''
-        };
-    
-        return productoDesglosado;
-    }
-
-    
     // Guardar productos en un archivo JSON
 function guardarProductos(productos) {
     try {
@@ -82,9 +60,11 @@ async function leerProductos(req,res) {
                 console.log('Categoría:', producto.categoria);
                 console.log('------------------------');
             });
-              // Actualizar la caché de productos
-            productosCache = productos;
-           return productosCache;
+            productos.forEach(producto => inventario.agregarProducto(producto));
+             // Iterar sobre cada producto y agregarlo al inventario y a la caché de productos
+            productosCache=productos;
+            return productos;
+        
         } catch (error) {
             console.error('Error al leer los productos:', error);
             throw error;
@@ -142,10 +122,8 @@ async function calcularCotizacion(){
 async function calcularCostoPresupuesto(archivoCotizacion) {
     try {
         const data = await fs.promises.readFile(archivoCotizacion, 'utf8');
-        
         // Parsear el contenido del archivo a un objeto JSON
         const cotizacion = JSON.parse(data);
-        
         // Verificar si cotizacion es un array antes de usar forEach
         if (Array.isArray(cotizacion)) {
             let costoTotal = 0;
@@ -155,19 +133,26 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
                 const idProducto = item.id_producto;
                 const cantidad = item.cantidad;
                 console.log(idProducto,' ', cantidad);
-                // Obtener el precio del producto de manera asíncrona
-                const precio = await obtenerPrecioProducto(idProducto);
-                // Calcular el costo total 
-                costoTotal += precio * cantidad;
-                console.log(costoTotal);
+
+                await leerProductos();
+
+                if (inventario.verificarStock(idProducto, cantidad)) {
+                    // Obtén el precio del producto de manera asíncrona
+                    const precio = await obtenerPrecioProducto(idProducto);
+                    // Calcula el costo total
+                    costoTotal += precio * cantidad;
+                    console.log(costoTotal);
+                }
+                // Descuenta el stock del producto
+                inventario.descontarStock(idProducto, cantidad);
+                
             }
 
             // Formatear el costo total a una representación de moneda legible
             const costoTotalFormateado = costoTotal.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-
+            
             return costoTotalFormateado;
 
-        return costoTotal;
         } else {
             console.error('El contenido del archivo de cotización no es un array.');
             return null;
@@ -177,6 +162,8 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
         return null;
     }
 }
+
+
 
 async function obtenerPrecioProducto(idProducto) {
     try {
@@ -201,6 +188,10 @@ async function obtenerPrecioProducto(idProducto) {
     }
 }
 
+
+async function actualizarInventario(){
+    return inventario;
+}
 
 //-------------------------------------------------------------------------------------
 
@@ -259,7 +250,7 @@ async function obtenerFechaEstimadaEntrega() {
 
 
 
-module.exports = {leerProductos,guardarProductos,obtenerProductos,recibirProductos,calcularCotizacion, guardarRespuesta,leerCotizacion};
+module.exports = {leerProductos,guardarProductos,obtenerInventario,recibirProductos,calcularCotizacion, guardarRespuesta,leerCotizacion, actualizarInventario};
 
 
 /*
