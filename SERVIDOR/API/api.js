@@ -1,4 +1,4 @@
-const fs = require('fs'); // Importa fs.promises para usar readFile como una promesa
+const fs = require('fs').promises; // Importa fs.promises para usar readFile como una promesa
 const Inventario = require('../ENTIDADES/inventario');
 let inventario = new Inventario();
 
@@ -21,33 +21,37 @@ async function obtenerInventario() {
 
 
     // Guardar productos en un archivo JSON
-function guardarProductos(productos) {
-    try {
-        const productosJSON = JSON.stringify(productos.productos, null, 2);
-        fs.writeFileSync('./SERVIDOR/API/productos.json', productosJSON);
-        console.log('Productos guardados en productos.json');
-    } catch (error) {
-        console.error('Error al guardar los productos:', error);
+    function guardarProductos(productos) {
+        try {
+            const productosJSON = JSON.stringify(productos, null, 2);
+            // Verificar si el archivo existe antes de intentar escribir en él
+            if (!fs.existsSync('./SERVIDOR/API/productos.json')) {
+                console.error('El archivo productos.json no existe.');
+                return;
+            }
+            fs.writeFileSync('./SERVIDOR/API/productos.json', productosJSON);
+            console.log('Productos guardados en productos.json');
+        } catch (error) {
+            console.error('Error al guardar los productos:', error);
+        }
     }
-}
 
 
-// Función para leer los productos desde el archivo JSON
-async function leerProductos(req,res) {
-    if (productosCache!=null) {
-        // Si los productos ya están en caché, devolverlos directamente
-        return productosCache;
-    } else {
+    // Función para leer los productos desde el archivo JSON
+    async function leerProductos(req, res) {
         try {
             // Leer el archivo de productos de manera asíncrona
-            const data = await fs.promises.readFile('./SERVIDOR/API/productos.json', 'utf8');
-            const productos = JSON.parse(data);
-            // Verifica si la variable productos es un array
-            if (!Array.isArray(productos)) {
-                throw new Error('El archivo JSON no contiene una lista de productos.');
+            const data = await fs.readFile('./SERVIDOR/API/productos.json', 'utf8');
+            const jsonData = JSON.parse(data);
+    
+            // Verifica si hay productos en el archivo JSON
+            if (!jsonData || !jsonData.productos || !Array.isArray(jsonData.productos)) {
+                throw new Error('El archivo JSON no contiene una lista de productos válida.');
             }
-
-            // Itera sobre cada producto y muestra su información
+    
+            const productos = jsonData.productos;
+    
+            // Iterar sobre cada producto e imprimir su información
             productos.forEach(producto => {
                 console.log('ID:', producto.id_producto);
                 console.log('Nombre:', producto.nombre);
@@ -60,17 +64,21 @@ async function leerProductos(req,res) {
                 console.log('Categoría:', producto.categoria);
                 console.log('------------------------');
             });
+    
+            // Agregar los productos al inventario y actualizar la caché
             productos.forEach(producto => inventario.agregarProducto(producto));
-             // Iterar sobre cada producto y agregarlo al inventario y a la caché de productos
-            productosCache=productos;
-            return productos;
-        
+            productosCache = productos;
+    
+            return inventario;
+            
         } catch (error) {
             console.error('Error al leer los productos:', error);
             throw error;
         }
     }
-}
+    
+    
+
 
 
 //--------------------------------------------------------------------------------------
@@ -121,7 +129,7 @@ async function calcularCotizacion(){
 
 async function calcularCostoPresupuesto(archivoCotizacion) {
     try {
-        const data = await fs.promises.readFile(archivoCotizacion, 'utf8');
+        const data = await fs.readFile(archivoCotizacion, 'utf8');
         // Parsear el contenido del archivo a un objeto JSON
         const cotizacion = JSON.parse(data);
         // Verificar si cotizacion es un array antes de usar forEach
@@ -168,8 +176,10 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
 async function obtenerPrecioProducto(idProducto) {
     try {
         //await leerProductos();
-        const productos = await leerProductos();
-        console.log("productos" +productos) ;
+        
+        inventario = await leerProductos();
+        console.log("productos" +inventario.productos) ;
+        const productos = inventario.productos
         // Encuentra el producto con el ID especificado
         const producto = productos.find(producto => producto.id_producto === idProducto);
         console.log(producto + "producto que se busca");
@@ -197,7 +207,9 @@ async function actualizarInventario(){
 
 //escribir
 
+
 async function guardarRespuesta() {
+    const fs = require('fs');
     const costoAlianza = await calcularCotizacion();
     if (costoAlianza !== null) {
         // Obtener la fecha estimada de entrega
@@ -213,17 +225,19 @@ async function guardarRespuesta() {
         const respuestaJSON = JSON.stringify(respuesta, null, 2);
 
         try {
-            // Escribir la respuesta en el archivo JSON
+            // Escribir la respuesta en el archivo JSON de manera síncrona
             fs.writeFileSync('./SERVIDOR/API/respuestaCotizacion.json', respuestaJSON);
             console.log('Respuesta escrita en el archivo respuestaCotizacion.json correctamente.');
             return respuesta;
         } catch (error) {
             console.error('Error al escribir en el archivo respuestaCotizacion.json:', error);
+            throw error; // Propaga el error para manejarlo en un nivel superior si es necesario
         }
     } else {
         console.error('No se pudo calcular el costo de la cotización.');
     }
 }
+
 
 async function obtenerFechaEstimadaEntrega() {
     const hoy = new Date();

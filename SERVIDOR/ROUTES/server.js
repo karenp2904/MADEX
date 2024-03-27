@@ -46,16 +46,6 @@ app.set('view engine', 'ejs');
 // Ruta para servir archivos estáticos
 app.use(express.static(path.join(__dirname, '..', 'cliente')));
 
-
-
-
-
-
-
-
-
-
-
 //manejo de errores
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -132,7 +122,7 @@ async function obtenerProductosConInventario(req, res) {
 
 
 // Ruta para generar el catálogo
-app.get('/generarCatalogo', async function(req, res) {
+app.get('/Alianza/generarCatalogo', async function(req, res) {
     try {
         // Obtener el inventario
         inventario = await obtenerProductosConInventario(req, res);
@@ -167,20 +157,28 @@ app.get('/producto/inventario', async function(req, res) {
     }
 });
 
-app.get('/obtenerCatalogo', async function (req, res) {
+let productosCache = null;
+
+app.get('/Alianza/obtenerCatalogo', async function (req, res) {
     try {
-        // Obtener el inventario
-        const productos = await archivos.leerProductos();
-    
-        console.log("Productos para alianza:", productos);
+        // Verificar si la caché está vacía
+        if (!productosCache) {
+            // La caché está vacía, leer productos del archivo
+            productosCache = await archivos.leerProductos();
+            console.log("Productos para alianza (leídos del archivo):", productosCache);
+        } else {
+            console.log("Productos para alianza (leídos de la caché):", productosCache);
+        }
+
         // Enviar respuesta al cliente
-        res.send(productos);
+        res.send(productosCache);
     } catch (error) {
         // Manejo de errores
-        console.error('Error al generar el catálogo:', error);
+        console.error('Error al obtener el catálogo:', error);
         res.status(500).send('Error en el servidor');
     }
 });
+
 
 // Ruta  para buscar un producto por nombre
 app.get('/buscar-producto/:nombre', async (req, res) => {
@@ -254,7 +252,7 @@ app.get('/producto/Imagenes/:nombre', async (req, res) => {
     }
 });
 
-/*
+
 app.get('/producto/rutas/:nombre', async (req, res) => {
     const nombre = req.params.nombre; 
 
@@ -272,11 +270,11 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
         res.status(500).send('Error en la búsqueda de la ruta');
     }
 });
-*/
+
 
 //app.get('/leerCotizacion', archivos.observarCambios);
 
-app.get('/presupuestoCotizacion/Alianza', async (req, res) => {
+app.get('/Alianza/presupuestoCotizacion', async (req, res) => {
     try {
         const costo = await archivos.calcularCotizacion();
 

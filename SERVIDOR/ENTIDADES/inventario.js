@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 class Inventario {
         constructor() {
-        this.productos = []; // Supongamos que aquí tienes tu lista de productos
+        this.productos = []; //  tu lista de productos
         /*
         this.rl = readline.createInterface({
             input: process.stdin,
