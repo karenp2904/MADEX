@@ -1,15 +1,16 @@
-const readline = require('readline');
+
 const Producto = require('../ENTIDADES/producto'); 
 const fs = require('fs');
 const path = require('path');
 class Inventario {
         constructor() {
         this.productos = []; // Supongamos que aquí tienes tu lista de productos
+        /*
         this.rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
             });
-
+        */
         }
     
         agregarProducto(productoData) {
@@ -60,6 +61,41 @@ class Inventario {
             return rutasImagenes;
         }
 
+        async  obtenerRutasbase64(nombreProducto) {
+            const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
+            const imagenesBase64 = [];
+        
+            try {
+                const archivos = fs.readdirSync(directorioImagenes);
+                console.log(archivos);
+        
+                archivos.forEach(archivo => {
+                    const nombreProductoLimpio = nombreProducto.trim();
+                    const archivoLimpio = archivo.trim();
+                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+        
+                    if (regex.test(archivoLimpio)) {
+                        const rutaImagen = path.join(directorioImagenes, archivo);
+                        const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
+                        
+                        imagenesBase64.push({
+                            nombre: archivo,
+                            base64: imagenBase64
+                        });
+        
+                        if (imagenesBase64.length == 5) {
+                            return;
+                        }
+                    }
+                });
+        
+            } catch (error) {
+                console.error('Error al leer el directorio de imágenes:', error);
+            }
+        
+            return imagenesBase64;
+        }
+        
 
 
 
@@ -73,7 +109,7 @@ class Inventario {
             // ... más productos
             ];
         */
-            
+        /*
             
             // Función para buscar productos por su categoría
         buscarProductosPorCategoria(categoria) {
@@ -118,6 +154,7 @@ class Inventario {
             this.rl.close();
             });
         }
+        */
 
         //algortimo de busqueda - barra de busqueda
         levenshteinDistance(s, t) {
@@ -172,10 +209,9 @@ class Inventario {
         
                     if (coincide) {
                         
-                        resultados.push({
-                            producto: producto,
-                            nombreOriginal: producto.nombre
-                        });
+                        resultados.push(
+                            producto
+                        );
                     }
                 }
         
@@ -204,9 +240,7 @@ class Inventario {
         
                     if (coincide) {
                         //  objeto producto 
-                        productosSegunCategoria.push({ producto,
-
-                        });
+                        productosSegunCategoria.push( producto);
                     }
                 }
                 resolve(productosSegunCategoria);

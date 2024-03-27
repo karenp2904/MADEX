@@ -84,7 +84,7 @@ async function leerProductos(req,res) {
             });
               // Actualizar la caché de productos
             productosCache = productos;
-            res.json(productos);
+           return productosCache;
         } catch (error) {
             console.error('Error al leer los productos:', error);
             throw error;
@@ -133,9 +133,10 @@ setInterval(() => {
 
 */
 
-function calcularCotizacion(){
+async function calcularCotizacion(){
     const archivoCotizacion = './SERVIDOR/API/cotizacion.json';
-    calcularCostoPresupuesto(archivoCotizacion);
+    const costoAlianza= await calcularCostoPresupuesto(archivoCotizacion);
+    return costoAlianza;
 }
 
 async function calcularCostoPresupuesto(archivoCotizacion) {
@@ -158,7 +159,13 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
                 const precio = await obtenerPrecioProducto(idProducto);
                 // Calcular el costo total 
                 costoTotal += precio * cantidad;
+                console.log(costoTotal);
             }
+
+            // Formatear el costo total a una representación de moneda legible
+            const costoTotalFormateado = costoTotal.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+
+            return costoTotalFormateado;
 
         return costoTotal;
         } else {
@@ -173,14 +180,15 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
 
 async function obtenerPrecioProducto(idProducto) {
     try {
+        //await leerProductos();
         const productos = await leerProductos();
-
+        console.log("productos" +productos) ;
         // Encuentra el producto con el ID especificado
         const producto = productos.find(producto => producto.id_producto === idProducto);
-
+        console.log(producto + "producto que se busca");
         if (producto) {
            // let precioFinal=producto.precio-(producto.precio*0.15);
-           console.error('Precio');
+            console.error(producto.precio);
             return producto.precio;
         } else {
             // Si no se encuentra el producto, lanza un error
@@ -198,6 +206,40 @@ async function obtenerPrecioProducto(idProducto) {
 
 //escribir
 
+async function guardarRespuesta() {
+    const costoAlianza = await calcularCotizacion();
+    if (costoAlianza !== null) {
+        // Obtener la fecha estimada de entrega
+        const fechaEstimadaEntrega = await obtenerFechaEstimadaEntrega();
+
+        // Crear un objeto con la respuesta
+        const respuesta = {
+            costoTotal: costoAlianza,
+            fechaEstimadaEntrega: fechaEstimadaEntrega
+        };
+
+        // Convertir el objeto a formato JSON
+        const respuestaJSON = JSON.stringify(respuesta, null, 2);
+
+        try {
+            // Escribir la respuesta en el archivo JSON
+            fs.writeFileSync('./SERVIDOR/API/respuestaCotizacion.json', respuestaJSON);
+            console.log('Respuesta escrita en el archivo respuestaCotizacion.json correctamente.');
+            return respuesta;
+        } catch (error) {
+            console.error('Error al escribir en el archivo respuestaCotizacion.json:', error);
+        }
+    } else {
+        console.error('No se pudo calcular el costo de la cotización.');
+    }
+}
+
+async function obtenerFechaEstimadaEntrega() {
+    const hoy = new Date();
+    const diasDeEntrega = 14; //   14 días de entrega
+    const fechaEntrega = new Date(hoy.getTime() + (diasDeEntrega * 24 * 60 * 60 * 1000));
+    return fechaEntrega.toISOString().slice(0, 10); // Formato AAAA-MM-DD
+}
 
 
 
@@ -217,7 +259,7 @@ async function obtenerPrecioProducto(idProducto) {
 
 
 
-module.exports = {leerProductos,guardarProductos,obtenerProductos,recibirProductos,calcularCotizacion, leerCotizacion};
+module.exports = {leerProductos,guardarProductos,obtenerProductos,recibirProductos,calcularCotizacion, guardarRespuesta,leerCotizacion};
 
 
 /*

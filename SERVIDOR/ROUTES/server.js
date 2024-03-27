@@ -50,22 +50,10 @@ app.use(express.static(path.join(__dirname, '..', 'cliente')));
 
 
 
-// Ruta protegida para usuarios
-//app.get('/usuario', controladorServer.autorizarRol('usuario'));
-
-// Ruta protegida para administradores
-//app.get('/admin', controladorServer.autorizarRol('administrador'));
-
-// Rutas de inicio de sesión y registro
-//app.post('/login', controladorServer.manejarInicioSesion(null));
-//app.post('/registro', controladorServer.manejarRegistro);
 
 
-//obtener todos los productos
- // Recibir productos
 
-//app.get('/productos',controladorServer.listaDeProductos);
-// Guardar productos (si la recepción es exitosa)
+
 
 
 //manejo de errores
@@ -163,9 +151,36 @@ app.get('/generarCatalogo', async function(req, res) {
 });
 
 
-app.get('/obtenerCatalogo', archivos.leerProductos);
+// Ruta para generar el catálogo
+app.get('/producto/inventario', async function(req, res) {
+    try {
+        // Obtener el inventario
+        inventario = await obtenerProductosConInventario(req, res);
+    
+        console.log("Productos en inventario:", inventario.productos);
+        // Enviar respuesta al cliente
+        res.send(inventario);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
-
+app.get('/obtenerCatalogo', async function (req, res) {
+    try {
+        // Obtener el inventario
+        const productos = await archivos.leerProductos();
+    
+        console.log("Productos para alianza:", productos);
+        // Enviar respuesta al cliente
+        res.send(productos);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
 // Ruta  para buscar un producto por nombre
 app.get('/buscar-producto/:nombre', async (req, res) => {
@@ -203,7 +218,25 @@ app.get('/filtrarCategoria/:categoria', async (req, res) => {
 });
 
 
-app.get('/obtenerRutasImagenesPorNombreProducto/:nombre', async (req, res) => {
+app.get('/producto/Imagenes/:nombre', async (req, res) => {
+    const nombre = req.params.nombre; 
+
+    try {
+        // Realizar la búsqueda del producto en el inventario
+        inventario =  await obtenerProductosConInventario(req, res);
+        console.log(nombre);
+        const lista = await inventario.obtenerRutasbase64(nombre);
+
+        // Devolver los resultados como respuesta
+        res.json(lista);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
+
+app.get('/producto/rutas/:nombre', async (req, res) => {
     const nombre = req.params.nombre; 
 
     try {
@@ -221,11 +254,35 @@ app.get('/obtenerRutasImagenesPorNombreProducto/:nombre', async (req, res) => {
     }
 });
 
-
 //app.get('/leerCotizacion', archivos.observarCambios);
 
-app.get('/presupuestoCotizacion', archivos.calcularCotizacion);
+app.get('/presupuestoCotizacion/Alianza', async (req, res) => {
+    try {
 
+        const costo = await archivos.calcularCotizacion();
+
+        // Devolver los resultados como respuesta
+        res.json(costo);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
+
+app.get('/Alianza/respuesta', async (req, res) => {
+    try {
+
+        const respuesta = await archivos.guardarRespuesta();
+
+        // Devolver los resultados como respuesta
+        res.json(respuesta);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
 
 
 //metodos que han funcionado pero los he renovado - posible copia
