@@ -290,6 +290,7 @@ async function eliminarProducto(productId){
 async function descontinuarProducto(productId){
   try {
 
+    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
 
     const estado= "descontinuado";
     const producto= await services.db_descontinuarProducto(productId, estado);
@@ -306,7 +307,6 @@ async function descontinuarProducto(productId){
 async function actualizarProducto(idProduct, newData){
   try {
     // Llama al servicio para actualizar el producto
-
     const producto= await services.db_actualizarProducto(idProduct, newData);
     // Envía una respuesta de éxito
 
@@ -319,13 +319,14 @@ async function actualizarProducto(idProduct, newData){
 }
 
 
+
+
 async function editarStock(productId, stock){
   try {
     // Llama al servicio para actualizar el producto
     const producto= await services.db_actualizarProducto(productId, stock);
     // Envía una respuesta de éxito
     res.json({ message: 'Producto actualizado correctamente '+producto });
-=======
 
   } catch (error) {
     // Manejar cualquier error y enviar una respuesta de error al cliente

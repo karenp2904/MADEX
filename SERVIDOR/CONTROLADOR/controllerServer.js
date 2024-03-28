@@ -257,7 +257,6 @@ async function manejarInicioSesion(datosSolicitud) {
 
     async function s_añadirProducto(req, res) {
         try {
-
             const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
             
             const productoData = {
@@ -274,9 +273,7 @@ async function manejarInicioSesion(datosSolicitud) {
     
             // Llama al método de controllerDB pasando los datos del producto
             const producto = await controllerDB.añadirProducto(productoData);
-    
-         
-    
+
             // Devolver una respuesta JSON con el producto añadido
             res.status(201).json(productoAñadido);
         } catch (error) {
