@@ -273,11 +273,11 @@ async function manejarInicioSesion(datosSolicitud) {
     
             // Llama al método de controllerDB pasando los datos del producto
             const producto = await controllerDB.añadirProducto(productoData);
-    
-            // Devuelve una respuesta JSON con el producto añadido
-            res.status(201).json(producto);
+
+            // Devolver una respuesta JSON con el producto añadido
+            res.status(201).json(productoAñadido);
         } catch (error) {
-            // Maneja cualquier error y envía una respuesta de error al cliente
+
             console.error('Error al añadir producto:', error);
             res.status(500).send('Error en el servidor');
         }
