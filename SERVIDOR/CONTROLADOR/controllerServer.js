@@ -1,6 +1,7 @@
 // controladorServer.js
 const Usuario = require('../ENTIDADES/usuario.js');
 const controllerDB = require('./controllerDatabase.js');
+const CarritoDeCompras = require('../ENTIDADES/carritoDeCompra.js');
 
 
 async function manejarInicioSesion(datosSolicitud) {
@@ -254,17 +255,34 @@ async function manejarInicioSesion(datosSolicitud) {
 
     }
 
-    async function s_añadirProducto(req, res){
+    async function s_añadirProducto(req, res) {
         try {
-            // Implementación para añadir un producto en la base de datos
-            const producto = await controllerDB.añadirProducto(req, res); // Llama al método de controllerDB
-            res.status(201).json(producto); // Devuelve una respuesta JSON con el producto añadido
+            const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
+            
+            const productoData = {
+                nombre,
+                descripcion,
+                precio,
+                estado_producto,
+                color,
+                stock,
+                descuento,
+                Proveedores_id_Proveedores,
+                Categoria_idCategoria
+            };
+    
+            // Llama al método de controllerDB pasando los datos del producto
+            const producto = await controllerDB.añadirProducto(productoData);
+    
+            // Devuelve una respuesta JSON con el producto añadido
+            res.status(201).json(producto);
         } catch (error) {
-            console.error('Error al añadir usuario:', error);
+            // Maneja cualquier error y envía una respuesta de error al cliente
+            console.error('Error al añadir producto:', error);
             res.status(500).send('Error en el servidor');
         }
-
     }
+    
     async function s_eliminarProducto(req, res) {
         const { idProducto } = req.body; // Suponiendo que el ID del producto está en el cuerpo de la solicitud
         try {
@@ -302,6 +320,34 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
         }
     }
+
+    async function s_actualizarProducto(req, res) {
+        const { idProducto, nuevosDatos } = req.body; // se proporcionan el ID del producto y los nuevos datos en el cuerpo de la solicitud
+        try {
+            await controllerDB.actualizarProducto(idProducto, nuevosDatos);
+    
+            res.status(200).send('Producto actualizado exitosamente');
+        } catch (error) {
+            console.error('Error al actualizar el producto:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+
+    async function s_editarStock(req, res) {
+        try {
+            const { idProducto, stock } = req.body;
+          // Llama al controlador para editar el stock del producto y obtiene el producto actualizado
+            const productoActualizado = await controllerDB.editarStock(idProducto, stock);
+            
+          // Envía el producto actualizado con el nuevo stock como respuesta
+            res.status(200).json({ producto: productoActualizado });
+        } catch (error) {
+          // Maneja cualquier error y envía una respuesta de error al cliente
+            console.error('Error al descontinuar el producto:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+
     
     async function s_obtenerProducto(req, res) {
         const { idProducto } = req.body; // ID del producto está en el cuerpo de la solicitud
@@ -319,13 +365,66 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
 
+    async function recibirCarritoDeCompras(req, res) {
+        try {
+            const { carrito } = req.body; 
+    
+            // Llama al método de controllerDB para agregar los productos al carrito
+            const carritoActualizado = await controllerDB.añadirProductosCarrito(carrito);
+    
+            // Devuelve el carrito actualizado como respuesta
+            res.status(200).json(carritoActualizado);
+        } catch (error) {
+            console.error('Error al recibir el carrito de compras:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+
+    async function editarCarritoDeCompras(req, res) {
+        try {
+            const { operacion, idProducto, cantidad } = req.body; 
+    
+            const carrito = new CarritoDeCompras();
+    
+            
+            switch (operacion) {
+                case 'agregarProducto':
+                    carrito.agregarProducto(idProducto, cantidad);
+                    break;
+                case 'eliminar':
+                    carrito.eliminarProducto(idProducto);
+                    break;
+                case 'actualizarCantidad':
+                    carrito.actualizarCantidad(idProducto, cantidad);
+                    break;
+                case 'disminuirCantidad':
+                carrito.disminuirCantidad(idProducto, cantidad);
+                break;
+                default:
+                    return res.status(400).send('Operación no válida');
+            }
+
+            const carritoActualizado = await controllerDB.editarCarrito(carrito);
+    
+            // Devolver una respuesta exitosa
+            res.status(200).send('Carrito actualizado correctamente');
+        } catch (error) {
+            console.error('Error al editar el carrito de compras:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+    
+    
+    
+
 
     
 
 
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,
-    listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_añadirProducto,s_eliminarProducto,s_descontinuarProducto
+    listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_editarStock,editarCarritoDeCompras,
+    s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, recibirCarritoDeCompras
 };
 
 
