@@ -6,28 +6,30 @@ class CarritoDeCompras {
         this.productos = [];
     }
 
-    agregarProducto(productoNuevo, cantidadDeseada) {
-        const productoExistenteIndex = this.productos.findIndex(p => p.id_producto === productoNuevo.id_producto);
+    agregarProducto(idProducto, cantidadDeseada) {
+        const producto = this.productos.find(producto => producto.id_producto === idProducto);
+        const productoExistenteIndex = this.productos.findIndex(p => p.id_producto === producto.id_producto);
     
         if (productoExistenteIndex !== -1) {
             // Si el producto ya está en el carrito, verificar el stock disponible
-            if (this.verificarStock(productoNuevo.id_producto, cantidadDeseada)) {
+            if (this.verificarStock(producto.id_producto, cantidadDeseada)) {
                 this.productos[productoExistenteIndex].cantidad += cantidadDeseada;
             } else {
-                console.log(`No hay suficiente stock disponible para agregar ${cantidadDeseada} unidades de ${productoNuevo.nombre}.`);
+                console.log(`No hay suficiente stock disponible para agregar ${cantidadDeseada} unidades de ${producto.nombre}.`);
             }
         } else {
             // Si el producto no está en el carrito, verificar el stock disponible
-            if (this.verificarStock(productoNuevo.id_producto, cantidadDeseada)) {
+            if (this.verificarStock(producto.id_producto, cantidadDeseada)) {
                 // Si hay suficiente stock, agregar el producto al carrito
-                const productoCarrito = new Producto(productoNuevo);
+
+                const productoCarrito = new Producto(producto);
 
                 this.productos.push({
                     productoCarrito,
                     cantidadDeseada
                 });
             } else {
-                console.log(`No hay suficiente stock disponible para agregar ${cantidadDeseada} unidades de ${productoNuevo.nombre}.`);
+                console.log(`No hay suficiente stock disponible para agregar ${cantidadDeseada} unidades de ${producto.nombre}.`);
             }
         }
     }
@@ -49,14 +51,20 @@ class CarritoDeCompras {
     actualizarCantidad(idProducto, nuevaCantidad) {
         const producto = this.productos.find(p => p.id_producto === idProducto);
         if (producto) {
-            producto.cantidad = nuevaCantidad;
+            if(verificarStock(idProducto, nuevaCantidad)){
+                producto.cantidad = nuevaCantidad;
+            }
+            
         }
     }
 
     aumentarCantidad(idProducto, cantidad) {
         const producto = this.productos.find(p => p.id_producto === idProducto);
         if (producto) {
-            producto.cantidad += cantidad;
+            if(verificarStock(idProducto, nuevaCantidad)){
+                producto.cantidad += cantidad;
+            }
+        
         }
     }
 

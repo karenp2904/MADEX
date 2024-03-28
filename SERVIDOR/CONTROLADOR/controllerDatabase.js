@@ -226,17 +226,8 @@ async function obtenerDatosUsuario(){
 
 };
 
-async function añadirProducto(req, res) {
-  try {
-    const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
-    const newProducto = await services.db_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria);
-    res.json(newProducto);
-    res.status(201).json({ message: 'producto añadido correctamente' });
-  } catch (error) {
-    console.error('Error al añadir producto:', error.message);
-    res.status(500).send('Error al añadir producto');
-  }
-};
+
+
 
 //  obtener la descripción del proveedor según su ID
 async function obtenerProveedor(nombre) {
@@ -258,7 +249,7 @@ async function obtenerProveedor(nombre) {
 
 // Otorga categoria al producto segun el id que acompañe
 async function obtenerCategoria(idCategoria) {
- 
+
   let categorias = await services.db_obtenerListaCategorias();
   // Buscar la categoría con el ID proporcionado
   const categoriaEncontrada = categorias.find(categoria => categoria.id === idCategoria);
@@ -271,9 +262,22 @@ async function obtenerCategoria(idCategoria) {
   }
 }
 
-async function eliminarProducto(req, res){
+async function añadirProducto(producto) {
   try {
-    const productId = req.params.productId;
+    // Llama al servicio para añadir el producto a la base de datos
+    const newProducto = await services.db_añadirProducto(producto);
+    
+    // Envía una respuesta con el nuevo producto
+    res.status(201).json(newProducto);
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al añadir producto:', error.message);
+    res.status(500).send('Error al añadir producto');
+  }
+};
+
+async function eliminarProducto(productId){
+  try {
     const producto=await services.db_eliminarProducto(productId);
     // Envía una respuesta de éxito
     res.json({ message: 'Producto eliminado correctamente '+ producto });
@@ -283,10 +287,10 @@ async function eliminarProducto(req, res){
   }
     
 }
-async function descontinuarProducto(req, res){
+async function descontinuarProducto(productId){
   try {
-    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
-    const productId = req.params.productId;
+
+
     const estado= "descontinuado";
     const producto= await services.db_descontinuarProducto(productId, estado);
 
@@ -299,14 +303,13 @@ async function descontinuarProducto(req, res){
     
 }
 
-async function actualizarProducto(req, res){
+async function actualizarProducto(idProduct, newData){
   try {
-    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
-    const productId = req.params.productId;
-    const newData = req.body;
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(productId, newData);
-    
+
+    const producto= await services.db_actualizarProducto(idProduct, newData);
+    // Envía una respuesta de éxito
+
     res.json({ message: 'Producto actualizado correctamente '+producto });
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
@@ -315,14 +318,15 @@ async function actualizarProducto(req, res){
   }
 }
 
-async function editarStock(idProducto, nuevoStock) {
-  try {
-    
-    // Llamar al servicio para actualizar el producto
-    const productoActualizado = await services.db_actualzarProducto(idProducto, nuevoStock);
 
-    // Enviar una respuesta exitosa al cliente
-    res.json({ message: 'Producto actualizado correctamente', producto: productoActualizado });
+async function editarStock(productId, stock){
+  try {
+    // Llama al servicio para actualizar el producto
+    const producto= await services.db_actualizarProducto(productId, stock);
+    // Envía una respuesta de éxito
+    res.json({ message: 'Producto actualizado correctamente '+producto });
+=======
+
   } catch (error) {
     // Manejar cualquier error y enviar una respuesta de error al cliente
     console.error('Error al actualizar el producto:', error.message);
