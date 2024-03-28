@@ -7,6 +7,9 @@ import { Catalogo } from '../pages/catalogo/Catalogo';
 import { Layout1 } from '../layout/Layout1';
 import { Layout2 } from '../layout/Layout2';
 
+import { AdminInventario } from '../pages/admin-inventario/AdminInventario';
+import { Categorias } from '../pages/categorias/Categorias';
+
 const baseurl = import.meta.env.BASE_URL;
 
 const AppRoutes: FC = () => {
@@ -22,6 +25,8 @@ const AppRoutes: FC = () => {
         </Route>
         <Route element={<Layout2 />}>
           <Route path={Router.catalogo} element={<Catalogo />} />
+          <Route path={Router.adminInventario} element={<AdminInventario />} />
+          <Route path={Router.categorias} element={<Categorias />} />
 
           <Route path="*" element={<Navigate to={Router.login} />} />
         </Route>

@@ -26,7 +26,7 @@ export const NavBar = () => {
             </div>
             <div className="flex justify-center items-center text-white">
                 <input 
-                    className="bg-[length:0.8rem] bg-[8px] bg-carrito bg-no-repeat outline-none indent-10 bg-transparent placeholder:text-white text-white w-96 border-2 border-white rounded-md"
+                    className="bg-[length:0.8rem] bg-[18px] bg-lupa bg-no-repeat outline-none indent-10 bg-transparent placeholder:text-white text-white w-96 border-2 border-white rounded-md"
                     type="text"
                     placeholder="Buscar en el sitio"
                 />
