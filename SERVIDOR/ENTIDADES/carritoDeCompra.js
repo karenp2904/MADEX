@@ -21,10 +21,12 @@ class CarritoDeCompras {
             // Si el producto no está en el carrito, verificar el stock disponible
             if (this.verificarStock(producto.id_producto, cantidadDeseada)) {
                 // Si hay suficiente stock, agregar el producto al carrito
+
                 const productoCarrito = new Producto(producto);
+
                 this.productos.push({
                     productoCarrito,
-                    cantidad: cantidadDeseada
+                    cantidadDeseada
                 });
             } else {
                 console.log(`No hay suficiente stock disponible para agregar ${cantidadDeseada} unidades de ${producto.nombre}.`);
@@ -87,8 +89,9 @@ class CarritoDeCompras {
     vaciarCarrito() {
         this.productos = [];
     }
+
 }
 
-
+module.exports = CarritoDeCompras;
 
 

@@ -2,6 +2,7 @@
 const Producto = require('../ENTIDADES/producto'); 
 const fs = require('fs');
 const path = require('path');
+const Usuario = require('./usuario');
 class Inventario {
         constructor() {
         this.productos = []; //  tu lista de productos
@@ -298,6 +299,29 @@ class Inventario {
             producto.stock -= cantidad;
             console.log(`Stock descontado correctamente para el producto con ID ${idProducto}. Nuevo stock: ${producto.stock}`);
             return true;
+        }
+
+
+        aplicarDescuento(idRol, idProducto) {
+            let descuento = 0;
+            const producto = this.productos.find(producto => producto.id_producto === idProducto);
+            
+            // Verificar el rol del usuario y aplicar el descuento correspondiente
+            switch (idRol) {
+                case '2': //cliente
+                    descuento = 10; // Descuento del 10% para clientes
+                    break;
+                case '3': //empresa
+                    descuento = 15; // Descuento del 15% para empresas
+                    break;
+                default:
+                    descuento = 0; // Sin descuento para otros roles
+            }
+    
+            // Calcular el precio con el descuento aplicado
+            const precioConDescuento = producto.precio * (1 - descuento / 100);
+    
+            return precioConDescuento;
         }
 
 

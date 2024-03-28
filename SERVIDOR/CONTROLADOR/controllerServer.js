@@ -257,6 +257,7 @@ async function manejarInicioSesion(datosSolicitud) {
 
     async function s_añadirProducto(req, res) {
         try {
+
             const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
             
             const productoData = {
@@ -274,10 +275,12 @@ async function manejarInicioSesion(datosSolicitud) {
             // Llama al método de controllerDB pasando los datos del producto
             const producto = await controllerDB.añadirProducto(productoData);
     
-            // Devuelve una respuesta JSON con el producto añadido
-            res.status(201).json(producto);
+         
+    
+            // Devolver una respuesta JSON con el producto añadido
+            res.status(201).json(productoAñadido);
         } catch (error) {
-            // Maneja cualquier error y envía una respuesta de error al cliente
+
             console.error('Error al añadir producto:', error);
             res.status(500).send('Error en el servidor');
         }
@@ -308,6 +311,24 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
         }
     }
+
+    async function s_actualizarStockProducto(req, res) {
+            const { idProducto } = req.body; 
+            try {
+            
+            const { nuevoStock } = req.body;
+    
+            const productoActualizado = await controllerDB.editarStock(idProducto, nuevoStock);
+        
+              // Envía el producto actualizado con el nuevo stock como respuesta
+            res.status(200).json({ producto: productoActualizado });
+            } catch (error) {
+              // Maneja cualquier error y envía una respuesta de error al cliente
+            console.error('Error al descontinuar el producto:', error);
+            res.status(500).send('Error en el servidor');
+            }
+        }
+        
     
     async function s_actualizarProducto(req, res) {
         const { idProducto, nuevosDatos } = req.body; // se proporcionan el ID del producto y los nuevos datos en el cuerpo de la solicitud
@@ -417,8 +438,6 @@ async function manejarInicioSesion(datosSolicitud) {
     
     
 
-
-    
 
 
 module.exports = {
