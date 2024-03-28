@@ -134,6 +134,23 @@ async function db_añadirProducto(nombre, descripcion, precio, estado_producto, 
   }
 };
 
+
+async function db_actualizarProducto(idProducto, newData) {
+    try {
+        const { nombre, precio, descripcion, /* otros atributos */ } = newData;
+        //ejecutar sql 
+
+
+        console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
+
+        return true; // Indica que la actualización fue exitosa
+    } catch (error) {
+        console.error('Error al actualizar el producto:', error);
+        throw error;
+    }
+}
+
+
 async function db_eliminarProducto(){
     
 }
@@ -141,9 +158,6 @@ async function db_descontinuarProducto(){
     
 }
 
-async function db_actualizarProducto(){
-    
-}
 
 async function db_editarStock(){
 

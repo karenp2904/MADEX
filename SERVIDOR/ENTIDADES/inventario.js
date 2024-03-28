@@ -301,6 +301,18 @@ class Inventario {
             return true;
         }
 
+        
+        eliminarProducto(idProducto) {
+            this.productos = this.productos.filter(producto => producto.id_producto !== idProducto);
+        }
+
+        actualizarStockAdmin(idProducto, nuevaCantidad) {
+            const producto = this.productos.find(p => p.id_producto === idProducto);
+            if (producto) {
+                    producto.stock = nuevaCantidad;
+            }
+        }
+
 
         aplicarDescuento(idRol, idProducto) {
             let descuento = 0;

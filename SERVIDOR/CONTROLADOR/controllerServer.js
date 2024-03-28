@@ -324,7 +324,7 @@ async function manejarInicioSesion(datosSolicitud) {
             console.error('Error al descontinuar el producto:', error);
             res.status(500).send('Error en el servidor');
             }
-        }
+    }
         
     
     async function s_actualizarProducto(req, res) {
@@ -339,17 +339,6 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
 
-    async function s_actualizarProducto(req, res) {
-        const { idProducto, nuevosDatos } = req.body; // se proporcionan el ID del producto y los nuevos datos en el cuerpo de la solicitud
-        try {
-            await controllerDB.actualizarProducto(idProducto, nuevosDatos);
-    
-            res.status(200).send('Producto actualizado exitosamente');
-        } catch (error) {
-            console.error('Error al actualizar el producto:', error);
-            res.status(500).send('Error en el servidor');
-        }
-    }
 
     async function s_editarStock(req, res) {
         try {
@@ -365,6 +354,24 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
         }
     }
+
+    async function actualizarInventario(req, res) {
+        try {
+            
+            const { productosActualizados } = req.body;
+    
+            // Llamar al controlador de base de datos para almacenar los cambios
+            await controllerDB.actualizarTodosProductos(productosActualizados);
+    
+            // Enviar una respuesta al cliente para confirmar que la actualización se realizó con éxito
+            res.status(200).json({ mensaje: 'Inventario actualizado exitosamente' });
+        } catch (error) {
+            // Manejar cualquier error que ocurra durante el proceso de actualización
+            console.error('Error al actualizar el inventario:', error);
+            res.status(500).json({ error: 'Error al actualizar el inventario' });
+        }
+    }
+    
 
     
     async function s_obtenerProducto(req, res) {
@@ -440,7 +447,7 @@ async function manejarInicioSesion(datosSolicitud) {
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,
     listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_editarStock,editarCarritoDeCompras,
-    s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, recibirCarritoDeCompras
+    s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, recibirCarritoDeCompras,actualizarInventario
 };
 
 

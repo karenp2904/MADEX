@@ -318,6 +318,21 @@ async function actualizarProducto(idProduct, newData){
   }
 }
 
+async function actualizarTodosProductos(productos) {
+  try {
+    for (const producto of productos) {
+      await services.db_actualizarProducto(producto.id, producto.newData);
+      console.log('Producto actualizado correctamente:', producto);
+    }
+    // Envía una respuesta de éxito
+    return { message: 'Todos los productos se han actualizado correctamente' };
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al actualizar productos:', error.message);
+    throw new Error('Error al actualizar productos');
+  }
+}
+
 
 
 
@@ -403,7 +418,7 @@ module.exports = {
   añadirProducto,
   eliminarProducto,
   descontinuarProducto,
-  actualizarProducto,
+  actualizarProducto,actualizarTodosProductos,
   editarStock,
   logInventario,
   logFacturas,
