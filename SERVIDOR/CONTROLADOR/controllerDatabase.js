@@ -287,7 +287,6 @@ async function descontinuarProducto(req, res){
   try {
     // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
     const productId = req.params.productId;
-    //const newData = req.body;
     const estado= "descontinuado";
     const producto= await services.db_descontinuarProducto(productId, estado);
 
@@ -307,7 +306,7 @@ async function actualizarProducto(req, res){
     const newData = req.body;
     // Llama al servicio para actualizar el producto
     const producto= await services.db_actualizarProducto(productId, newData);
-    // Envía una respuesta de éxito
+    
     res.json({ message: 'Producto actualizado correctamente '+producto });
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
@@ -316,21 +315,21 @@ async function actualizarProducto(req, res){
   }
 }
 
-async function editarStock(){
+async function editarStock(idProducto, nuevoStock) {
   try {
-    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
-    const productId = req.params.productId;
-    const stock = req.body;
-    // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(productId, stock);
-    // Envía una respuesta de éxito
-    res.json({ message: 'Producto actualizado correctamente '+producto });
+    
+    // Llamar al servicio para actualizar el producto
+    const productoActualizado = await services.db_actualzarProducto(idProducto, nuevoStock);
+
+    // Enviar una respuesta exitosa al cliente
+    res.json({ message: 'Producto actualizado correctamente', producto: productoActualizado });
   } catch (error) {
-    // Maneja cualquier error y envía una respuesta de error al cliente
-    console.error('Error al actualizar producto:', error.message);
-    res.status(500).json({ error: 'Error al actualizar producto' });
+    // Manejar cualquier error y enviar una respuesta de error al cliente
+    console.error('Error al actualizar el producto:', error.message);
+    res.status(500).json({ error: 'Error al actualizar el producto' });
   }
 }
+
 
 
 async function logInventario(){

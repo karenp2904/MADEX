@@ -254,17 +254,36 @@ async function manejarInicioSesion(datosSolicitud) {
 
     }
 
-    async function s_añadirProducto(req, res){
+    async function s_añadirProducto(req, res) {
         try {
+            // Obtener los datos del producto del cuerpo de la solicitud
+            const { id_producto, nombre, descripcion, precio, estado_producto, color, stock, descuento, proveedor, categoria } = req.body;
+    
+            // Crear un nuevo objeto producto con los datos recibidos
+            const nuevoProducto = {
+                id_producto,
+                nombre,
+                descripcion,
+                precio,
+                estado_producto,
+                color,
+                stock,
+                descuento,
+                proveedor,
+                categoria
+            };
+    
             // Implementación para añadir un producto en la base de datos
-            const producto = await controllerDB.añadirProducto(req, res); // Llama al método de controllerDB
-            res.status(201).json(producto); // Devuelve una respuesta JSON con el producto añadido
+            const productoAñadido = await controllerDB.añadirProducto(nuevoProducto);
+    
+            // Devolver una respuesta JSON con el producto añadido
+            res.status(201).json(productoAñadido);
         } catch (error) {
-            console.error('Error al añadir usuario:', error);
+            console.error('Error al añadir producto:', error);
             res.status(500).send('Error en el servidor');
         }
-
     }
+    
     async function s_eliminarProducto(req, res) {
         const { idProducto } = req.body; // Suponiendo que el ID del producto está en el cuerpo de la solicitud
         try {
@@ -290,6 +309,24 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
         }
     }
+
+    async function s_actualizarStockProducto(req, res) {
+            const { idProducto } = req.body; 
+            try {
+            
+            const { nuevoStock } = req.body;
+    
+            const productoActualizado = await controllerDB.editarStock(idProducto, nuevoStock);
+        
+              // Envía el producto actualizado con el nuevo stock como respuesta
+            res.status(200).json({ producto: productoActualizado });
+            } catch (error) {
+              // Maneja cualquier error y envía una respuesta de error al cliente
+            console.error('Error al descontinuar el producto:', error);
+            res.status(500).send('Error en el servidor');
+            }
+        }
+        
     
     async function s_actualizarProducto(req, res) {
         const { idProducto, nuevosDatos } = req.body; // se proporcionan el ID del producto y los nuevos datos en el cuerpo de la solicitud
@@ -319,8 +356,6 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
 
-
-    
 
 
 module.exports = {
