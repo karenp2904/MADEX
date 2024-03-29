@@ -1,29 +1,27 @@
 const pool = require('./databaseConexion');
 
 
-
-
-async function db_obtenerTodosLosProductos () {
+async function db_obtenerTodosLosProductos () { //TODO VERIFICACION PENDIENTE
   try {
-    const allProductos  = await pool.query('SELECT * FROM productos');
-   // console.log("productos en db" +allProductos); //  ver los resultados antes de devolverlos
+    const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
+    console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
     return allProductos.rows;
   } catch (error) {
-    console.error("Error al obtener los productos:", error);
-    throw new Error("Error al obtener los productos");
+    console.error("Error al ejecutar la consulta:", error);
+    throw new Error("Error al ejecutar la consulta");
   }
 }
 
 async function db_obtenerListaProveedores(){
   try {
-    let proveedor = await pool.query('SELECT * FROM proveedor');
+    let proveedor = await pool.query('SELECT * FROM db_obtenerListaProveedores()'); //TODO: hacer un procedure
     return proveedor.rows;
   } catch (error) {
     console.error("Error al obtener categorias :", error);
     throw new Error("Error al obtener categorias");
   }
 }
-/*
+
 async function db_obtenerNombreProveedorPorId(idProveedor) {
   try {
       const query = 'SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1';
@@ -42,9 +40,9 @@ async function db_obtenerNombreProveedorPorId(idProveedor) {
 }
 */
 
-async function db_obtenerNombreProveedorPorId (id) {
+/* TODO async function db_obtenerNombreProveedorPorId (id) {
   try {
-    let prov = await pool.query('SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1', [id]);
+    let prov = await pool.query('SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1', [id]); //TODO: hacer un procedure
     return prov.rows[0];
   } catch (error) {
     throw error;
@@ -54,7 +52,7 @@ async function db_obtenerNombreProveedorPorId (id) {
 
 async function db_obtenerCategoriaPorId (id) {
   try {
-    let cat = await pool.query('SELECT nombre FROM categoria WHERE idcategoria = $1', [id]);
+    let cat = await pool.query('SELECT nombre FROM categoria WHERE idcategoria = $1', [id]); //TODO: hacer un procedure
     return cat.rows[0];
   } catch (error) {
     throw error;
@@ -63,7 +61,7 @@ async function db_obtenerCategoriaPorId (id) {
 
 async function db_obtenerListaCategorias(){
   try {
-    const categoria = await pool.query('SELECT * FROM categoria');
+    const categoria = await pool.query('SELECT * FROM categoria'); //TODO: hacer un procedure
     return categoria.rows;
   } catch (error) {
     console.error("Error al obtener categorias :", error);
@@ -74,13 +72,18 @@ async function db_obtenerListaCategorias(){
 
 async function db_obtenerProductoPorId (id) {
   try {
-    const producto = await pool.query('SELECT * FROM productos WHERE id_producto = $1', [id]);
+    const producto = await pool.query('SELECT * FROM productos WHERE id_producto = $1', [id]); //TODO: hacer un procedure
     return producto.rows;
   } catch (error) {
     throw error;
   }
 };
 
+async function db_obtenereProductos(){
+  try{
+    const productos = await pool.query(//TODO: llamar procedure para que retorne la lista de productos)
+  }
+}
 
 async function db_añadirUsuario(){
 
