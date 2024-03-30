@@ -29,25 +29,43 @@ async function manejarInicioSesion(datosSolicitud) {
         s_añadirUsuario(req,res);
     }
 
-/*
 
-    // listaDeProductos como una función asíncrona
-    async function listaDeProductos(req, res) {
+
+    async function s_verificarCredencialUsuario(req, res) {
+        const { correo, contraseña } = req.body;
         try {
-            const listaProductos = await controllerDB.obtenerTodosLosProductos();
-            if (!listaProductos || listaProductos.length === 0) {
-                // Si no se encontraron productos, devuelve una respuesta 404
-                return res.status(404).json({ message: 'No se encontraron productos' });
+            const usuarios = await s_obtenerTodosUsuarios();
+            const usuario = usuarios.find(u => u.correo === correo && u.contraseña === contraseña);
+            if (!usuario) {
+                return res.status(401).send('Credenciales incorrectas');
+            } else {
+                req.usuario = usuario;
+                res.json(usuario);
             }
-            // Si se encontraron productos, devuelve una respuesta JSON con la lista de productos
-            //console.log(LlistaProductos);
-            res.json(listaProductos);
         } catch (error) {
-            console.error('Error al obtener los productos:', error);
-            res.status(500).send('Error en el servidor');
+            console.error('Error al verificar las credenciales del usuario:', error);
+            res.status(500).send('Error al verificar las credenciales del usuario');
         }
     }
-    */
+
+    async function s_comprobarRol(usuario) {
+        if (usuario.idRol === 1) {
+            console.log('El usuario es un administrador');
+            return "admin";
+        } else if (usuario.idRol === 2) {
+            // El usuario es un cliente
+            console.log('El usuario es un cliente');
+            return "cliente";
+        } else if(usuario.idRol === 3){
+            console.log('El usuario es un empresa');
+            return "empresa";
+        }else{
+            // El usuario tiene un rol desconocido
+            console.log('El usuario tiene un rol desconocido');
+            res.status(403).send('Rol de usuario desconocido');
+            return "otro";
+        }
+    }
 
     
     async function listaDeProductos(req, res) {
@@ -86,46 +104,101 @@ async function manejarInicioSesion(datosSolicitud) {
             throw error;
         }
     }
-    
+
+    async function aplicarDescuento(idRol, idProducto) {
+        let descuento = 0;
+        const productos= await listaDeProductos();
+        const producto = productos.find(producto => producto.id_producto === idProducto);
+        
+        // Verificar el rol del usuario y aplicar el descuento correspondiente
+        switch (idRol) {
+            case '2': //cliente
+                descuento = 10; // Descuento del 10% para clientes
+                break;
+            case '3': //empresa
+                descuento = 15; // Descuento del 15% para empresas
+                break;
+            default:
+                descuento = 0; // Sin descuento para otros roles
+        }
+
+        // Calcular el precio con el descuento aplicado
+        const precioConDescuento = producto.precio * (1 - descuento / 100);
+
+        return precioConDescuento;
+    }
+
+    function definirDescuento(idRol){
+        let descuento = 0;
+        
+        switch (idRol) {
+            case 2: //cliente
+                descuento = 10; // Descuento del 10% para clientes
+                break;
+            case 3: //empresa
+                descuento = 15; // Descuento del 15% para empresas
+                break;
+            default:
+                descuento = 0; // Sin descuento para otros roles
+        }
+        console.log("descuento  "+descuento);
+        return descuento;
+    }    
     
     
     
     async function s_añadirUsuario(req, res) {
         try {
-            // Implementación para añadir un usuario en la base de datos
-            const usuario = await controllerDB.añadirUsuario(req, res); // Llama al método añadirUsuario de controllerDB
-            res.status(201).json(usuario); // Devuelve una respuesta JSON con el usuario añadido
+            // Obtener los datos del cuerpo de la solicitud
+            const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
+    
+            // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
+            const usuario = await controllerDB.añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+    
+            // Devuelve una respuesta JSON con el usuario añadido
+            res.status(201).json(usuario);
         } catch (error) {
             console.error('Error al añadir usuario:', error);
             res.status(500).send('Error en el servidor');
         }
     }
     
+    
 
 
     async function s_eliminarUsuario(req, res) {
         try {
+            const { idUsuario } = req.body; 
+    
             // Implementación para eliminar un usuario en la base de datos
-            await controllerDB.eliminarUsuario();
-            res.status(501).send('Función no implementada');
+            await controllerDB.eliminarUsuario(idUsuario);
+    
+            res.status(200).send('Usuario eliminado correctamente');
         } catch (error) {
+            // Manejar cualquier error que ocurra durante el proceso de eliminación
             console.error('Error al eliminar usuario:', error);
             res.status(500).send('Error en el servidor');
         }
     }
+    
 
     async function s_actualizarUsuario(req, res) {
         try {
+            const idUsuario = req.params.id;
+            const nuevosDatos = req.body;
+    
             // Implementación para actualizar un usuario en la base de datos
-        
-            const usuarioActualizado = await controllerDB.actualizarUsuario(req.params.id, req.body);
-            // res.json(usuarioActualizado);
-            res.status(501).send('Función no implementada');
+            const usuarioActualizado = await controllerDB.actualizarUsuario(idUsuario, nuevosDatos);
+    
+            // Enviar una respuesta con el usuario actualizado
+            res.status(200).json(usuarioActualizado);
         } catch (error) {
+            // Manejar cualquier error que ocurra durante el proceso de actualización
             console.error('Error al actualizar usuario:', error);
             res.status(500).send('Error en el servidor');
         }
     }
+    
 
     async function s_añadirEmpresa(req, res) {
         try {
@@ -165,42 +238,6 @@ async function manejarInicioSesion(datosSolicitud) {
 */
 
 
-
-    async function s_verificarCredencialUsuario(req, res) {
-        const { correo, contraseña } = req.body;
-        try {
-            const usuarios = await s_obtenerTodosUsuarios();
-            const usuario = usuarios.find(u => u.correo === correo && u.contraseña === contraseña);
-            if (!usuario) {
-                return res.status(401).send('Credenciales incorrectas');
-            } else {
-                req.usuario = usuario;
-                await s_comprobarRol(req, res);
-            }
-        } catch (error) {
-            console.error('Error al verificar las credenciales del usuario:', error);
-            res.status(500).send('Error al verificar las credenciales del usuario');
-        }
-    }
-
-    async function s_comprobarRol(req, res) {
-        const usuario = req.usuario;
-        if (usuario.idRol === 1) {
-            console.log('El usuario es un administrador');
-            res.json(usuario);
-        } else if (usuario.idRol === 2) {
-            // El usuario es un cliente
-            res.json(usuario);
-            console.log('El usuario es un cliente');
-        } else if(usuario.idRol === 3){
-            console.log('El usuario es un empresa');
-        }else{
-            // El usuario tiene un rol desconocido
-            res.json(usuario);
-            console.log('El usuario tiene un rol desconocido');
-            res.status(403).send('Rol de usuario desconocido');
-        }
-    }
 
 
 
@@ -325,7 +362,22 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
             }
     }
-        
+    
+    async function s_obtenerProducto(req, res) {
+        const { idProducto } = req.body; // ID del producto está en el cuerpo de la solicitud
+        try {
+            const producto = await controllerDB.obtenerProductoPorId(idProducto);
+            // Verifica si se encontró el producto
+            if (!producto) {
+                return res.status(404).send('Producto no encontrado');
+            }
+            // Devuelve el producto encontrado en formato JSON
+            res.status(200).json(producto);
+        } catch (error) {
+            console.error('Error al obtener el producto:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
     
     async function s_actualizarProducto(req, res) {
         const { idProducto, nuevosDatos } = req.body; // se proporcionan el ID del producto y los nuevos datos en el cuerpo de la solicitud
@@ -373,29 +425,11 @@ async function manejarInicioSesion(datosSolicitud) {
     }
     
 
-    
-    async function s_obtenerProducto(req, res) {
-        const { idProducto } = req.body; // ID del producto está en el cuerpo de la solicitud
-        try {
-            const producto = await controllerDB.obtenerProducto(idProducto);
-            // Verifica si se encontró el producto
-            if (!producto) {
-                return res.status(404).send('Producto no encontrado');
-            }
-            // Devuelve el producto encontrado en formato JSON
-            res.status(200).json(producto);
-        } catch (error) {
-            console.error('Error al obtener el producto:', error);
-            res.status(500).send('Error en el servidor');
-        }
-    }
 
-    async function recibirCarritoDeCompras(req, res) {
+    async function añadirProductoCarritoCompras(producto, cantidad) {
         try {
-            const { carrito } = req.body; 
-    
-            // Llama al método de controllerDB para agregar los productos al carrito
-            const carritoActualizado = await controllerDB.añadirProductosCarrito(carrito);
+            // agregar los productos al carrito con la cantidad especificada
+            const carritoActualizado = await controllerDB.añadirProductoCarrito(producto, cantidad);
     
             // Devuelve el carrito actualizado como respuesta
             res.status(200).json(carritoActualizado);
@@ -404,6 +438,47 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
         }
     }
+    
+    async function modificarCantidadProductoCarritoCompras(idProducto, cantidad) {
+        try {
+            // agregar los productos al carrito con la cantidad especificada
+            const carritoActualizado = await controllerDB.modificarCantidadProductoCarrito(idProducto, cantidad);
+    
+            // Devuelve el carrito actualizado como respuesta
+            res.status(200).json(carritoActualizado);
+        } catch (error) {
+            console.error('Error al recibir el carrito de compras:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+
+    async function obtenerCarritoCompras(idUsuario) {
+        try {
+            const carrito = await controllerDB.obtenerCarrito(idUsuario);
+    
+            // Devuelve el carrito actualizado como respuesta
+            res.status(200).json(carrito);
+        } catch (error) {
+            console.error('Error al recibir el carrito de compras:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+
+    async function eliminarProductoCarritoCompras(idProducto) {
+        try {
+            // agregar los productos al carrito con la cantidad especificada
+            const carritoActualizado = await controllerDB.eliminarProductoCarrito(idProducto);
+    
+            // Devuelve el carrito actualizado como respuesta
+            res.status(200).json(carritoActualizado);
+        } catch (error) {
+            console.error('Error al recibir el carrito de compras:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+
+
+/*
 
     async function editarCarritoDeCompras(req, res) {
         try {
@@ -438,7 +513,7 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
         }
     }
-    
+    */
     
     
 
@@ -446,8 +521,10 @@ async function manejarInicioSesion(datosSolicitud) {
 
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,
-    listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_editarStock,editarCarritoDeCompras,
-    s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, recibirCarritoDeCompras,actualizarInventario
+    listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
+    s_editarStock,editarCarritoDeCompras,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,
+    s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,
+    actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras
 };
 
 

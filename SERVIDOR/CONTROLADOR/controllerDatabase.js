@@ -2,7 +2,6 @@
 // controllerB >> ServicesDB >>> ConexionDB
 
 const services = require('../DATABASE/servicesDatabase.js');
-const Producto = require('../ENTIDADES/producto');
 
 
 
@@ -114,13 +113,11 @@ async function obtenerProveedorId(id){
 
 
 // Función para añadir un usuario
-async function  añadirUsuario (req, res)  {
+async function  añadirUsuario (id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol)  {
   try {
-    // Extrae los datos del usuario del cuerpo de la solicitud
-    const {documento, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono } = req.body;
     //  para añadir el usuario
-    const usuario= await services.db_añadirUsuario(nombre_usuario, apellido_usuario, correo, tipo_documento,documento, contraseña, telefono);
-    res.send(usuario);
+    const añadido= await services.db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+    res.send(añadido);
     //  respuesta de éxito
     res.status(201).json({ message: 'Usuario añadido correctamente' });
   } catch (error) {
@@ -131,12 +128,10 @@ async function  añadirUsuario (req, res)  {
 }
 
 // Función para eliminar un usuario
-async function  eliminarUsuario (req, res)  {
+async function  eliminarUsuario (idUsuario)  {
   try {
-    // Obtiene el ID del usuario a eliminar de los parámetros de la solicitud
-    const userId = req.params.userId;
     // Llama al servicio para eliminar el usuario
-    const usuario=await services.db_eliminarUsuario(userId);
+    const usuario=await services.db_eliminarUsuario(idUsuario);
     // Envía una respuesta de éxito
     res.json({ message: 'Usuario eliminado correctamente '+ usuario });
   } catch (error) {
@@ -147,13 +142,11 @@ async function  eliminarUsuario (req, res)  {
 }
 
 // Función para actualizar un usuario
-async function actualizarUsuario(req, res) {
+async function actualizarUsuario(idUsuario,nuevosDatos) {
   try {
-    // Obtiene el ID del usuario y los nuevos datos del cuerpo de la solicitud
-    const userId = req.params.userId;
-    const newData = req.body;
+
     // Llama al servicio para actualizar el usuario
-    const usuario= await services.db_actualizarUsuario(userId, newData);
+    const usuario= await services.db_actualizarUsuario(idUsuario, nuevosDatos);
     // Envía una respuesta de éxito
     res.json({ message: 'Usuario actualizado correctamente '+usuario });
   } catch (error) {
@@ -164,10 +157,9 @@ async function actualizarUsuario(req, res) {
 }
 
 
-async function añadirEmpresa(req, res){
+async function añadirEmpresa(documento, correo, tipo_documento, contraseña, telefono ){
   try {
-    // Extrae los datos de la empresa
-    const {documento, correo, tipo_documento, contraseña, telefono } = req.body;
+
     //  para añadir el usuario
     const empresa= await services.db_añadirEmpresa(documento, correo, tipo_documento, contraseña, telefono);
     res.send(empresa);
@@ -276,9 +268,9 @@ async function añadirProducto(producto) {
   }
 };
 
-async function eliminarProducto(productId){
+async function eliminarProducto(idProducto){
   try {
-    const producto=await services.db_eliminarProducto(productId);
+    const producto=await services.db_eliminarProducto(idProducto);
     // Envía una respuesta de éxito
     res.json({ message: 'Producto eliminado correctamente '+ producto });
   } catch (error) {
@@ -287,13 +279,13 @@ async function eliminarProducto(productId){
   }
     
 }
-async function descontinuarProducto(productId){
+async function descontinuarProducto(idProducto){
   try {
 
     // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
 
     const estado= "descontinuado";
-    const producto= await services.db_descontinuarProducto(productId, estado);
+    const producto= await services.db_descontinuarProducto(idProducto, estado);
 
     res.json({ message: 'Producto actualizado correctamente '+producto });
   } catch (error) {
@@ -304,10 +296,10 @@ async function descontinuarProducto(productId){
     
 }
 
-async function actualizarProducto(idProduct, newData){
+async function actualizarProducto(idProducto, nuevosDatos){
   try {
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(idProduct, newData);
+    const producto= await services.db_actualizarProducto(idProducto, nuevosDatos);
     // Envía una respuesta de éxito
 
     res.json({ message: 'Producto actualizado correctamente '+producto });
@@ -371,7 +363,33 @@ async function logUsuarios(){
 
 }
 
-async function añadirProductosCarrito(){
+async function añadirProductoCarrito(producto, cantidad){
+// se manda el producto  con la cantidad que se desea
+}
+
+async function modificarCantidadProductoCarrito(idProducto, cantidad){
+// se manda el idProducto  con la cantidad que se modifica
+}
+
+async function eliminarProductoCarrito(idProducto){
+  // se manda el idproducto a eliminar
+  }
+  
+
+async function obtenerCarrito(idUsuario){
+
+  // paso 1: obtener los id de producto y la cantidad
+  //paso 2: buscar al producto por el id
+  //paso 3: recolectar la info del producto
+  /* 
+  const productosCompletosPromises = allProductos.map(producto =>
+      obtenerProductoDatos(producto)
+    );
+
+    // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
+    const productosCompletos = await Promise.all(productosCompletosPromises);
+  */
+  //paso 4: enviar todo
 
 }
 
@@ -381,10 +399,6 @@ async function editarCarrito(){
 
 async function verificarClienteActivo(){
 } 
-
-async function obtenerCarrito(){
-
-}
 
 async function obtenerHistorialDeCompra(){
 
@@ -423,8 +437,8 @@ module.exports = {
   logInventario,
   logFacturas,
   logUsuarios,
-  añadirProductosCarrito,
-  editarCarrito,
+  añadirProductoCarrito, modificarCantidadProductoCarrito,
+  editarCarrito,eliminarProductoCarrito,
   verificarClienteActivo,
   obtenerCarrito,
   obtenerHistorialDeCompra,

@@ -22,6 +22,7 @@ async function obtenerInventario() {
 
     // Guardar productos en un archivo JSON
     function guardarProductos(productos) {
+        const fs = require('fs');
         try {
             const productosJSON = JSON.stringify(productos, null, 2);
             // Verificar si el archivo existe antes de intentar escribir en él
@@ -184,9 +185,9 @@ async function obtenerPrecioProducto(idProducto) {
         const producto = productos.find(producto => producto.id_producto === idProducto);
         console.log(producto + "producto que se busca");
         if (producto) {
-           // let precioFinal=producto.precio-(producto.precio*0.15);
+            let precioConDescuento = producto.precio * (1 - producto.descuento / 100);
             console.error(producto.precio);
-            return producto.precio;
+            return precioConDescuento;
         } else {
             // Si no se encuentra el producto, lanza un error
             throw new Error('El producto con el ID especificado no existe');

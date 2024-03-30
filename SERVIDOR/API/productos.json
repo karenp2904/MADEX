@@ -7,7 +7,7 @@
       "precio": 299.99,
       "color": "Marr¢n",
       "stock": 20,
-      "descuento": 0,
+      "descuento": 15,
       "proveedor": "Proveedor A",
       "categoria": "Pisos"
     },
@@ -18,7 +18,7 @@
       "precio": 79.99,
       "color": "Marr¢n",
       "stock": 50,
-      "descuento": 5,
+      "descuento": 15,
       "proveedor": "Proveedor A",
       "categoria": "Pisos"
     },
@@ -29,7 +29,7 @@
       "precio": 149.99,
       "color": "Marr¢n",
       "stock": 30,
-      "descuento": 0,
+      "descuento": 15,
       "proveedor": "Proveedor A",
       "categoria": "Pisos"
     },
@@ -40,7 +40,7 @@
       "precio": 349.99,
       "color": "Marr¢n",
       "stock": 10,
-      "descuento": 0,
+      "descuento": 15,
       "proveedor": "Proveedor A",
       "categoria": "Techos"
     },
@@ -51,7 +51,7 @@
       "precio": 59.99,
       "color": "Marr¢n",
       "stock": 20,
-      "descuento": 0,
+      "descuento": 15,
       "proveedor": "Proveedor A",
       "categoria": "Techos"
     }
