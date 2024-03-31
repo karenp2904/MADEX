@@ -124,13 +124,12 @@ async function db_obtenerTodosUsuarios(){
 async function db_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria){
   try {
     const newProducto = await pool.query(
-      'INSERT INTO Productos (nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
       [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
     );
-  
-    return newProducto.rows[0];
   } catch (error) {
-    throw error;
+    console.error("Error al insertar el producto");
+    throw new Error("Error al insertar el producto");
   }
 };
 
