@@ -85,7 +85,7 @@ async function db_obtenerProductoPorId (id) {
 };
 
 
-async function db_añadirUsuario(){
+async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol){
 
 }
 
@@ -93,11 +93,11 @@ async function db_verificarCredencialUsuario(){
 
 }
 
-async function db_eliminarUsuario(){
+async function db_eliminarUsuario(idUsuario){
 
 }
 
-async function db_actualizarUsuario(){
+async function db_actualizarUsuario(idUsuario, nuevosDatos){
 
 }
 
@@ -106,7 +106,7 @@ async function db_añadirEmpresa(){
 }
 
 
-async function db_obtenerUsuario(){
+async function db_obtenerUsuario(idUsuario){
 
 }
 
@@ -151,10 +151,10 @@ async function db_actualizarProducto(idProducto, newData) {
 }
 
 
-async function db_eliminarProducto(){
+async function db_eliminarProducto(idProducto){
     
 }
-async function db_descontinuarProducto(){
+async function db_descontinuarProducto(idProducto){
     
 }
 
@@ -185,20 +185,29 @@ async function db_logUsuarios(){
 
 }
 
-async function db_añadirProductosCarrito(){
-
-}
-
-async function db_editarCarrito(){
-
-}
 
 async function db_verificarClienteActivo(){
 } 
 
-async function  db_obtenerCarrito(){
 
-}
+
+async function  db_añadirProductoCarrito(producto, cantidad){
+  // se manda el producto  con la cantidad que se desea
+  }
+  
+  async function  db_modificarCantidadProductoCarrito(idProducto, cantidad){
+  // se manda el idProducto  con la cantidad que se modifica
+  }
+  
+  async function  db_eliminarProductoCarrito(idProducto){
+    // se manda el idproducto a eliminar
+    }
+    
+  
+  async function  db_obtenerCarrito(idUsuario){
+      // obtener todos los id de producto y la cantidad
+      // luego db_obtenerProductoPorId 
+  }
 
 async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ //TODO: VERIFICAR FUNCIONAMIENTO
   try {
@@ -215,11 +224,15 @@ async function db_añadirFactura(){
 }
 
 
-async function db_obtenerFactura(){
+async function db_obtenerFactura(idFactura){
 
 }
 
-async function db_guardarDireccionEnvio(){
+async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
+
+}
+
+async function db_obtenerDireccionPorUsuario(idUsuario) {
 
 }
 
@@ -251,5 +264,5 @@ module.exports = { db_añadirUsuario,
   db_obtenerHistorialDeCompra,
   db_añadirFactura,
   db_obtenerFactura,
-  db_guardarDireccionEnvio
+  db_guardarDireccionEnvio,db_obtenerDireccionPorUsuario
 };
