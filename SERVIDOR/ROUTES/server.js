@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //seguridad de la app
 const helmet = require('helmet');
+const CarritoDeCompras = require('../ENTIDADES/carritoDeCompra');
 app.use(helmet());
 
 
@@ -326,6 +327,50 @@ app.delete('/carrito/:idProducto', (req, res) => {
 });
 
 
+// Ruta para añadir una dirección
+app.post('/direccion', async (req, res) => {
+    try {
+        
+        const { ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion } = req.body;
+
+        // Crear una instancia de la dirección utilizando los datos recibidos
+        const nuevaDireccion = new Direccion ({
+            ID_Usuario,
+            Calle,
+            Ciudad,
+            Codigo_Postal,
+            departamento,
+            barrio,
+            descripcion
+        });
+
+        const direccionGuardada = await controladorServer.guardarDireccion(nuevaDireccion);
+
+        res.status(201).json(direccionGuardada);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al añadir la dirección:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+// Ruta para agregar una factura
+app.post('/factura/', async (req, res) => {
+    try {
+        const { idUsuario, productos, total } = req.body;
+
+        const contenidoCarrito = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const carrito= new CarritoDeCompras(contenidoCarrito);
+
+
+        res.status(201).json(facturaCreada);
+    } catch (error) {
+        // envía una respuesta de error al cliente
+        console.error('Error al crear la factura:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
 
 

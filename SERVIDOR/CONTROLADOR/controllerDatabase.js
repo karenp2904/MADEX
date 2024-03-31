@@ -176,9 +176,9 @@ async function verificarCredencialUsuario(){
 
 }
 
-async function obtenerUsuario(id){
+async function obtenerUsuario(idUsuario){
   try {
-    let usuario = await services.db_obtenerUsuario(id); //buscaporid
+    let usuario = await services.db_obtenerUsuario(idUsuario); //buscaporid
     return producto;
   } catch (error) {
     console.error(error.message);
@@ -413,9 +413,39 @@ async function obtenerFactura(){
 
 }
 
-async function guardarDireccionEnvio(){
+async function guardarDireccionEnvio(nuevaDireccion){
+  try{
+    services.db_guardarDireccionEnvio(nuevaDireccion.ID_Usuario,
+      nuevaDireccion.Calle,
+      nuevaDireccion.Ciudad,
+      nuevaDireccion.Codigo_Postal,
+      nuevaDireccion.departamento,
+      nuevaDireccion.barrio,
+      nuevaDireccion.descripcion)
 
+      // Devuelve una respuesta indicando que la dirección se ha guardado correctamente
+      return { message: 'Dirección guardada correctamente' };
+  }catch (error) {
+    console.error('Error al obtener al guardar direccion:', error.message);
+    res.status(500).json({ error: 'Error al obtener al guardar direccion' });
+  }
 }
+
+async function obtenerDireccionPorUsuario(idUsuario) {
+  try {
+      if (idUsuario != null) {
+          const direccion = await services.db_obtenerDireccionPorUsuario(idUsuario);
+          return direccion;
+      } else {
+          // Si idUsuario es nulo, lanza un error indicando que se proporcionó un ID de usuario inválido
+          throw new Error('ID de usuario no válido');
+      }
+  } catch (error) {
+      console.error('Error al obtener la dirección por usuario:', error.message);
+      throw error; // Relanza el error para que pueda ser manejado por el código que llama a esta función
+  }
+}
+
 
 module.exports = {
   obtenerTodosLosProductos,
@@ -444,7 +474,7 @@ module.exports = {
   obtenerHistorialDeCompra,
   añadirFactura,
   obtenerFactura,
-  guardarDireccionEnvio
+  guardarDireccionEnvio,obtenerDireccionPorUsuario
 };
 
 

@@ -478,6 +478,32 @@ async function manejarInicioSesion(datosSolicitud) {
     }
 
 
+    async function guardarDireccion(nuevaDireccion) {
+        try {
+            const direccion = await controllerDB.guardarDireccionEnvio(nuevaDireccion);
+
+            return direccion;
+        } catch (error) {
+
+            console.error('Error al guardar direccion:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+    
+
+    
+    async function obtenerDireccion(idUsuario) {
+        try {
+            const direccion = await controllerDB.obtenerDireccionPorUsuario(idUsuario);
+
+            return direccion;
+        } catch (error) {
+            console.error('Error al retornar direccion:', error);
+            res.status(500).send('Error en el servidor');
+        }
+    }
+
+
 /*
 
     async function editarCarritoDeCompras(req, res) {
@@ -520,10 +546,10 @@ async function manejarInicioSesion(datosSolicitud) {
 
 
 module.exports = {
-    s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,
+    s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,
     listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
     s_editarStock,editarCarritoDeCompras,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,
-    s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,
+    s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras
 };
 
