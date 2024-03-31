@@ -106,7 +106,13 @@ async function db_obtenerUsuario(){
 }
 
 async function db_obtenerTodosUsuarios(){
-
+  try {
+    let usuarios = await pool.query('SELECT * FROM db_obtenerTodosUsuarios();');
+    return usuarios.rows;
+  } catch (error) {
+    console.error("Error al obtener usuarios :", error);
+    throw new Error("Error al obtener usuarios");
+  }
 }
 
 
