@@ -280,7 +280,6 @@ class Inventario {
         // Método que verifica la cantidad de unidades de stock
         verificarStock(idProducto, cantidad) {
             const producto = this.productos.find(producto => producto.id_producto === idProducto);
-            
             if (!producto) {
                 throw new Error('El producto no se encuentra en el inventario.');
             }
@@ -313,28 +312,14 @@ class Inventario {
             }
         }
 
-
-        aplicarDescuento(idRol, idProducto) {
-            let descuento = 0;
-            const producto = this.productos.find(producto => producto.id_producto === idProducto);
             
-            // Verificar el rol del usuario y aplicar el descuento correspondiente
-            switch (idRol) {
-                case '2': //cliente
-                    descuento = 10; // Descuento del 10% para clientes
-                    break;
-                case '3': //empresa
-                    descuento = 15; // Descuento del 15% para empresas
-                    break;
-                default:
-                    descuento = 0; // Sin descuento para otros roles
-            }
-    
-            // Calcular el precio con el descuento aplicado
-            const precioConDescuento = producto.precio * (1 - descuento / 100);
-    
-            return precioConDescuento;
+        // Método para actualizar el descuento de todos los productos
+        async actualizarDescuentoTodosProductos(nuevoDescuento) {
+            this.productos.forEach(producto => {
+                producto.descuento = nuevoDescuento;
+            });
         }
+
 
 
         // Ejecutar la búsqueda de productos por categoría
