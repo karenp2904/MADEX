@@ -1,33 +1,31 @@
 const pool = require('./databaseConexion');
 
 
-
-
-async function db_obtenerTodosLosProductos () {
+async function db_obtenerTodosLosProductos () { //TODO VERIFICACION PENDIENTE
   try {
-    const allProductos  = await pool.query('SELECT * FROM productos');
-   // console.log("productos en db" +allProductos); //  ver los resultados antes de devolverlos
-   console.log(allProductos.rows);
+    const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
+    console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
+
     return allProductos.rows;
   } catch (error) {
-    console.error("Error al obtener los productos:", error);
-    throw new Error("Error al obtener los productos");
+    console.error("Error al ejecutar la consulta:", error);
+    throw new Error("Error al ejecutar la consulta");
   }
 }
 
-async function db_obtenerListaProveedores(){
+async function db_obtenerListaProveedores(){ //TODO VERIFICACION PENDIENTE
   try {
-    let proveedor = await pool.query('SELECT * FROM proveedor');
+    let proveedor = await pool.query('SELECT * FROM db_obtenerListaProveedores()');
     return proveedor.rows;
   } catch (error) {
     console.error("Error al obtener proveedor :", error);
     throw new Error("Error al obtener proveedor");
   }
 }
-/*
-async function db_obtenerNombreProveedorPorId(idProveedor) {
+
+async function db_obtenerNombreProveedorPorId(idProveedor) { //TODO VERIFICACION PENDIENTE
   try {
-      const query = 'SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1';
+      const query = ('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [idProveedor]);
       const values = [idProveedor];
       const result = await pool.query(query, values);
 
@@ -41,18 +39,13 @@ async function db_obtenerNombreProveedorPorId(idProveedor) {
       throw new Error("Error al obtener nombre del proveedor por ID");
   }
 }
-*/
 
-async function db_obtenerNombreProveedorPorId(id) {
+
+
+async function db_obtenerNombreProveedorPorId (id) { //Retorna texto
   try {
-    // Ejecutar la consulta SQL para obtener el nombre del proveedor por su ID
-    let prov = await pool.query('SELECT nombreempresa FROM proveedor WHERE id_proveedores = $1', [id]);
-    
-    // Imprimir el resultado en la consola (opcional)
-    console.log(prov.rows[0]);
-    
-    // Devolver el resultado (nombre del proveedor)
-    return prov.rows[0];
+    let prov = await pool.query('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [id]); //TODO: VERIFICACION PENDIENTE
+    return prov;
   } catch (error) {
     // Capturar y lanzar cualquier error que ocurra durante la consulta
     throw error;
@@ -63,16 +56,17 @@ async function db_obtenerNombreProveedorPorId(id) {
 
 async function db_obtenerCategoriaPorId (id) {
   try {
-    let cat = await pool.query('SELECT nombre FROM categoria WHERE idcategoria = $1', [id]);
-    return cat.rows[0];
+    let cat = await pool.query('SELECT * FROM db_obtenerCategoriaPorId($1)', [id]); //TODO: VERIFICACION PENDIENTE
+    return cat;
   } catch (error) {
-    throw error;
+    console.error("Error al obtener la categoria:", error);
+    throw new Error("Error al obtener la categoria");
   }
 };
 
 async function db_obtenerListaCategorias(){
   try {
-    const categoria = await pool.query('SELECT * FROM categoria');
+    const categoria = await pool.query('db_obtenerListaCategorias'); //TODO: VERIFICACION PENDIENTE
     return categoria.rows;
   } catch (error) {
     console.error("Error al obtener categorias :", error);
@@ -83,7 +77,7 @@ async function db_obtenerListaCategorias(){
 
 async function db_obtenerProductoPorId (id) {
   try {
-    const producto = await pool.query('SELECT * FROM productos WHERE id_producto = $1', [id]);
+    const producto = await pool.query('SELECT * FROM db_obtenerProductoPorId($1);', [id]); //TODO: VERIFICACION PENDIENTE
     return producto.rows;
   } catch (error) {
     throw error;
@@ -117,7 +111,13 @@ async function db_obtenerUsuario(){
 }
 
 async function db_obtenerTodosUsuarios(){
-
+  try {
+    let usuarios = await pool.query('SELECT * FROM db_obtenerTodosUsuarios();');
+    return usuarios.rows;
+  } catch (error) {
+    console.error("Error al obtener usuarios :", error);
+    throw new Error("Error al obtener usuarios");
+  }
 }
 
 
@@ -159,7 +159,14 @@ async function db_descontinuarProducto(){
 }
 
 
-async function db_editarStock(){
+/*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
+async function db_editarStock(id_producto, stock){ //TODO VERIFICAR
+  try {
+    const historial = await pool.query('CALL db_editarStock($1,$2);', [id_usuario], [stock]);
+  } catch (error) {
+    console.error("Error al obtener el historial :", error);
+    throw new Error("Error al obtener el historial");
+  }
 
 }
 
@@ -193,8 +200,14 @@ async function  db_obtenerCarrito(){
 
 }
 
-async function db_obtenerHistorialDeCompra(){
-
+async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ //TODO: VERIFICAR FUNCIONAMIENTO
+  try {
+    const historial = await pool.query('SELECT * FROM db_obtenerHistorialDeCompra($1)', [id_usuario]); 
+    return historial.rows;
+  } catch (error) {
+    console.error("Error al obtener el historial :", error);
+    throw new Error("Error al obtener el historial");
+  }
 }
 
 async function db_añadirFactura(){

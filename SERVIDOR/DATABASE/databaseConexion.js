@@ -6,9 +6,9 @@ const pool = new Pool({
 
     user: 'postgres', 
     host: 'localhost', 
-    database: 'madex', // Reemplaza 'postgress' con el nombre de tu base de datos PostgreSQL
-    password: 'karen', // Reemplaza 'modeloMadex' con tu contraseña de PostgreSQL
-    port: 5433 // Reemplaza este número con el puerto en el que PostgreSQL está escuchando, por lo general es 5432
+    database: 'Madex_DB', // Reemplaza 'postgress' con el nombre de tu base de datos PostgreSQL
+    password: 'stefanny', // Reemplaza 'modeloMadex' con tu contraseña de PostgreSQL
+    port: 5432 // Reemplaza este número con el puerto en el que PostgreSQL está escuchando, por lo general es 5432
 });
 
 
