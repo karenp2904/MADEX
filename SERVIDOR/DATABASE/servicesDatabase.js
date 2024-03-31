@@ -40,10 +40,10 @@ async function db_obtenerNombreProveedorPorId(idProveedor) { //TODO VERIFICACION
 }
 
 
-async function db_obtenerNombreProveedorPorId (id) {
+async function db_obtenerNombreProveedorPorId (id) { //Retorna texto
   try {
-    let prov = await pool.query('SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1', [id]); //TODO: hacer un procedure
-    return prov.rows[0];
+    let prov = await pool.query('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [id]); //TODO: VERIFICACION PENDIENTE
+    return prov;
   } catch (error) {
     throw error;
   }
@@ -52,16 +52,17 @@ async function db_obtenerNombreProveedorPorId (id) {
 
 async function db_obtenerCategoriaPorId (id) {
   try {
-    let cat = await pool.query('SELECT nombre FROM categoria WHERE idcategoria = $1', [id]); //TODO: hacer un procedure
-    return cat.rows[0];
+    let cat = await pool.query('SELECT * FROM db_obtenerCategoriaPorId($1)', [id]); //TODO: VERIFICACION PENDIENTE
+    return cat;
   } catch (error) {
-    throw error;
+    console.error("Error al obtener la categoria:", error);
+    throw new Error("Error al obtener la categoria");
   }
 };
 
 async function db_obtenerListaCategorias(){
   try {
-    const categoria = await pool.query('SELECT * FROM categoria'); //TODO: hacer un procedure
+    const categoria = await pool.query('db_obtenerListaCategorias'); //TODO: VERIFICACION PENDIENTE
     return categoria.rows;
   } catch (error) {
     console.error("Error al obtener categorias :", error);
@@ -72,7 +73,7 @@ async function db_obtenerListaCategorias(){
 
 async function db_obtenerProductoPorId (id) {
   try {
-    const producto = await pool.query('SELECT * FROM productos WHERE id_producto = $1', [id]); //TODO: hacer un procedure
+    const producto = await pool.query('SELECT * FROM db_obtenerProductoPorId($1);', [id]); //TODO: VERIFICACION PENDIENTE
     return producto.rows;
   } catch (error) {
     throw error;
