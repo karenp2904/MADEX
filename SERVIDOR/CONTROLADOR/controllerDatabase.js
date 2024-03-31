@@ -257,7 +257,8 @@ async function obtenerCategoria(idCategoria) {
 async function añadirProducto(producto) {
   try {
     // Llama al servicio para añadir el producto a la base de datos
-    const newProducto = await services.db_añadirProducto(producto);
+
+    const newProducto = await services.db_añadirProducto(producto.nombre, producto.descripcion, producto.precio, producto.estado_producto, producto.color, producto.stock, producto.descuento, producto.Proveedores_id_Proveedores, producto.Categoria_idCategoria);
     
     // Envía una respuesta con el nuevo producto
     res.status(201).json(newProducto);
@@ -328,10 +329,10 @@ async function actualizarTodosProductos(productos) {
 
 
 
-async function editarStock(productId, stock){
+async function editarStock(id_producto, stock){
   try {
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(productId, stock);
+    const producto= await services.db_actualizarProducto(id_producto, stock);
     // Envía una respuesta de éxito
     res.json({ message: 'Producto actualizado correctamente '+producto });
 
@@ -398,10 +399,17 @@ async function editarCarrito(){
 }
 
 async function verificarClienteActivo(){
+
 } 
 
-async function obtenerHistorialDeCompra(){
-
+async function obtenerHistorialDeCompra(idUsuario){
+  try {
+    const historial = await services.db_obtenerHistorialDeCompra(parseInt(idUsuario));
+    return historial;
+  } catch (error) {
+    console.error("Error al obtener el historial :", error);
+    throw new Error("Error al obtener el historial");
+  }
 }
 
 async function añadirFactura(){

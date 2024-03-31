@@ -241,6 +241,7 @@ async function manejarInicioSesion(datosSolicitud) {
 
 
 
+
     async function s_obtenerUsuarioId(req, res) {
         const usuarioId = req.params.id; // Suponiendo que el ID del usuario está en los parámetros de la solicitud
         try {
@@ -291,6 +292,24 @@ async function manejarInicioSesion(datosSolicitud) {
         }
 
     }
+
+    async function s_obtenerHistorialCompra(req, res) {
+        try {
+            const idUsuario = req.params.id; // Suponiendo que el ID del usuario está en los parámetros de la solicitud
+
+            const facturas = await controllerDB.obtenerHistorialDeCompra(idUsuario);
+            
+
+            // Devuelve el array de objetos "producto"
+            console.log("HistorialCompra" + facturas);
+            return productos;
+        } catch (error) {
+            console.error('Error al obtener los productos:', error);
+            res.status(500).send('Error en el servidor');
+            throw error;
+        }
+    }
+
 
     async function s_añadirProducto(req, res) {
         try {
@@ -546,11 +565,11 @@ async function manejarInicioSesion(datosSolicitud) {
 
 
 module.exports = {
-    s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,
+    s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
     listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
     s_editarStock,editarCarritoDeCompras,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
-    actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras
+    actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra
 };
 
 

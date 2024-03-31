@@ -154,7 +154,7 @@ async function db_actualizarProducto(idProducto, newData) {
 async function db_eliminarProducto(idProducto){
     
 }
-async function db_descontinuarProducto(idProducto){
+async function db_descontinuarProducto(idProducto,estado){
     
 }
 
@@ -162,7 +162,7 @@ async function db_descontinuarProducto(idProducto){
 /*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
 async function db_editarStock(id_producto, stock){ //TODO VERIFICAR
   try {
-    const historial = await pool.query('CALL db_editarStock($1,$2);', [id_usuario], [stock]);
+    const historial = await pool.query('CALL db_editarStock($1,$2);', [id_producto], [stock]);
   } catch (error) {
     console.error("Error al obtener el historial :", error);
     throw new Error("Error al obtener el historial");
@@ -258,7 +258,8 @@ module.exports = { db_añadirUsuario,
   db_logFacturas,
   db_logUsuarios,
   db_añadirProductosCarrito,
-  db_editarCarrito,
+  db_añadirProductoCarrito,db_modificarCantidadProductoCarrito,
+  db_editarCarrito,db_eliminarProductoCarrito,
   db_verificarClienteActivo,
   db_obtenerCarrito,
   db_obtenerHistorialDeCompra,

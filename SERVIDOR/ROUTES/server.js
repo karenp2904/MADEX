@@ -108,7 +108,8 @@ async function obtenerProductosConInventario(req, res) {
 
 // Rutas para autenticación y autorización
 app.post('/usuario/verificar-credencial', controladorServer.s_verificarCredencialUsuario);
-app.get('/usuario/:id', controladorServer.s_obtenerUsuario);
+app.get('/usuario/:id', controladorServer.s_obtenerUsuarioId);
+
 
 //Rutas para productos
 app.post('/producto/añadir', controladorServer.s_añadirProducto);
@@ -117,6 +118,7 @@ app.post('/producto/descontinuar', controladorServer.s_descontinuarProducto);
 app.post('/producto/actualizar', controladorServer.s_actualizarProducto);
 app.get('/producto/:id', controladorServer.s_obtenerProducto);
 
+app.get('/usuario/historialCompra/:id', controladorServer.s_obtenerHistorialCompra);
 
 // Ruta para generar el inventario
 app.get('/producto/inventario', async function(req, res) {
