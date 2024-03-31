@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //seguridad de la app
 const helmet = require('helmet');
+const CarritoDeCompras = require('../ENTIDADES/carritoDeCompra');
 app.use(helmet());
 
 
@@ -65,27 +66,13 @@ app.post('/usuario/verificar-credencial', controladorServer.verificarCredencialU
 app.get('/usuario/:id', controladorServer.obtenerUsuario);
 app.get('/usuarios', controladorServer.obtenerTodosUsuarios);
 
-//Rutas para productos
-app.post('/producto/añadir', controladorServer.añadirProducto);
-app.post('/producto/eliminar', controladorServer.eliminarProducto);
-app.post('/producto/descontinuar', controladorServer.descontinuarProducto);
-app.post('/producto/actualizar', controladorServer.actualizarProducto);
-app.get('/producto/:id', controladorServer.obtenerProducto);
-app.get('/productos', controladorServer.obtenerListaProductos);
 
-// Rutas para inventario
-app.post('/inventario/editar-stock', controladorServer.editarStock);
-app.post('/inventario/log', controladorServer.logInventario);
+
 
 // Rutas para facturas
 app.post('/facturas/log', controladorServer.logFacturas);
 
-// Rutas para registros de usuarios
-app.post('/usuarios/log', controladorServer.logUsuarios);
 
-// Rutas para carrito de compras
-app.post('/carrito/añadir-producto', controladorServer.añadirProductosCarrito);
-app.post('/carrito/editar', controladorServer.editarCarrito);
 */
 
 
@@ -119,29 +106,21 @@ async function obtenerProductosConInventario(req, res) {
     }
 }
 
+// Rutas para autenticación y autorización
+app.post('/usuario/verificar-credencial', controladorServer.s_verificarCredencialUsuario);
+app.get('/usuario/:id', controladorServer.s_obtenerUsuarioId);
 
 
-// Ruta para generar el catálogo
-app.get('/Alianza/generarCatalogo', async function(req, res) {
-    try {
-        // Obtener el inventario
-        inventario = await obtenerProductosConInventario(req, res);
-        
-        // Enviar el inventario a archivos.recibirProductos
-        archivos.recibirProductos(inventario);
+//Rutas para productos
+app.post('/producto/añadir', controladorServer.s_añadirProducto);
+app.delete('/producto/eliminar', controladorServer.s_eliminarProducto);
+app.post('/producto/descontinuar', controladorServer.s_descontinuarProducto);
+app.post('/producto/actualizar', controladorServer.s_actualizarProducto);
+app.get('/producto/:id', controladorServer.s_obtenerProducto);
 
-        console.log("Productos en inventario:", inventario.productos);
-        // Enviar respuesta al cliente
-        res.send('Catálogo generado correctamente.');
-    } catch (error) {
-        // Manejo de errores
-        console.error('Error al generar el catálogo:', error);
-        res.status(500).send('Error en el servidor');
-    }
-});
+app.get('/usuario/historialCompra/:id', controladorServer.s_obtenerHistorialCompra);
 
-
-// Ruta para generar el catálogo
+// Ruta para generar el inventario
 app.get('/producto/inventario', async function(req, res) {
     try {
         // Obtener el inventario
@@ -157,25 +136,46 @@ app.get('/producto/inventario', async function(req, res) {
     }
 });
 
-let productosCache = null;
-
-app.get('/Alianza/obtenerCatalogo', async function (req, res) {
+// Ruta para generar el catálogo
+app.get('/producto/catalogo', async function(req, res) {
     try {
-        // Verificar si la caché está vacía
-        if (!productosCache) {
-            // La caché está vacía, leer productos del archivo
-            productosCache = await archivos.leerProductos();
-            console.log("Productos para alianza (leídos del archivo):", productosCache);
-        } else {
-            console.log("Productos para alianza (leídos de la caché):", productosCache);
-        }
+        // Obtener el inventario
+        inventario = await obtenerProductosConInventario(req, res);
 
+         // llamar al que identifica el rol del usuario
+
+    
+        console.log("Productos en inventario:", inventario.productos);
         // Enviar respuesta al cliente
-        res.send(productosCache);
+        res.send(inventario);
     } catch (error) {
         // Manejo de errores
-        console.error('Error al obtener el catálogo:', error);
+        console.error('Error al generar el catálogo:', error);
         res.status(500).send('Error en el servidor');
+    }
+});
+
+// verifica la cantidad de unidades de stock
+app.get('/producto/verificarStock/:idProducto/:cantidad', async function(req, res) {
+    try {
+        // Obtener los parámetros de la solicitud (ID del producto y cantidad)
+        const idProducto = parseInt(req.params.idProducto);
+        const cantidad = parseInt(req.params.cantidad);
+
+
+        console.log(idProducto + " | "+cantidad);
+
+        inventario = await obtenerProductosConInventario(req, res);
+        
+        // Verificar el stock del producto utilizando el método en el inventario
+        const tieneStockSuficiente = inventario.verificarStock(idProducto, cantidad);
+        
+        // Enviar una respuesta al cliente indicando si hay suficiente stock o no
+        res.json(tieneStockSuficiente);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al verificar el stock del producto:', error);
+        res.status(500).json({ error: 'Error al verificar el stock del producto' });
     }
 });
 
@@ -272,7 +272,166 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
 });
 
 
+//ruta agregar un producto al carrito de compra
+app.post('/carrito/agregar', (req, res) => {
+    
+    const { producto, cantidad } = req.body;
+
+    // Llamar al controlador para agregar el producto al carrito con la cantidad especificada
+    controladorServer.añadirProductoCarritoCompras(producto, cantidad);
+
+    res.send('Producto agregado al carrito');
+});
+
+
+// Ruta para modificar la cantidad de un producto en el carrito
+app.put('/carrito/modificarCantidad/:idProducto', (req, res) => {
+    try {
+        // Obtener el ID del producto y la nueva cantidad 
+        const idProducto = parseInt(req.params.idProducto);
+        const nuevaCantidad = parseInt(req.body.nuevaCantidad);
+
+        controladorServer.modificarCantidadProductoCarritoCompras(idProducto, nuevaCantidad);
+
+        res.send('Cantidad de producto en el carrito modificada');
+    } catch (error) {
+        console.error('Error al modificar la cantidad del producto en el carrito:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+// Ruta para ver el contenido del carrito
+app.get('/carrito/:idUsuario', async (req, res) => {
+    try {
+        // Obtener el ID del usuario de la solicitud
+        const idUsuario = req.params.idUsuario;
+
+        const contenidoCarrito = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        // Enviar el contenido del carrito como respuesta
+        res.json(contenidoCarrito);
+    } catch (error) {
+        console.error('Error al obtener el contenido del carrito de compras:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+
+// Ruta para eliminar un producto del carrito
+app.delete('/carrito/:idProducto', (req, res) => {
+    const idProducto = req.params.idProducto;
+
+    controladorServer.eliminarProductoCarritoCompras(idProducto);
+
+    res.send(`Producto con ID ${idProducto} eliminado del carrito`);
+});
+
+
+// Ruta para añadir una dirección
+app.post('/direccion', async (req, res) => {
+    try {
+        
+        const { ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion } = req.body;
+
+        // Crear una instancia de la dirección utilizando los datos recibidos
+        const nuevaDireccion = new Direccion ({
+            ID_Usuario,
+            Calle,
+            Ciudad,
+            Codigo_Postal,
+            departamento,
+            barrio,
+            descripcion
+        });
+
+        const direccionGuardada = await controladorServer.guardarDireccion(nuevaDireccion);
+
+        res.status(201).json(direccionGuardada);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al añadir la dirección:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+// Ruta para agregar una factura
+app.post('/factura/', async (req, res) => {
+    try {
+        const { idUsuario, productos, total } = req.body;
+
+        const contenidoCarrito = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const carrito= new CarritoDeCompras(contenidoCarrito);
+
+
+        res.status(201).json(facturaCreada);
+    } catch (error) {
+        // envía una respuesta de error al cliente
+        console.error('Error al crear la factura:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+
+
+
+
+
+//API >---------------------------------------------------------------------------------------
+
 //app.get('/leerCotizacion', archivos.observarCambios);
+
+let productosCache = null;
+
+// Ruta para generar el catálogo
+app.get('/Alianza/generarCatalogo', async function(req, res) {
+    try {
+        // Obtener el inventario
+        inventario = await obtenerProductosConInventario(req, res);
+        
+        // Enviar el inventario a archivos.recibirProductos
+        archivos.recibirProductos(inventario);
+
+        console.log("Productos en inventario:", inventario.productos);
+        // Enviar respuesta al cliente
+        res.send('Catálogo generado correctamente.');
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.get('/Alianza/obtenerCatalogo', async function (req, res) {
+    try {
+        // Obtener el inventario
+        inventario = await obtenerProductosConInventario(req, res);
+
+        inventario.actualizarDescuentoTodosProductos(controladorServer.definirDescuento(3));
+        
+        // Enviar el inventario a archivos.recibirProductos
+        archivos.recibirProductos(inventario);
+
+        // Verificar si la caché está vacía
+        if (!productosCache) {
+            // La caché está vacía, leer productos del archivo
+            productosCache = await archivos.leerProductos();
+            console.log("Productos para alianza (leídos del archivo):", productosCache);
+        } else {
+            console.log("Productos para alianza (leídos de la caché):", productosCache);
+        }
+
+        // Enviar respuesta al cliente
+        res.send(productosCache);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al obtener el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
 app.get('/Alianza/presupuestoCotizacion', async (req, res) => {
     try {
@@ -306,9 +465,8 @@ app.get('/Alianza/actualizarInventario', async (req, res) => {
 
         inventario = await archivos.actualizarInventario();
 
-        // enviar esa actualización a la base de datos
-        
-        // Devolver los resultados como respuesta
+        controladorServer.actualizarInventario(inventario);
+
         res.json(inventario);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda

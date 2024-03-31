@@ -9,13 +9,8 @@ class Usuario {
         this.contraseña = contraseña;
         this.telefono = telefono;
         this.idRol=idRol;
-
-        this.rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-            });
-
-        }
+    
+    }
 
     actualizarUsuarioConId(id_usuario){
         this.id_usuario = id_usuario;
