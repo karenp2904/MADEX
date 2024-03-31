@@ -5,6 +5,7 @@ async function db_obtenerTodosLosProductos () { //TODO VERIFICACION PENDIENTE
   try {
     const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
     console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
+
     return allProductos.rows;
   } catch (error) {
     console.error("Error al ejecutar la consulta:", error);
@@ -17,8 +18,8 @@ async function db_obtenerListaProveedores(){ //TODO VERIFICACION PENDIENTE
     let proveedor = await pool.query('SELECT * FROM db_obtenerListaProveedores()');
     return proveedor.rows;
   } catch (error) {
-    console.error("Error al obtener categorias :", error);
-    throw new Error("Error al obtener categorias");
+    console.error("Error al obtener proveedor :", error);
+    throw new Error("Error al obtener proveedor");
   }
 }
 
@@ -40,14 +41,17 @@ async function db_obtenerNombreProveedorPorId(idProveedor) { //TODO VERIFICACION
 }
 
 
+
 async function db_obtenerNombreProveedorPorId (id) { //Retorna texto
   try {
     let prov = await pool.query('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [id]); //TODO: VERIFICACION PENDIENTE
     return prov;
   } catch (error) {
+    // Capturar y lanzar cualquier error que ocurra durante la consulta
     throw error;
   }
-};
+}
+
 
 
 async function db_obtenerCategoriaPorId (id) {
@@ -130,6 +134,23 @@ async function db_añadirProducto(nombre, descripcion, precio, estado_producto, 
   }
 };
 
+
+async function db_actualizarProducto(idProducto, newData) {
+    try {
+        const { nombre, precio, descripcion, /* otros atributos */ } = newData;
+        //ejecutar sql 
+
+
+        console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
+
+        return true; // Indica que la actualización fue exitosa
+    } catch (error) {
+        console.error('Error al actualizar el producto:', error);
+        throw error;
+    }
+}
+
+
 async function db_eliminarProducto(){
     
 }
@@ -137,9 +158,6 @@ async function db_descontinuarProducto(){
     
 }
 
-async function db_actualizarProducto(){
-    
-}
 
 /*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
 async function db_editarStock(id_producto, stock){ //TODO VERIFICAR

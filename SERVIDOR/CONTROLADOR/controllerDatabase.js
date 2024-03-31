@@ -41,11 +41,14 @@ async function obtenerProductoDatos(producto) {
       return null;
     }
   
+    console.log(producto.categoria_idcategoria + " c");
     const descripcionCategoria = await services.db_obtenerCategoriaPorId(producto.categoria_idcategoria);
     const categoria = descripcionCategoria ? descripcionCategoria.nombre : '' ;
 
-    let nombreProveedor = await services.db_obtenerNombreProveedorPorId(producto.Proveedores_id_Proveedores);
+    console.log(producto.proveedores_id_proveedores + " p");
+    let nombreProveedor = await services.db_obtenerNombreProveedorPorId(producto.proveedores_id_proveedores);
     const proveedor = nombreProveedor ? nombreProveedor.nombreempresa : '';
+    
 
     //let descripcionCategoria = await services.db_obtenerCategoriaPorId(producto.categoria);
     // Construir el objeto
@@ -223,17 +226,8 @@ async function obtenerDatosUsuario(){
 
 };
 
-async function añadirProducto(req, res) {
-  try {
-    const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
-    const newProducto = await services.db_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria);
-    res.json(newProducto);
-    res.status(201).json({ message: 'producto añadido correctamente' });
-  } catch (error) {
-    console.error('Error al añadir producto:', error.message);
-    res.status(500).send('Error al añadir producto');
-  }
-};
+
+
 
 //  obtener la descripción del proveedor según su ID
 async function obtenerProveedor(nombre) {
@@ -255,7 +249,7 @@ async function obtenerProveedor(nombre) {
 
 // Otorga categoria al producto segun el id que acompañe
 async function obtenerCategoria(idCategoria) {
- 
+
   let categorias = await services.db_obtenerListaCategorias();
   // Buscar la categoría con el ID proporcionado
   const categoriaEncontrada = categorias.find(categoria => categoria.id === idCategoria);
@@ -268,9 +262,22 @@ async function obtenerCategoria(idCategoria) {
   }
 }
 
-async function eliminarProducto(req, res){
+async function añadirProducto(producto) {
   try {
-    const productId = req.params.productId;
+    // Llama al servicio para añadir el producto a la base de datos
+    const newProducto = await services.db_añadirProducto(producto);
+    
+    // Envía una respuesta con el nuevo producto
+    res.status(201).json(newProducto);
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al añadir producto:', error.message);
+    res.status(500).send('Error al añadir producto');
+  }
+};
+
+async function eliminarProducto(productId){
+  try {
     const producto=await services.db_eliminarProducto(productId);
     // Envía una respuesta de éxito
     res.json({ message: 'Producto eliminado correctamente '+ producto });
@@ -280,11 +287,11 @@ async function eliminarProducto(req, res){
   }
     
 }
-async function descontinuarProducto(req, res){
+async function descontinuarProducto(productId){
   try {
+
     // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
-    const productId = req.params.productId;
-    //const newData = req.body;
+
     const estado= "descontinuado";
     const producto= await services.db_descontinuarProducto(productId, estado);
 
@@ -297,14 +304,12 @@ async function descontinuarProducto(req, res){
     
 }
 
-async function actualizarProducto(req, res){
+async function actualizarProducto(idProduct, newData){
   try {
-    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
-    const productId = req.params.productId;
-    const newData = req.body;
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(productId, newData);
+    const producto= await services.db_actualizarProducto(idProduct, newData);
     // Envía una respuesta de éxito
+
     res.json({ message: 'Producto actualizado correctamente '+producto });
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
@@ -313,21 +318,38 @@ async function actualizarProducto(req, res){
   }
 }
 
-async function editarStock(){
+async function actualizarTodosProductos(productos) {
   try {
-    // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
-    const productId = req.params.productId;
-    const stock = req.body;
+    for (const producto of productos) {
+      await services.db_actualizarProducto(producto.id, producto.newData);
+      console.log('Producto actualizado correctamente:', producto);
+    }
+    // Envía una respuesta de éxito
+    return { message: 'Todos los productos se han actualizado correctamente' };
+  } catch (error) {
+    // Maneja cualquier error y envía una respuesta de error al cliente
+    console.error('Error al actualizar productos:', error.message);
+    throw new Error('Error al actualizar productos');
+  }
+}
+
+
+
+
+async function editarStock(productId, stock){
+  try {
     // Llama al servicio para actualizar el producto
     const producto= await services.db_actualizarProducto(productId, stock);
     // Envía una respuesta de éxito
     res.json({ message: 'Producto actualizado correctamente '+producto });
+
   } catch (error) {
-    // Maneja cualquier error y envía una respuesta de error al cliente
-    console.error('Error al actualizar producto:', error.message);
-    res.status(500).json({ error: 'Error al actualizar producto' });
+    // Manejar cualquier error y enviar una respuesta de error al cliente
+    console.error('Error al actualizar el producto:', error.message);
+    res.status(500).json({ error: 'Error al actualizar el producto' });
   }
 }
+
 
 
 async function logInventario(){
@@ -396,7 +418,7 @@ module.exports = {
   añadirProducto,
   eliminarProducto,
   descontinuarProducto,
-  actualizarProducto,
+  actualizarProducto,actualizarTodosProductos,
   editarStock,
   logInventario,
   logFacturas,

@@ -46,28 +46,6 @@ app.set('view engine', 'ejs');
 // Ruta para servir archivos estáticos
 app.use(express.static(path.join(__dirname, '..', 'cliente')));
 
-
-
-
-
-// Ruta protegida para usuarios
-//app.get('/usuario', controladorServer.autorizarRol('usuario'));
-
-// Ruta protegida para administradores
-//app.get('/admin', controladorServer.autorizarRol('administrador'));
-
-// Rutas de inicio de sesión y registro
-//app.post('/login', controladorServer.manejarInicioSesion(null));
-//app.post('/registro', controladorServer.manejarRegistro);
-
-
-//obtener todos los productos
- // Recibir productos
-
-//app.get('/productos',controladorServer.listaDeProductos);
-// Guardar productos (si la recepción es exitosa)
-
-
 //manejo de errores
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -133,7 +111,6 @@ async function obtenerProductosConInventario(req, res) {
                 productosProcesados.add(producto.id_producto);
             }
         });
-
         // Retorna el inventario
         return inventario;
     } catch (error) {
@@ -144,9 +121,8 @@ async function obtenerProductosConInventario(req, res) {
 
 
 
-
 // Ruta para generar el catálogo
-app.get('/generarCatalogo', async function(req, res) {
+app.get('/Alianza/generarCatalogo', async function(req, res) {
     try {
         // Obtener el inventario
         inventario = await obtenerProductosConInventario(req, res);
@@ -165,7 +141,43 @@ app.get('/generarCatalogo', async function(req, res) {
 });
 
 
-app.get('/obtenerCatalogo', archivos.leerProductos);
+// Ruta para generar el catálogo
+app.get('/producto/inventario', async function(req, res) {
+    try {
+        // Obtener el inventario
+        inventario = await obtenerProductosConInventario(req, res);
+    
+        console.log("Productos en inventario:", inventario.productos);
+        // Enviar respuesta al cliente
+        res.send(inventario);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+let productosCache = null;
+
+app.get('/Alianza/obtenerCatalogo', async function (req, res) {
+    try {
+        // Verificar si la caché está vacía
+        if (!productosCache) {
+            // La caché está vacía, leer productos del archivo
+            productosCache = await archivos.leerProductos();
+            console.log("Productos para alianza (leídos del archivo):", productosCache);
+        } else {
+            console.log("Productos para alianza (leídos de la caché):", productosCache);
+        }
+
+        // Enviar respuesta al cliente
+        res.send(productosCache);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al obtener el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
 
 // Ruta  para buscar un producto por nombre
@@ -192,6 +204,7 @@ app.get('/filtrarCategoria/:categoria', async (req, res) => {
     console.log('Categoría a buscar:', categoriaAbuscar);
 
     try {
+        inventario = await obtenerProductosConInventario(req, res);
         const lista = await inventario.productosPorCategoria(categoriaAbuscar);
         console.log('Lista de productos:', lista);
 
@@ -203,30 +216,106 @@ app.get('/filtrarCategoria/:categoria', async (req, res) => {
     }
 });
 
-
-app.get('/obtenerRutaImagenPorNombre/:nombre', async (req, res) => {
-    const nombre = req.params.nombre; 
+app.get('/producto/filtrarColor/:color', async (req, res) => {
+    const color = req.params.color;
+    console.log('Color a buscar:', color);
 
     try {
-        // Realizar la búsqueda del producto en el inventario
-        console.log(nombre);
-        inventario =  await obtenerProductosConInventario(req, res);
-        const lista = await inventario.obtenerRutaImagenPorNombre(nombre);
+        inventario = await obtenerProductosConInventario(req, res);
+        const lista = await inventario.productosPorColor(color);
+        console.log('Lista de productos:', lista);
 
-        // Devolver los resultados como respuesta
         res.json(lista);
+        
     } catch (error) {
-        // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error en la búsqueda del producto:', error);
         res.status(500).send('Error en la búsqueda del producto');
     }
 });
 
 
+app.get('/producto/Imagenes/:nombre', async (req, res) => {
+    const nombre = req.params.nombre; 
+
+    try {
+        // Realizar la búsqueda del producto en el inventario
+        inventario =  await obtenerProductosConInventario(req, res);
+        console.log(nombre);
+        const lista = await inventario.obtenerRutasbase64(nombre);
+
+        // Devolver los resultados como respuesta
+        res.json(lista);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
+
+
+app.get('/producto/rutas/:nombre', async (req, res) => {
+    const nombre = req.params.nombre; 
+
+    try {
+        // Realizar la búsqueda del producto en el inventario
+        inventario =  await obtenerProductosConInventario(req, res);
+        console.log(nombre);
+        const lista = await inventario.obtenerRutasImagenesPorNombreProducto(nombre);
+
+        // Devolver los resultados como respuesta
+        res.json(lista);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
+
+
 //app.get('/leerCotizacion', archivos.observarCambios);
 
+app.get('/Alianza/presupuestoCotizacion', async (req, res) => {
+    try {
+        const costo = await archivos.calcularCotizacion();
+
+        // Devolver los resultados como respuesta
+        res.json(costo);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
+
+app.get('/Alianza/respuesta', async (req, res) => {
+    try {
+
+        const respuesta = await archivos.guardarRespuesta();
+        // Devolver los resultados como respuesta
+        res.json(respuesta);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
 
 
+app.get('/Alianza/actualizarInventario', async (req, res) => {
+    try {
+
+        inventario = await archivos.actualizarInventario();
+
+        // enviar esa actualización a la base de datos
+        
+        // Devolver los resultados como respuesta
+        res.json(inventario);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
 
 
 //metodos que han funcionado pero los he renovado - posible copia
