@@ -10,6 +10,8 @@ const controladorServer = require('../CONTROLADOR/controllerServer');
 const archivos = require('../API/api');
 //INVENTARIO -LISTA DE PRODUCTOS
 const Inventario = require('../ENTIDADES/inventario'); 
+const Direccion = require('../ENTIDADES/direccion'); 
+const carritoDeCompra = require('../ENTIDADES/carritoDeCompra'); 
  //  instancia de la clase Inventario
 
 
@@ -275,23 +277,20 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
 //ruta agregar un producto al carrito de compra
 app.post('/carrito/agregar', (req, res) => {
     
-    const { producto, cantidad } = req.body;
+    const { idUsuario,idproducto, cantidad } = req.body;
 
     // Llamar al controlador para agregar el producto al carrito con la cantidad especificada
-    controladorServer.añadirProductoCarritoCompras(producto, cantidad);
+    controladorServer.añadirProductoCarritoCompras(idUsuario,idproducto, cantidad);
 
     res.send('Producto agregado al carrito');
 });
 
 
 // Ruta para modificar la cantidad de un producto en el carrito
-app.put('/carrito/modificarCantidad/:idProducto', (req, res) => {
+app.put('/carrito/modificarCantidad', (req, res) => {
     try {
-        // Obtener el ID del producto y la nueva cantidad 
-        const idProducto = parseInt(req.params.idProducto);
-        const nuevaCantidad = parseInt(req.body.nuevaCantidad);
-
-        controladorServer.modificarCantidadProductoCarritoCompras(idProducto, nuevaCantidad);
+        const { idUsuario,idproducto, cantidad } = req.body;
+        controladorServer.modificarCantidadProductoCarritoCompras( idUsuario,idproducto, cantidad);
 
         res.send('Cantidad de producto en el carrito modificada');
     } catch (error) {
@@ -301,16 +300,20 @@ app.put('/carrito/modificarCantidad/:idProducto', (req, res) => {
 });
 
 
-// Ruta para ver el contenido del carrito
+// Ruta para ver el contenido del carrito y saber el subtotal
 app.get('/carrito/:idUsuario', async (req, res) => {
     try {
         // Obtener el ID del usuario de la solicitud
         const idUsuario = req.params.idUsuario;
 
-        const contenidoCarrito = await controladorServer.obtenerCarritoCompras(idUsuario);
+        let contenidoCarrito = new carritoDeCompra();
+        contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const subtotal= contenidoCarrito.calcularTotal();
+
 
         // Enviar el contenido del carrito como respuesta
-        res.json(contenidoCarrito);
+        res.json({carritoCompras:contenidoCarrito , subtotal:subtotal});
     } catch (error) {
         console.error('Error al obtener el contenido del carrito de compras:', error);
         res.status(500).send('Error en el servidor');
@@ -320,12 +323,18 @@ app.get('/carrito/:idUsuario', async (req, res) => {
 
 
 // Ruta para eliminar un producto del carrito
-app.delete('/carrito/:idProducto', (req, res) => {
-    const idProducto = req.params.idProducto;
+app.delete('/carrito/eliminar', (req, res) => {
+    try {
+        const { idUsuario,idproducto } = req.body;
 
-    controladorServer.eliminarProductoCarritoCompras(idProducto);
+        controladorServer.eliminarProductoCarritoCompras(idUsuario,idproducto);
 
-    res.send(`Producto con ID ${idProducto} eliminado del carrito`);
+        res.send(`Producto con ID ${idproducto} eliminado del carrito`);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al eliminar producto:', error);
+        res.status(500).send('Error en el servidor');
+    }
 });
 
 
@@ -356,14 +365,46 @@ app.post('/direccion', async (req, res) => {
     }
 });
 
+// Ruta para obtener el resumen de la compra
+app.get('/resumenCompra/idUsuario', async (req, res) => {
+    try {
+        // Obtener el ID del usuario de la solicitud
+        const idUsuario = req.params.idUsuario;
+
+        let direccionGuardada = new Direccion();
+        direccionGuardada=await controladorServer.obtenerDireccion(idUsuario);
+        const costoEnvio= direccionGuardada.calcularCostoEnvio();
+        const fecha= direccionGuardada.calcularFechaEstimadaEntrega();
+
+        let contenidoCarrito = new carritoDeCompra();
+        contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+        const subtotal= contenidoCarrito.calcularTotal();
+
+        const total= costoEnvio+subtotal;
+
+
+        res.json({carrito: contenidoCarrito,direccion: direccionGuardada,
+            subTotal:subtotal,costoEnvio:costoEnvio, fecha:fecha, total:total});
+
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al obtener el resumen:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
 // Ruta para agregar una factura
-app.post('/factura/', async (req, res) => {
+app.post('/factura/añadir', async (req, res) => {
     try {
         const { idUsuario, productos, total } = req.body;
 
-        const contenidoCarrito = await controladorServer.obtenerCarritoCompras(idUsuario);
+        let contenidoCarrito = new carritoDeCompra();
+        contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
 
-        const carrito= new CarritoDeCompras(contenidoCarrito);
+        const subtotal= contenidoCarrito.calcularTotal();
+
+
 
 
         res.status(201).json(facturaCreada);

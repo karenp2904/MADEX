@@ -445,10 +445,10 @@ async function manejarInicioSesion(datosSolicitud) {
     
 
 
-    async function añadirProductoCarritoCompras(producto, cantidad) {
+    async function añadirProductoCarritoCompras(idUsuario,idproducto, cantidad) {
         try {
             // agregar los productos al carrito con la cantidad especificada
-            const carritoActualizado = await controllerDB.añadirProductoCarrito(producto, cantidad);
+            const carritoActualizado = await controllerDB.añadirProductoCarrito(idUsuario,idproducto, cantidad);
     
             // Devuelve el carrito actualizado como respuesta
             res.status(200).json(carritoActualizado);
@@ -458,10 +458,10 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
     
-    async function modificarCantidadProductoCarritoCompras(idProducto, cantidad) {
+    async function modificarCantidadProductoCarritoCompras(idUsuario,idproducto, cantidad) {
         try {
             // agregar los productos al carrito con la cantidad especificada
-            const carritoActualizado = await controllerDB.modificarCantidadProductoCarrito(idProducto, cantidad);
+            const carritoActualizado = await controllerDB.modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad);
     
             // Devuelve el carrito actualizado como respuesta
             res.status(200).json(carritoActualizado);
@@ -483,10 +483,10 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
 
-    async function eliminarProductoCarritoCompras(idProducto) {
+    async function eliminarProductoCarritoCompras(idUsuario,idProducto) {
         try {
             // agregar los productos al carrito con la cantidad especificada
-            const carritoActualizado = await controllerDB.eliminarProductoCarrito(idProducto);
+            const carritoActualizado = await controllerDB.eliminarProductoCarrito(idUsuario,idProducto);
     
             // Devuelve el carrito actualizado como respuesta
             res.status(200).json(carritoActualizado);
@@ -567,7 +567,7 @@ async function manejarInicioSesion(datosSolicitud) {
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
     listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
-    s_editarStock,editarCarritoDeCompras,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,
+    s_editarStock,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra
 };

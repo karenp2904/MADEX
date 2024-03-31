@@ -191,15 +191,15 @@ async function db_verificarClienteActivo(){
 
 
 
-async function  db_añadirProductoCarrito(producto, cantidad){
+async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
   // se manda el producto  con la cantidad que se desea
   }
   
-  async function  db_modificarCantidadProductoCarrito(idProducto, cantidad){
+  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
   // se manda el idProducto  con la cantidad que se modifica
   }
   
-  async function  db_eliminarProductoCarrito(idProducto){
+  async function  db_eliminarProductoCarrito(idUsuario,idProducto){
     // se manda el idproducto a eliminar
     }
     
@@ -257,9 +257,8 @@ module.exports = { db_añadirUsuario,
   db_logInventario,
   db_logFacturas,
   db_logUsuarios,
-  db_añadirProductosCarrito,
   db_añadirProductoCarrito,db_modificarCantidadProductoCarrito,
-  db_editarCarrito,db_eliminarProductoCarrito,
+  db_eliminarProductoCarrito,
   db_verificarClienteActivo,
   db_obtenerCarrito,
   db_obtenerHistorialDeCompra,
