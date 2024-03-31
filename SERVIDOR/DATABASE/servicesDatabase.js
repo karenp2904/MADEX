@@ -12,9 +12,9 @@ async function db_obtenerTodosLosProductos () { //TODO VERIFICACION PENDIENTE
   }
 }
 
-async function db_obtenerListaProveedores(){
+async function db_obtenerListaProveedores(){ //TODO VERIFICACION PENDIENTE
   try {
-    let proveedor = await pool.query('SELECT * FROM db_obtenerListaProveedores()'); //TODO: hacer un procedure
+    let proveedor = await pool.query('SELECT * FROM db_obtenerListaProveedores()');
     return proveedor.rows;
   } catch (error) {
     console.error("Error al obtener categorias :", error);
@@ -22,9 +22,9 @@ async function db_obtenerListaProveedores(){
   }
 }
 
-async function db_obtenerNombreProveedorPorId(idProveedor) {
+async function db_obtenerNombreProveedorPorId(idProveedor) { //TODO VERIFICACION PENDIENTE
   try {
-      const query = 'SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1';
+      const query = ('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [idProveedor]);
       const values = [idProveedor];
       const result = await pool.query(query, values);
 
@@ -38,9 +38,9 @@ async function db_obtenerNombreProveedorPorId(idProveedor) {
       throw new Error("Error al obtener nombre del proveedor por ID");
   }
 }
-*/
 
-/* TODO async function db_obtenerNombreProveedorPorId (id) {
+
+async function db_obtenerNombreProveedorPorId (id) {
   try {
     let prov = await pool.query('SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1', [id]); //TODO: hacer un procedure
     return prov.rows[0];
@@ -79,11 +79,6 @@ async function db_obtenerProductoPorId (id) {
   }
 };
 
-async function db_obtenereProductos(){
-  try{
-    const productos = await pool.query(//TODO: llamar procedure para que retorne la lista de productos)
-  }
-}
 
 async function db_añadirUsuario(){
 
@@ -139,7 +134,14 @@ async function db_actualizarProducto(){
     
 }
 
-async function db_editarStock(){
+/*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
+async function db_editarStock(id_producto, stock){ //TODO VERIFICAR
+  try {
+    const historial = await pool.query('CALL db_editarStock($1,$2);', [id_usuario], [stock]);
+  } catch (error) {
+    console.error("Error al obtener el historial :", error);
+    throw new Error("Error al obtener el historial");
+  }
 
 }
 
@@ -173,8 +175,14 @@ async function  db_obtenerCarrito(){
 
 }
 
-async function db_obtenerHistorialDeCompra(){
-
+async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ //TODO: VERIFICAR FUNCIONAMIENTO
+  try {
+    const historial = await pool.query('SELECT * FROM db_obtenerHistorialDeCompra($1)', [id_usuario]); 
+    return historial.rows;
+  } catch (error) {
+    console.error("Error al obtener el historial :", error);
+    throw new Error("Error al obtener el historial");
+  }
 }
 
 async function db_añadirFactura(){
