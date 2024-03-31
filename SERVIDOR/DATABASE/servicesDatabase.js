@@ -5,6 +5,7 @@ async function db_obtenerTodosLosProductos () { //TODO VERIFICACION PENDIENTE
   try {
     const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
     console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
+
     return allProductos.rows;
   } catch (error) {
     console.error("Error al ejecutar la consulta:", error);
@@ -17,8 +18,8 @@ async function db_obtenerListaProveedores(){ //TODO VERIFICACION PENDIENTE
     let proveedor = await pool.query('SELECT * FROM db_obtenerListaProveedores()');
     return proveedor.rows;
   } catch (error) {
-    console.error("Error al obtener categorias :", error);
-    throw new Error("Error al obtener categorias");
+    console.error("Error al obtener proveedor :", error);
+    throw new Error("Error al obtener proveedor");
   }
 }
 
@@ -40,14 +41,17 @@ async function db_obtenerNombreProveedorPorId(idProveedor) { //TODO VERIFICACION
 }
 
 
+
 async function db_obtenerNombreProveedorPorId (id) { //Retorna texto
   try {
     let prov = await pool.query('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [id]); //TODO: VERIFICACION PENDIENTE
     return prov;
   } catch (error) {
+    // Capturar y lanzar cualquier error que ocurra durante la consulta
     throw error;
   }
-};
+}
+
 
 
 async function db_obtenerCategoriaPorId (id) {
@@ -81,7 +85,7 @@ async function db_obtenerProductoPorId (id) {
 };
 
 
-async function db_añadirUsuario(){
+async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol){
 
 }
 
@@ -89,11 +93,11 @@ async function db_verificarCredencialUsuario(){
 
 }
 
-async function db_eliminarUsuario(){
+async function db_eliminarUsuario(idUsuario){
 
 }
 
-async function db_actualizarUsuario(){
+async function db_actualizarUsuario(idUsuario, nuevosDatos){
 
 }
 
@@ -102,7 +106,7 @@ async function db_añadirEmpresa(){
 }
 
 
-async function db_obtenerUsuario(){
+async function db_obtenerUsuario(idUsuario){
 
 }
 
@@ -129,21 +133,35 @@ async function db_añadirProducto(nombre, descripcion, precio, estado_producto, 
   }
 };
 
-async function db_eliminarProducto(){
+
+async function db_actualizarProducto(idProducto, newData) {
+    try {
+        const { nombre, precio, descripcion, /* otros atributos */ } = newData;
+        //ejecutar sql 
+
+
+        console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
+
+        return true; // Indica que la actualización fue exitosa
+    } catch (error) {
+        console.error('Error al actualizar el producto:', error);
+        throw error;
+    }
+}
+
+
+async function db_eliminarProducto(idProducto){
     
 }
-async function db_descontinuarProducto(){
+async function db_descontinuarProducto(idProducto,estado){
     
 }
 
-async function db_actualizarProducto(){
-    
-}
 
 /*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
 async function db_editarStock(id_producto, stock){ //TODO VERIFICAR
   try {
-    const historial = await pool.query('CALL db_editarStock($1,$2);', [id_usuario], [stock]);
+    const historial = await pool.query('CALL db_editarStock($1,$2);', [id_producto], [stock]);
   } catch (error) {
     console.error("Error al obtener el historial :", error);
     throw new Error("Error al obtener el historial");
@@ -166,20 +184,29 @@ async function db_logUsuarios(){
 
 }
 
-async function db_añadirProductosCarrito(){
-
-}
-
-async function db_editarCarrito(){
-
-}
 
 async function db_verificarClienteActivo(){
 } 
 
-async function  db_obtenerCarrito(){
 
-}
+
+async function  db_añadirProductoCarrito(producto, cantidad){
+  // se manda el producto  con la cantidad que se desea
+  }
+  
+  async function  db_modificarCantidadProductoCarrito(idProducto, cantidad){
+  // se manda el idProducto  con la cantidad que se modifica
+  }
+  
+  async function  db_eliminarProductoCarrito(idProducto){
+    // se manda el idproducto a eliminar
+    }
+    
+  
+  async function  db_obtenerCarrito(idUsuario){
+      // obtener todos los id de producto y la cantidad
+      // luego db_obtenerProductoPorId 
+  }
 
 async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ //TODO: VERIFICAR FUNCIONAMIENTO
   try {
@@ -196,11 +223,15 @@ async function db_añadirFactura(){
 }
 
 
-async function db_obtenerFactura(){
+async function db_obtenerFactura(idFactura){
 
 }
 
-async function db_guardarDireccionEnvio(){
+async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
+
+}
+
+async function db_obtenerDireccionPorUsuario(idUsuario) {
 
 }
 
@@ -226,11 +257,12 @@ module.exports = { db_añadirUsuario,
   db_logFacturas,
   db_logUsuarios,
   db_añadirProductosCarrito,
-  db_editarCarrito,
+  db_añadirProductoCarrito,db_modificarCantidadProductoCarrito,
+  db_editarCarrito,db_eliminarProductoCarrito,
   db_verificarClienteActivo,
   db_obtenerCarrito,
   db_obtenerHistorialDeCompra,
   db_añadirFactura,
   db_obtenerFactura,
-  db_guardarDireccionEnvio
+  db_guardarDireccionEnvio,db_obtenerDireccionPorUsuario
 };

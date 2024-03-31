@@ -33,7 +33,7 @@ export const Login = () => {
                             style={{
                                 boxShadow: "-2px 2px 2px gray"
                             }}
-                            type=""
+                            type="email"
                         />
                     </div>
                 </div>
@@ -50,7 +50,7 @@ export const Login = () => {
                             style={{
                                 boxShadow: "-2px 2px 2px gray"
                             }}
-                            type=""
+                            type="password"
                         />
                     </div>
                 </div>

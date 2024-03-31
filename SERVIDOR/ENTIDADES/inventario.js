@@ -1,20 +1,24 @@
-const readline = require('readline');
+
 const Producto = require('../ENTIDADES/producto'); 
+const fs = require('fs');
+const path = require('path');
+const Usuario = require('./usuario');
 class Inventario {
         constructor() {
-        this.productos = []; // Supongamos que aquí tienes tu lista de productos
+        this.productos = []; //  tu lista de productos
+        /*
         this.rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout
             });
-
+        */
         }
     
         agregarProducto(productoData) {
             const producto = new Producto(productoData);
             this.productos.push(producto);
         }
-
+/*
         obtenerRutaImagenPorNombre(nombreProducto) {
             const path = require('path');
             const nombreArchivoImagen = `${nombreProducto }.png`; // Ajusta la extensión según tus imágenes (jpg, png, etc.)
@@ -22,7 +26,77 @@ class Inventario {
             console.log(rutaImagen);
             return rutaImagen;
         }
+*/
+        async obtenerRutasImagenesPorNombreProducto(nombreProducto) {
+            const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
+            const rutasImagenes = [];
+            console.log(directorioImagenes);
 
+            // Leer el contenido del directorio de imágenes
+            try {
+                const archivos = fs.readdirSync(directorioImagenes);
+                console.log(archivos);
+                
+                // Filtrar los archivos para obtener solo las imágenes que contienen el nombre del producto
+                archivos.forEach(archivo => {
+                    console.log(archivo + ' imagenENServidor');
+                    const nombreProductoLimpio = nombreProducto.trim(); // Eliminar espacios en blanco al principio y al final del nombre del producto
+                    const archivoLimpio = archivo.trim(); // Eliminar espacios en blanco al principio y al final del nombre del archivo
+                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+                    console.log(regex + ' lectura');
+                    if (regex.test(archivoLimpio)) {
+                        console.log(nombreProductoLimpio + " prueba ruta");
+                        const rutaImagen = path.join(__dirname, '../IMAGENES', archivo); // Ruta relativa de la imagen
+                        rutasImagenes.push(rutaImagen);
+                        
+                        // Salir del bucle si se han encontrado 5 imágenes
+                        if (rutasImagenes.length == 5) {
+                            return;
+                        }
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error al leer el directorio de imágenes:', error);
+            }
+            return rutasImagenes;
+        }
+
+        async  obtenerRutasbase64(nombreProducto) {
+            const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
+            const imagenesBase64 = [];
+        
+            try {
+                const archivos = fs.readdirSync(directorioImagenes);
+                console.log(archivos);
+        
+                archivos.forEach(archivo => {
+                    const nombreProductoLimpio = nombreProducto.trim();
+                    const archivoLimpio = archivo.trim();
+                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+        
+                    if (regex.test(archivoLimpio)) {
+                        const rutaImagen = path.join(directorioImagenes, archivo);
+                        const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
+                        
+                        imagenesBase64.push({
+                            nombre: archivo,
+                            base64: imagenBase64
+                        });
+        
+                        if (imagenesBase64.length == 5) {
+                            return;
+                        }
+                    }
+                });
+        
+            } catch (error) {
+                console.error('Error al leer el directorio de imágenes:', error);
+            }
+        
+            return imagenesBase64;
+        }
+        
 
 
 
@@ -36,7 +110,7 @@ class Inventario {
             // ... más productos
             ];
         */
-            
+        /*
             
             // Función para buscar productos por su categoría
         buscarProductosPorCategoria(categoria) {
@@ -81,6 +155,7 @@ class Inventario {
             this.rl.close();
             });
         }
+        */
 
         //algortimo de busqueda - barra de busqueda
         levenshteinDistance(s, t) {
@@ -135,10 +210,9 @@ class Inventario {
         
                     if (coincide) {
                         
-                        resultados.push({
-                            producto: producto,
-                            nombreOriginal: producto.nombre
-                        });
+                        resultados.push(
+                            producto
+                        );
                     }
                 }
         
@@ -167,14 +241,85 @@ class Inventario {
         
                     if (coincide) {
                         //  objeto producto 
-                        productosSegunCategoria.push({ producto,
-
-                        });
+                        productosSegunCategoria.push( producto);
                     }
                 }
                 resolve(productosSegunCategoria);
             });
         }
+
+        productosPorColor (color){
+            return new Promise((resolve, reject) => {
+                
+                let productosConColor = []; 
+                const colorABuscar = color.toLowerCase(); 
+                console.log(colorABuscar + " color a buscar");
+                // Iterar sobre la lista de productos
+                for (const producto of this.productos) {
+                    const palabrasProducto = producto.color.toLowerCase().split(' ');
+                    console.log(palabrasProducto);
+                    let coincide = false;
+                    for (const palabra of palabrasProducto) {
+                        const distancia = this.levenshteinDistance(palabra, colorABuscar);
+                        if (distancia <= 2) { 
+                            coincide = true;
+                            break;
+                        }
+                    }
+        
+                    if (coincide) {
+                        //  objeto producto 
+                        productosConColor.push( producto);
+                    }
+                }
+                resolve(productosConColor);
+            });
+        }
+
+        
+        // Método que verifica la cantidad de unidades de stock
+        verificarStock(idProducto, cantidad) {
+            const producto = this.productos.find(producto => producto.id_producto === idProducto);
+            if (!producto) {
+                throw new Error('El producto no se encuentra en el inventario.');
+            }
+            return producto.stock >= cantidad; //rertorna true si es mayor y false si es menor
+        }
+
+        // Método que descuenta el stock de cada producto
+        descontarStock(idProducto, cantidad) {
+            const producto = this.productos.find(producto => producto.id_producto === idProducto);
+            if (!producto) {
+                throw new Error('El producto no se encuentra en el inventario.');
+            }
+            if (producto.stock < cantidad) {
+                throw new Error('No hay suficiente stock disponible para realizar la operación.');
+            }
+            producto.stock -= cantidad;
+            console.log(`Stock descontado correctamente para el producto con ID ${idProducto}. Nuevo stock: ${producto.stock}`);
+            return true;
+        }
+
+        
+        eliminarProducto(idProducto) {
+            this.productos = this.productos.filter(producto => producto.id_producto !== idProducto);
+        }
+
+        actualizarStockAdmin(idProducto, nuevaCantidad) {
+            const producto = this.productos.find(p => p.id_producto === idProducto);
+            if (producto) {
+                    producto.stock = nuevaCantidad;
+            }
+        }
+
+            
+        // Método para actualizar el descuento de todos los productos
+        async actualizarDescuentoTodosProductos(nuevoDescuento) {
+            this.productos.forEach(producto => {
+                producto.descuento = nuevoDescuento;
+            });
+        }
+
 
 
         // Ejecutar la búsqueda de productos por categoría

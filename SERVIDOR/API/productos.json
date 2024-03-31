@@ -1,57 +1,59 @@
-[
-  {
-    "id_producto": 1,
-    "nombre": "Mesa de madera",
-    "descripcion": "Mesa de comedor hecha de madera de roble resistente",
-    "precio": 299.99,
-    "color": "Marr¢n",
-    "stock": 20,
-    "descuento": 0,
-    "proveedor": "",
-    "categoria": "Pisos"
-  },
-  {
-    "id_producto": 2,
-    "nombre": "Silla de madera",
-    "descripcion": "Silla de madera maciza con respaldo alto",
-    "precio": 79.99,
-    "color": "Marr¢n",
-    "stock": 50,
-    "descuento": 5,
-    "proveedor": "",
-    "categoria": "Pisos"
-  },
-  {
-    "id_producto": 3,
-    "nombre": "Estante de madera",
-    "descripcion": "Estante de pared con varios niveles de almacenamiento",
-    "precio": 149.99,
-    "color": "Marr¢n",
-    "stock": 30,
-    "descuento": 0,
-    "proveedor": "",
-    "categoria": "Pisos"
-  },
-  {
-    "id_producto": 4,
-    "nombre": "Cama de madera",
-    "descripcion": "Cama doble de madera de pino con cabecero y pie de cama",
-    "precio": 349.99,
-    "color": "Marr¢n",
-    "stock": 10,
-    "descuento": 0,
-    "proveedor": "",
-    "categoria": "Techos"
-  },
-  {
-    "id_producto": 5,
-    "nombre": "Banqueta de madera",
-    "descripcion": "Banqueta de madera maciza con asiento acolchado",
-    "precio": 59.99,
-    "color": "Marr¢n",
-    "stock": 20,
-    "descuento": 0,
-    "proveedor": "",
-    "categoria": "Techos"
-  }
-]
+{
+  "productos": [
+    {
+      "id_producto": 1,
+      "nombre": "Mesa de madera",
+      "descripcion": "Mesa de comedor hecha de madera de roble resistente",
+      "precio": 299.99,
+      "color": "Marr¢n",
+      "stock": 20,
+      "descuento": 15,
+      "proveedor": "Proveedor A",
+      "categoria": "Pisos"
+    },
+    {
+      "id_producto": 2,
+      "nombre": "Silla de madera",
+      "descripcion": "Silla de madera maciza con respaldo alto",
+      "precio": 79.99,
+      "color": "Marr¢n",
+      "stock": 50,
+      "descuento": 15,
+      "proveedor": "Proveedor A",
+      "categoria": "Pisos"
+    },
+    {
+      "id_producto": 3,
+      "nombre": "Estante de madera",
+      "descripcion": "Estante de pared con varios niveles de almacenamiento",
+      "precio": 149.99,
+      "color": "Marr¢n",
+      "stock": 30,
+      "descuento": 15,
+      "proveedor": "Proveedor A",
+      "categoria": "Pisos"
+    },
+    {
+      "id_producto": 4,
+      "nombre": "Cama de madera",
+      "descripcion": "Cama doble de madera de pino con cabecero y pie de cama",
+      "precio": 349.99,
+      "color": "Marr¢n",
+      "stock": 10,
+      "descuento": 15,
+      "proveedor": "Proveedor A",
+      "categoria": "Techos"
+    },
+    {
+      "id_producto": 5,
+      "nombre": "Banqueta de madera",
+      "descripcion": "Banqueta de madera maciza con asiento acolchado",
+      "precio": 59.99,
+      "color": "Marr¢n",
+      "stock": 20,
+      "descuento": 15,
+      "proveedor": "Proveedor A",
+      "categoria": "Techos"
+    }
+  ]
+}
