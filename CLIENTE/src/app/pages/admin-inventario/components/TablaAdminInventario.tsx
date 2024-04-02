@@ -1,7 +1,7 @@
 import { Column, ColumnEditorOptions } from "primereact/column";
-import { DataTable, DataTableFilterMeta, DataTableRowEditCompleteEvent } from "primereact/datatable";
+import { DataTable, DataTableRowEditCompleteEvent } from "primereact/datatable";
 import { IProduct } from "../../../../models/interfaces/IProduct";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import { Dropdown } from "primereact/dropdown";
@@ -65,7 +65,7 @@ export function TablaAdminiventario({
         );
     };
 
-    const priceEditor = (options: ColumnEditorOptions) => {
+    const priceEditor = (options: ColumnEditorOptions) => { 
         return (
             <InputNumber
                 value={options.value}
@@ -78,6 +78,14 @@ export function TablaAdminiventario({
     };
 
     const statusBodyTemplate = (product: IProduct) => {
+        if(product.stock >= 10){
+            product.status = 'INSTOCK';
+        }else if(product.stock == 0){
+            product.status = 'OUTOFSTOCK'
+        } else if (product.stock < 10) {
+            product.status = 'LOWSTOCK'
+        }
+        console.log(product)
         return <Tag value={product.status} severity={getEstado(product.status)}></Tag>;
     };
 
@@ -127,6 +135,7 @@ export function TablaAdminiventario({
         >
             <Column field="id"              header="ID"   editor={(options) => textEditor(options)}   style={{ width: '10%' }}/>
             <Column field="name"            header="Nombre"   editor={(options) => textEditor(options)}   style={{ width: '20%' }}/>
+            <Column field="stock"           header="Cantidad"   editor={(options) => textEditor(options)}   style={{ width: '20%' }}/>
             <Column field="inventoryStatus" header="Status" editor={(options) => statusEditor(options)} style={{ width: '20%' }} body={statusBodyTemplate}/>
             <Column field="price"           header="Precio"  editor={(options) => priceEditor(options)}  style={{ width: '20%' }} body={priceBodyTemplate}/>
             <Column header="Editar"rowEditor={true} headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}/>

@@ -12,40 +12,32 @@ export const AdminInventario = () => {
     const products: IProduct[] = [
 
         {
-            "id": "1",
-            "name": "Wooden Chair",
+            "id": "WP0",
+            "name": "Oak Plank",
+            "price": 50.00,
+            "stock":   100,
             "status": "INSTOCK",
-            "price": 49.99
         },
         {
-            "id": "2",
-            "name": "Oak Table",
-            "status": "INSTOCK",
-            "price": 199.99
+            "id": "WP3",
+            "name": "Maple Wood",
+            "price": 40.00,
+            "stock": 0,
+            "status": "LOWSTOCK"
         },
         {
-            "id": "3",
-            "name": "Pine Bookshelf",
-            "status": "LOWSTOCK",
-            "price": 99.99
+            "id": "WP3",
+            "name": "Birch Timber",
+            "price": 45.00,
+            "stock": 4,
+            "status": "INSTOCK"
         },
         {
-            "id": "4",
-            "name": "Cedar Chest",
-            "status": "OUTOFSTOCK",
-            "price": 149.99
-        },
-        {
-            "id": "5",
-            "name": "Birch Desk",
-            "status": "INSTOCK",
-            "price": 129.99
-        },
-        {
-            "id": "6",
-            "name": "Maple Bed",
-            "status": "INSTOCK",
-            "price": 299.99
+            "id": "WP4",
+            "name": "Pine Board",
+            "price": 30.00,
+            "stock": 60,
+            "status": "OUTOFSTOCK"
         }
 
     ];
@@ -73,7 +65,7 @@ export const AdminInventario = () => {
                     <Opcion nombre="Facturas" className="bg-facturas" />
                 </div>
             </div>
-            <div className="bg-white shadow-xl w-full h-screen rounded-xl m-5">
+            <div className="bg-white shadow-xl aspect-auto rounded-xl m-5">
                 <div className='m-3 p-4'>
                     <div className="card p-fluid">
                         <TablaAdminiventario
