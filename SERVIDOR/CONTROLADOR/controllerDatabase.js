@@ -364,15 +364,15 @@ async function logUsuarios(){
 
 }
 
-async function añadirProductoCarrito(producto, cantidad){
+async function añadirProductoCarrito(idUsuario,idproducto, cantidad){
 // se manda el producto  con la cantidad que se desea
 }
 
-async function modificarCantidadProductoCarrito(idProducto, cantidad){
+async function modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
 // se manda el idProducto  con la cantidad que se modifica
 }
 
-async function eliminarProductoCarrito(idProducto){
+async function eliminarProductoCarrito(idUsuario,idproducto){
   // se manda el idproducto a eliminar
   }
   
@@ -457,7 +457,7 @@ async function obtenerDireccionPorUsuario(idUsuario) {
 
 module.exports = {
   obtenerTodosLosProductos,
-  obtenerProductoDatos, obtenerProductoPorId,
+  obtenerProductoDatos, obtenerProductoPorId, obtenerCategoria,
   actualizarUsuario,
   añadirUsuario,
   añadirUsuario,
