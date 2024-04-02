@@ -36,7 +36,7 @@ import {
         </CardHeader>
         <CardBody className="relative p-0 h-14">
           {
-            product.discount > 0 && (
+            product.discount && product.discount > 0 && (
               <div className="absolute right-0 w-[101px] h-9 z-10 flex flex-col items-end">
                 <div className="w-full h-5 bg-red-700 rounded-bl-2xl flex justify-center text-white text-sm">
                   En Oferta

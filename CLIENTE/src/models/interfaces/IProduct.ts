@@ -2,9 +2,10 @@ export interface IProduct {
     id: string;
     name: string;
     price: number;
-    //category: string;
-    //quantity: number;
+    stock: number;
     status: string;
-    //discount: number;
-    //isFavorite: boolean;
+    category?: number;
+    //quantity: number;
+    discount?: number;
+    isFavorite?: boolean;
 }
