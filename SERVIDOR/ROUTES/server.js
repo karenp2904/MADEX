@@ -11,7 +11,9 @@ const archivos = require('../API/api');
 //INVENTARIO -LISTA DE PRODUCTOS
 const Inventario = require('../ENTIDADES/inventario'); 
 const Direccion = require('../ENTIDADES/direccion'); 
+const Usuario = require('../ENTIDADES/usuario'); 
 const carritoDeCompra = require('../ENTIDADES/carritoDeCompra'); 
+const Factura = require('../ENTIDADES/factura'); 
  //  instancia de la clase Inventario
 
 
@@ -397,15 +399,24 @@ app.get('/resumenCompra/idUsuario', async (req, res) => {
 // Ruta para agregar una factura
 app.post('/factura/añadir', async (req, res) => {
     try {
-        const { idUsuario, productos, total } = req.body;
+       // const { idUsuario, productos, total } = req.body;
 
-        let contenidoCarrito = new carritoDeCompra();
-        contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+       // let contenidoCarrito = new carritoDeCompra();
+       // contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
 
-        const subtotal= contenidoCarrito.calcularTotal();
+        const usuario = new Usuario(1097490756, "Karen", "Pérez", "karen@example.com", "CC", "contraseña123", "123456789", 2);
+        const metodoPago = "Tarjeta de crédito";
+        const direccion = new Direccion(1, 1097490756, 'Calle', 'Ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
+        const listaProductos = ["Producto 1", "Producto 2", "Producto 3"];
+        const totalCompra = 500; 
 
+        const factura = new Factura(usuario, metodoPago, direccion, listaProductos, totalCompra);
+        
 
+        const resumenFactura = factura.obtenerResumen();
+        console.log(resumenFactura);
 
+        //const subtotal= contenidoCarrito.calcularTotal();
 
         res.status(201).json(facturaCreada);
     } catch (error) {
@@ -414,6 +425,33 @@ app.post('/factura/añadir', async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 });
+
+
+app.get('/factura/generar', async (req, res) => {
+    try {
+        //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
+
+        const usuario = new Usuario(1097490756, "Karen", "Pérez", "karen@example.com", "CC", "contraseña123", "123456789", 2);
+        const metodoPago = "Tarjeta de crédito";
+        const direccion = new Direccion(1, 1097490756, 'Calle', 'Ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
+        const listaProductos = ["Producto 1", "Producto 2", "Producto 3"];
+        const totalCompra = 500; 
+
+        const factura = new Factura(usuario, metodoPago, direccion, listaProductos, totalCompra);
+
+        const pdfBytes = await factura.generarPDF(usuario, direccion, metodoPago, listaProductos, totalCompra);
+        
+        await factura.guardarPDF(pdfBytes, '../SERVIDOR/factura.pdf');
+        // Enviar el PDF como respuesta al cliente
+        res.setHeader('Content-Type', 'application/pdf');
+        res.send(pdfBytes);
+    } catch (error) {
+        console.error('Error al generar la factura:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
 
 
 
