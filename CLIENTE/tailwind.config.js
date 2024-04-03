@@ -24,7 +24,10 @@ module.exports = withMT({
         "auditlog": "url('auditlog/auditlog.svg')",
         "m-users": "url('user/m-users.svg')",
         "roles": "url('user/roles.svg')",
-        "facturas": "url('facturas/facturas.svg')"
+        "facturas": "url('facturas/facturas.svg')",
+        "muebles": "url('categorias/centro e irl.webp')"
+
+
       },
       screens: {
         'sm': '650px',
@@ -41,8 +44,11 @@ module.exports = withMT({
       'lg': '0.5rem',
       'full': '9999px',
       'xl':'25px',
-      'large': '12px',
+      'large': '12px'
+      },
 
+      dropShadow: {
+        '3xl': '0 35px 35px rgba(0, 0, 0, 0.25)'
       }
     },
   },
