@@ -24,13 +24,6 @@ async function manejarInicioSesion(datosSolicitud) {
     }
 }
 
-    async function manejarRegistro(req,res) {
-        // Lógica de registro utilizando el controlador de la base de datos
-        s_añadirUsuario(req,res);
-    }
-
-
-
     async function s_verificarCredencialUsuario(req, res) {
         const { correo, contraseña } = req.body;
         try {
