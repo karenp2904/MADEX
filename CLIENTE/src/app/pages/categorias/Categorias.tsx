@@ -21,13 +21,15 @@ export const Categorias = () => {
     const IrAProductos = (categoria: string) => {
         setParams({ ...params, categoria });
         navigate(Router.catalogo + `?categoria=${categoria}`);
+        
     }
+
 
     return (
         <div className="grid grid-cols-4 gap-4 p-7">
             <div
                 className="h-64 drop-shadow-xl relative hover:scale-105 hover:cursor-pointer"
-                onClick={() => IrAProductos("1")}
+                onClick={() => IrAProductos("1") }
             >
                 <Opcion nombre="Muebles para el hogar" className="align-middle text-center text-ardilla px-4" />
                 <img src="categorias/centro e irl.webp" alt="Muebles para el hogar" className="h-full w-full object-cover rounded-xl" />

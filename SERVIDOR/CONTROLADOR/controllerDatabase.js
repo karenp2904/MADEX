@@ -157,11 +157,11 @@ async function actualizarUsuario(idUsuario,nuevosDatos) {
 }
 
 
-async function añadirEmpresa(documento, correo, tipo_documento, contraseña, telefono ){
+async function añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
   try {
 
     //  para añadir el usuario
-    const empresa= await services.db_añadirEmpresa(documento, correo, tipo_documento, contraseña, telefono);
+    const empresa= await services.db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
     res.send(empresa);
     //  respuesta de éxito
     res.status(201).json({ message: 'Empresa añadido correctamente' });

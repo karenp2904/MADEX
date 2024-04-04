@@ -14,6 +14,7 @@ const Direccion = require('../ENTIDADES/direccion');
 const Usuario = require('../ENTIDADES/usuario'); 
 const carritoDeCompra = require('../ENTIDADES/carritoDeCompra'); 
 const Factura = require('../ENTIDADES/factura'); 
+const pdf = require('../ENTIDADES/pdf'); 
  //  instancia de la clase Inventario
 
 
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 //seguridad de la app
 const helmet = require('helmet');
 const CarritoDeCompras = require('../ENTIDADES/carritoDeCompra');
+const producto = require('../ENTIDADES/producto');
 app.use(helmet());
 
 
@@ -59,10 +61,7 @@ app.use((err, req, res, next) => {
 
 
 // Rutas para usuarios
-//app.post('/usuario/añadir', controladorServer.s_añadirUsuario);
-//app.delete('/usuario/eliminar', controladorServer.s_eliminarUsuario);
-//app.put('/usuario/actualizar', controladorServer.s_actualizarUsuario);
-//app.post('/empresa/añadir', controladorServer.s_añadirEmpresa);
+
 
 /*
 // Rutas para autenticación y autorización
@@ -109,6 +108,12 @@ async function obtenerProductosConInventario(req, res) {
         throw error;
     }
 }
+//Rutas usuario
+app.post('/usuario/añadir', controladorServer.s_añadirUsuario);
+app.delete('/usuario/eliminar', controladorServer.s_eliminarUsuario);
+app.put('/usuario/actualizar', controladorServer.s_actualizarUsuario);
+app.post('/empresa/añadir', controladorServer.s_añadirEmpresa);
+
 
 // Rutas para autenticación y autorización
 app.post('/usuario/verificar-credencial', controladorServer.s_verificarCredencialUsuario);
@@ -429,19 +434,66 @@ app.post('/factura/añadir', async (req, res) => {
 
 app.get('/factura/generar', async (req, res) => {
     try {
+
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
 
-        const usuario = new Usuario(1097490756, "Karen", "Pérez", "karen@example.com", "CC", "contraseña123", "123456789", 2);
+        const usuario = new Usuario(1097490756, "Karen", "Pérez", "kp3707194@gmail.com", "CC", "contraseña123", "123456789", 2);
         const metodoPago = "Tarjeta de crédito";
         const direccion = new Direccion(1, 1097490756, 'Calle', 'Ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
-        const listaProductos = ["Producto 1", "Producto 2", "Producto 3"];
+        const listaProductos = [
+            {
+                producto: new producto({
+                    id_producto: 1,
+                    nombre: 'cama',
+                    descripcion: 'cama de madera',
+                    precio: 2000,
+                    estado_producto: 'nuevo',
+                    color: 'marron',
+                    stock: 90,
+                    descuento: 15,
+                    proveedor: 'proveedor',
+                    categoria: 'muebles'
+                }),
+                cantidad: 1 // Cantidad del producto en el carrito
+            },
+            {
+                producto: new producto({
+                    id_producto: 2,
+                    nombre: 'puerta',
+                    descripcion: 'puerta de madera',
+                    precio: 2000,
+                    estado_producto: 'nuevo',
+                    color: 'marron',
+                    stock: 90,
+                    descuento: 15,
+                    proveedor: 'proveedor',
+                    categoria: 'muebles'
+                }),
+                cantidad: 2 // Cantidad del producto en el carrito
+            },
+            {
+                producto: new producto({
+                    id_producto: 3,
+                    nombre: 'techo',
+                    descripcion: 'techo de madera',
+                    precio: 2000,
+                    estado_producto: 'nuevo',
+                    color: 'marron',
+                    stock: 90,
+                    descuento: 15,
+                    proveedor: 'proveedor',
+                    categoria: 'muebles'
+                }),
+                cantidad: 1 // Cantidad del producto en el carrito
+            }
+        ];
+        
+        
         const totalCompra = 500; 
 
-        const factura = new Factura(usuario, metodoPago, direccion, listaProductos, totalCompra);
-
-        const pdfBytes = await factura.generarPDF(usuario, direccion, metodoPago, listaProductos, totalCompra);
         
-        await factura.guardarPDF(pdfBytes, '../SERVIDOR/factura.pdf');
+
+        const pdfBytes = await pdf(usuario, direccion, metodoPago, listaProductos, totalCompra);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
         res.send(pdfBytes);
@@ -554,6 +606,8 @@ app.get('/Alianza/actualizarInventario', async (req, res) => {
     }
 });
 
+
+module.exports = app;
 
 //metodos que han funcionado pero los he renovado - posible copia
 
