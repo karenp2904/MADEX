@@ -203,7 +203,8 @@ async function manejarInicioSesion(datosSolicitud) {
     async function s_añadirEmpresa(req, res) {
         try {
             // añadir un empresa en la base de datos
-            const empresa =await controllerDB.añadirEmpresa(null);
+            const { idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
+            const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
             res.status(201).json(null); // Devuelve una respuesta JSON con el usuario añadido
         } catch (error) {
             console.error('Error al añadir usuario:', error);
