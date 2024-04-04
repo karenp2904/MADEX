@@ -101,7 +101,7 @@ async function db_actualizarUsuario(idUsuario, nuevosDatos){
 
 }
 
-async function db_añadirEmpresa(){
+async function db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
 
 }
 
