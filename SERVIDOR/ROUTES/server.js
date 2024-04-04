@@ -109,7 +109,24 @@ async function obtenerProductosConInventario(req, res) {
     }
 }
 //Rutas usuario
-app.post('/usuario/añadir', controladorServer.s_añadirUsuario);
+app.post('/usuario/añadir', async function(req, res) {
+    try {
+        console.log('USER');
+        // Obtener los datos del cuerpo de la solicitud
+        const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
+        console.log(id_usuario);
+
+        // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
+        const usuario = await controllerDB.añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+
+        // Devuelve una respuesta JSON con el usuario añadido
+        res.json('exitoso')
+    } catch (error) {
+        console.error('Error al añadir usuario:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
 app.delete('/usuario/eliminar', controladorServer.s_eliminarUsuario);
 app.put('/usuario/actualizar', controladorServer.s_actualizarUsuario);
 app.post('/empresa/añadir', controladorServer.s_añadirEmpresa);

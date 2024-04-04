@@ -113,7 +113,7 @@ async function obtenerProveedorId(id){
 
 
 // Función para añadir un usuario
-async function  añadirUsuario (id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol)  {
+async function  añadirUsuario (nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol)  {
   try {
     //  para añadir el usuario
     const añadido= await services.db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);

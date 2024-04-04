@@ -140,10 +140,11 @@ async function manejarInicioSesion(datosSolicitud) {
     
     
     
-    async function s_añadirUsuario(req, res) {
+    async function s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
         try {
+            console.log('USER');
             // Obtener los datos del cuerpo de la solicitud
-            const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
+            //const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
     
             // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
             const usuario = await controllerDB.añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
@@ -560,7 +561,7 @@ async function manejarInicioSesion(datosSolicitud) {
 
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
-    listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
+    listaDeProductos,manejarInicioSesion,s_actualizarProducto,s_actualizarStockProducto,
     s_editarStock,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra
