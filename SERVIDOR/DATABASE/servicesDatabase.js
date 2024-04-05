@@ -213,15 +213,14 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
   }
   
   async function  db_eliminarProductoCarrito(idUsuario,idProducto){//TODO
-    // se manda el idproducto a eliminar
+    // se manda el idproducto a eliminar del usuario
     try {
-      const newProducto = await pool.query(
-        'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
-        [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
-      );
+      const newProducto = await pool.query('CALL db_eliminarProductoCarrito($1,$2);', 
+      [idUsuario, idProducto]);
+  
     } catch (error) {
-      console.error("Error al insertar el producto");
-      throw new Error("Error al insertar el producto");
+      console.error("Error al insertar el producto en el carrito de compras");
+      throw new Error("Error al insertar el producto en el carrito de compras");
     }
     }
     
