@@ -288,39 +288,12 @@ async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProduct
 
     pdfStream.on('finish', async () => {
         console.log('PDF generado exitosamente.');
-    /*
-        // Ruta al archivo PDF
-        const rutaPDF = 'C:/Users/HP VICTUS/Documents/MADEX/factura.pdf';
-    
-        // Leer el contenido del archivo PDF como texto
-        const contenidoPDF = fs.readFileSync(rutaPDF, 'utf-8');
-    
-        // Verificar que el contenido sea una cadena de texto
-        console.log(typeof contenidoPDF); // Debería imprimir "string"
-    
-        // Utilizar una función async para poder usar await
-        try {
-            const qrDataURL = await generarQR(contenidoPDF, 'L', 'Byte');
-    
-            // Insertar la imagen del código QR en el PDF
-            const qrImage = pdfDoc.openImage(qrDataURL);
-            const qrWidth = 100; // Ancho del código QR en el PDF
-            const qrHeight = qrWidth; // Altura del código QR en el PDF
-            const qrX = pdfDoc.page.width - pdfDoc.page.margins.right - qrWidth; // Posición X del código QR
-            const qrY = pdfDoc.y + 50; // Posición Y del código QR
-            pdfDoc.image(qrImage, qrX, qrY, { width: qrWidth, height: qrHeight });
-    
-            console.log('PDF con código QR generado exitosamente.');
-        } catch (error) {
-            console.error('Error al generar el código QR:', error);
-        }
-        */
     });
     
 
 // Finalizar el documento PDF
 pdfDoc.end();
-/*
+
     return new Promise((resolve, reject) => {
         pdfStream.on('finish', () => {
             console.log('PDF generado exitosamente');
@@ -331,7 +304,7 @@ pdfDoc.end();
             reject(error);
         });
     });
-    */
+    
 }
 
 

@@ -51,6 +51,7 @@ async function obtenerProductoDatos(producto) {
 
     //let descripcionCategoria = await services.db_obtenerCategoriaPorId(producto.categoria);
     // Construir el objeto
+  
     const Producto = {
       id_producto: producto.id_producto || '',
       nombre: producto.nombre || '',
@@ -61,14 +62,14 @@ async function obtenerProductoDatos(producto) {
       stock: producto.stock || 0,
       descuento: producto.descuento || '',
       idProveedor: producto.Proveedores_id_Proveedores || '',
-      proveedor: proveedor || '',
-      categoria_idcategoria: producto.categoria_idcategoria || '',
-      categoria: categoria || '' ,
+      //  proveedor: proveedor || '',
+      idCategoria: producto.categoria_idcategoria || '',
+      //categoria: categoria || '' ,
     };
 
     // Asignar el nombre del proveedor y la descripción de la categoría al objeto del producto
-    Producto.proveedor = proveedor;
-    Producto.categoria = categoria;
+   // Producto.proveedor = proveedor;
+   // Producto.categoria = categoria;
 
 
     // Devolver el producto con la información extra
@@ -82,7 +83,7 @@ async function obtenerProductoDatos(producto) {
 async function obtenerProductoPorId(id){
   try {
     let producto = await services.db_obtenerProductoPorId(id); //buscaporid
-   return producto;
+    return producto;
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Error en el servidor');
@@ -117,9 +118,8 @@ async function  añadirUsuario (id_usuario, nombre_usuario, apellido_usuario, co
   try {
     //  para añadir el usuario
     const añadido= await services.db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
-    res.send(añadido);
-    //  respuesta de éxito
-    res.status(201).json({ message: 'Usuario añadido correctamente' });
+    console.log('usuario añadido correctamente' );
+    return añadido;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir usuario:', error.message);
@@ -132,8 +132,9 @@ async function  eliminarUsuario (idUsuario)  {
   try {
     // Llama al servicio para eliminar el usuario
     const usuario=await services.db_eliminarUsuario(idUsuario);
+    console.log('usuario eliminado correctamente' );
     // Envía una respuesta de éxito
-    res.json({ message: 'Usuario eliminado correctamente '+ usuario });
+    return usuario;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al eliminar usuario:', error.message);
@@ -147,8 +148,9 @@ async function actualizarUsuario(idUsuario,nuevosDatos) {
 
     // Llama al servicio para actualizar el usuario
     const usuario= await services.db_actualizarUsuario(idUsuario, nuevosDatos);
+    console.log('usuario actualizado correctamente' );
     // Envía una respuesta de éxito
-    res.json({ message: 'Usuario actualizado correctamente '+usuario });
+    return usuario;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al actualizar usuario:', error.message);
@@ -160,11 +162,11 @@ async function actualizarUsuario(idUsuario,nuevosDatos) {
 async function añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
   try {
 
-    //  para añadir el usuario
+    //  para añadir el empresa
     const empresa= await services.db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
-    res.send(empresa);
+    console.log('Empresa añadido correctamente' );
+    return empresa;
     //  respuesta de éxito
-    res.status(201).json({ message: 'Empresa añadido correctamente' });
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir empresa:', error.message);
@@ -172,14 +174,10 @@ async function añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, 
   }
 }
 
-async function verificarCredencialUsuario(){
-
-}
-
 async function obtenerUsuario(idUsuario){
   try {
     let usuario = await services.db_obtenerUsuario(idUsuario); //buscaporid
-    return producto;
+    return usuario;
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Error en el servidor');
@@ -194,19 +192,10 @@ async function obtenerTodosUsuarios(){
     
     // Verifica si se obtuvieron productos
     if (!Array.isArray(allUsers)) {
-      throw new Error('El servicio db_obtenerTodosLosProductos no devolvió una lista de productos.');
+      throw new Error('El servicio db_obtenerTodosUsuarios no devolvió una lista de usuarios.');
     }
-    
-    const usuariosInfo = allUsers.map(usuario =>
-      obtenerDatosUsuario(usuario)
-    );
 
-    // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
-    const usuariosCompletos = await Promise.all(usuariosInfo);
-
-    console.log('Usuarios:', usuariosCompletos);
-
-    return usuariosCompletos;
+    return allUsers;
   } catch (error) {
     // Propaga el error para que sea manejado por la función que llama a obtenerTodosLosProductos
     throw error;
@@ -215,14 +204,14 @@ async function obtenerTodosUsuarios(){
 
 async function obtenerDatosUsuario(){
 // se agrega el rol al toda la informacion del usuario
-
+// esta funcion es en caso de necesitar info adicional - pendiente
 };
 
 
 
 
 //  obtener la descripción del proveedor según su ID
-async function obtenerProveedor(nombre) {
+async function obtenerProveedor(idProveedor) {
 
   let proveedores = await services.db_obtenerListaProveedores();
 
@@ -245,7 +234,6 @@ async function obtenerCategoria(idCategoria) {
   let categorias = await services.db_obtenerListaCategorias();
   // Buscar la categoría con el ID proporcionado
   const categoriaEncontrada = categorias.find(categoria => categoria.id === idCategoria);
-        
   // Si se encuentra la categoría, retornar su descripción
   if (categoriaEncontrada) {
       return categoriaEncontrada;
@@ -258,10 +246,9 @@ async function añadirProducto(producto) {
   try {
     // Llama al servicio para añadir el producto a la base de datos
 
-    const newProducto = await services.db_añadirProducto(producto.nombre, producto.descripcion, producto.precio, producto.estado_producto, producto.color, producto.stock, producto.descuento, producto.Proveedores_id_Proveedores, producto.Categoria_idCategoria);
-    
+    const newProducto = await services.db_añadirProducto(producto.nombre, producto.descripcion, producto.precio, producto.estado_producto, producto.color, producto.stock, producto.descuento, producto.idProveedor, producto.idCategoria);
     // Envía una respuesta con el nuevo producto
-    res.status(201).json(newProducto);
+    return newProducto;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir producto:', error.message);
@@ -273,7 +260,8 @@ async function eliminarProducto(idProducto){
   try {
     const producto=await services.db_eliminarProducto(idProducto);
     // Envía una respuesta de éxito
-    res.json({ message: 'Producto eliminado correctamente '+ producto });
+    consologe.log('Producto eliminado correctamente '+ producto);
+    return producto;
   } catch (error) {
     console.error('Error al eliminar Producto:', error.message);
     res.status(500).json({ error: 'Error al eliminar Producto' });
@@ -288,22 +276,24 @@ async function descontinuarProducto(idProducto){
     const estado= "descontinuado";
     const producto= await services.db_descontinuarProducto(idProducto, estado);
 
-    res.json({ message: 'Producto actualizado correctamente '+producto });
+    consologe.log('Producto actualizado correctamente '+producto );
+    return producto;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
-    console.error('Error al actualizar producto:', error.message);
+    console.error('Error al descontinuar producto:', error.message);
     res.status(500).json({ error: 'Error al actualizar producto' });
   }
     
 }
 
-async function actualizarProducto(idProducto, nuevosDatos){
+async function actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria){
   try {
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(idProducto, nuevosDatos);
+    const producto= await services.db_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria);
     // Envía una respuesta de éxito
 
-    res.json({ message: 'Producto actualizado correctamente '+producto });
+    consologe.log( 'Producto actualizado correctamente '+producto );
+    return producto;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al actualizar producto:', error.message);
@@ -314,11 +304,11 @@ async function actualizarProducto(idProducto, nuevosDatos){
 async function actualizarTodosProductos(productos) {
   try {
     for (const producto of productos) {
-      await services.db_actualizarProducto(producto.id, producto.newData);
+      await services.db_actualizarProducto(producto.idProducto,producto.nombre, producto.descripcion, producto.precio, producto.estado_producto, producto.color, producto.stock, producto.descuento, producto.idProveedor, producto.idCategoria);
       console.log('Producto actualizado correctamente:', producto);
     }
     // Envía una respuesta de éxito
-    return { message: 'Todos los productos se han actualizado correctamente' };
+    return  'Todos los productos se han actualizado correctamente' ;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al actualizar productos:', error.message);
@@ -332,10 +322,10 @@ async function actualizarTodosProductos(productos) {
 async function editarStock(id_producto, stock){
   try {
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(id_producto, stock);
+    const producto= await services.db_editarStock(id_producto, stock);
     // Envía una respuesta de éxito
-    res.json({ message: 'Producto actualizado correctamente '+producto });
-
+    console.log('Producto actualizado correctamente '+producto );
+    return producto;
   } catch (error) {
     // Manejar cualquier error y enviar una respuesta de error al cliente
     console.error('Error al actualizar el producto:', error.message);
@@ -347,7 +337,8 @@ async function editarStock(id_producto, stock){
 
 async function logInventario(){
   try{
-
+    const lista= await services.db_logInventario();
+    return lista;
   }catch (error) {
     console.error('Error al obtener el log inventario:', error.message);
     res.status(500).json({ error: 'Error al obtener el log inventarioo' });
@@ -356,32 +347,57 @@ async function logInventario(){
 
 
 async function logFacturas(){
-
+  const lista= await services.db_logFacturas();
+  return lista;
 }
 
 
 async function logUsuarios(){
-
+  const lista= await services.db_logUsuarios();
+  return lista;
 }
 
 async function añadirProductoCarrito(idUsuario,idproducto, cantidad){
 // se manda el producto  con la cantidad que se desea
+  try{
+    const carrito= await services.db_añadirProductoCarrito(idUsuario,idproducto, cantidad);
+    return carrito;
+  }catch (error) {
+    console.error('Error al añadir producto:', error.message);
+    res.status(500).json({ error: 'Error al controllerDatabase' });
+  }
 }
 
 async function modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
 // se manda el idProducto  con la cantidad que se modifica
+  try{
+    const carrito= await services.db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad);
+    return carrito;
+  }catch (error) {
+    console.error('Error al modficar producto Carrito:', error.message);
+    res.status(500).json({ error: 'Error al controllerDatabase' });
+  }
 }
 
 async function eliminarProductoCarrito(idUsuario,idproducto){
   // se manda el idproducto a eliminar
+  try{
+    const carrito= await services.db_eliminarProductoCarrito(idUsuario,idproducto);
+    return carrito;
+  }catch (error) {
+    console.error('Error al eliminar producto Carrito:', error.message);
+    res.status(500).json({ error: 'Error al controllerDatabase' });
   }
+}
   
 
 async function obtenerCarrito(idUsuario){
+  try{
+    // paso 1: obtener los id de producto y la cantidad
+    const carrito= await services.db_obtenerCarrito(idUsuario);
+     //paso 2: buscar al producto por el id
 
-  // paso 1: obtener los id de producto y la cantidad
-  //paso 2: buscar al producto por el id
-  //paso 3: recolectar la info del producto
+     //paso 3: recolectar la info del producto
   /* 
   const productosCompletosPromises = allProductos.map(producto =>
       obtenerProductoDatos(producto)
@@ -391,16 +407,17 @@ async function obtenerCarrito(idUsuario){
     const productosCompletos = await Promise.all(productosCompletosPromises);
   */
   //paso 4: enviar todo
+    return carrito;
+  }catch (error) {
+    console.error('Error al añadir producto:', error.message);
+    res.status(500).json({ error: 'Error al controllerDatabase' });
+  }
+
+  
+
+  
 
 }
-
-async function editarCarrito(){
-
-}
-
-async function verificarClienteActivo(){
-
-} 
 
 async function obtenerHistorialDeCompra(idUsuario){
   try {
@@ -464,7 +481,6 @@ module.exports = {
   eliminarUsuario,
   actualizarUsuario,
   añadirEmpresa,
-  verificarCredencialUsuario,
   obtenerUsuario,
   obtenerTodosUsuarios,
   añadirProducto,
@@ -476,8 +492,7 @@ module.exports = {
   logFacturas,
   logUsuarios,
   añadirProductoCarrito, modificarCantidadProductoCarrito,
-  editarCarrito,eliminarProductoCarrito,
-  verificarClienteActivo,
+  eliminarProductoCarrito,
   obtenerCarrito,
   obtenerHistorialDeCompra,
   añadirFactura,

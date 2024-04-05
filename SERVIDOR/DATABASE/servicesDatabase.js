@@ -89,9 +89,6 @@ async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, c
 
 }
 
-async function db_verificarCredencialUsuario(){
-
-}
 
 async function db_eliminarUsuario(idUsuario){
 
@@ -134,12 +131,11 @@ async function db_añadirProducto(nombre, descripcion, precio, estado_producto, 
 };
 
 
-async function db_actualizarProducto(idProducto, newData) {
+async function db_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria) {
     try {
-        const { nombre, precio, descripcion, /* otros atributos */ } = newData;
         //ejecutar sql 
 
-
+        
         console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
 
         return true; // Indica que la actualización fue exitosa

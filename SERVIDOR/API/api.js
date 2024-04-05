@@ -61,8 +61,8 @@ async function obtenerInventario() {
                 console.log('Color:', producto.color);
                 console.log('Stock:', producto.stock);
                 console.log('Descuento:', producto.descuento);
-                console.log('Proveedor:', producto.proveedor);
-                console.log('Categoría:', producto.categoria);
+                console.log('Proveedor:', producto.idProveedor);
+                console.log('Categoría:', producto.idCategoria);
                 console.log('------------------------');
             });
     

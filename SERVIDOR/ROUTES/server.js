@@ -108,6 +108,7 @@ async function obtenerProductosConInventario(req, res) {
         throw error;
     }
 }
+
 //Rutas usuario
 app.post('/usuario/registro', async function(req, res) {
     try {
@@ -118,6 +119,23 @@ app.post('/usuario/registro', async function(req, res) {
         const usuario= await controladorServer.s_añadirUsuario( id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
+        res.status(200).json(usuario);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+// Rutas para autenticación y autorización del inicio de sesión
+app.get('/usuario/login', async function(req, res) {
+    try {
+        const {correo,contraseña} = req.body;
+    
+        console.log(correo);
+        
+        const usuario= await controladorServer.manejarInicioSesion(correo,contraseña);        // Enviar respuesta al cliente
         res.send(usuario);
     } catch (error) {
         // Manejo de errores
@@ -125,6 +143,7 @@ app.post('/usuario/registro', async function(req, res) {
         res.status(500).send('Error en el servidor');
     }
 });
+
  // Obtener los datos del cuerpo de la solicitud
 
 app.delete('/usuario/eliminar', async function(req, res) {
@@ -136,7 +155,7 @@ app.delete('/usuario/eliminar', async function(req, res) {
         console.log(id_usuario);
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
-        res.send(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
         // Manejo de errores
         console.error('Error al generar el catálogo:', error);
@@ -154,7 +173,7 @@ app.put('/usuario/actualizar', async function(req, res) {
 
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
-        res.send(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
         // Manejo de errores
         console.error('Error al generar el catálogo:', error);
@@ -162,14 +181,14 @@ app.put('/usuario/actualizar', async function(req, res) {
     }
 });
 
-app.post('/empresa/agregar', async function(req, res) {
+app.post('/empresa/registro', async function(req, res) {
     try {
         const { id_usuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
     
         console.log(nombre_usuario);
         const usuario = await controladorServer.s_añadirEmpresa(id_usuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
         // Enviar respuesta al cliente
-        res.send(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
         // Manejo de errores
         console.error('Error al generar el catálogo:', error);
@@ -178,8 +197,6 @@ app.post('/empresa/agregar', async function(req, res) {
 });
 
 
-// Rutas para autenticación y autorización
-app.post('/usuario/verificar-credencial', controladorServer.s_verificarCredencialUsuario);
 
 
 app.get('/usuario/:id_usuario',async function(req, res) {
@@ -214,7 +231,7 @@ app.post('/producto/agregar', async function(req, res) {
             
         producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
 
-        res.status(201).json(producto);
+        res.status(200).json(producto);
     } catch (error) {
         console.error('Error al añadir producto:', error);
         res.status(500).send('Error en el servidor');
@@ -252,7 +269,7 @@ app.post('/producto/actualizarStock', async function(req, res) {
         const { idProducto, nuevoStock} = req.body; 
         const producto = await controladorServer.s_actualizarStockProducto(idProducto, nuevoStock);
         // Devuelve el usuario encontrado en formato JSON
-        res.json({producto });
+        res.status(201).json({producto });
     } catch (error) {
         console.error('Error al buscar Usuario por ID:', error);
         res.status(500).send('Error en el servidor');
@@ -277,10 +294,10 @@ app.get('/producto/obtenerProducto', async function(req, res) {
 
 app.post('/producto/actualizar', async function(req, res) {
     try {
-        const { nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria } = req.body;
-        const producto = await controladorServer.s_actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
+        const {idProducto, nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria } = req.body;
+        const producto = await controladorServer.s_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
         // Devuelve el usuario encontrado en formato JSON
-        res.json({producto });
+        res.status(201).json({producto });
     } catch (error) {
         console.error('Error al buscar Usuario por ID:', error);
         res.status(500).send('Error en el servidor');
@@ -386,9 +403,14 @@ app.get('/filtrarCategoria/:categoria', async (req, res) => {
     try {
         inventario = await obtenerProductosConInventario(req, res);
         const lista = await inventario.productosPorCategoria(categoriaAbuscar);
+
+        const listaId= await inventario.buscarProductosPorCategoria(categoriaAbuscar);
+
         console.log('Lista de productos:', lista);
 
-        res.json(lista);
+        console.log('Lista de productos:', listaId);
+
+        res.json(listaId);
         
     } catch (error) {
         console.error('Error en la búsqueda del producto:', error);
@@ -453,24 +475,30 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
 
 
 //ruta agregar un producto al carrito de compra
-app.post('/carrito/agregar', (req, res) => {
+app.post('/carrito/agregar', async (req, res) => {
+    try {
+        const { idUsuario,idproducto, cantidad } = req.body;
+
+        // Llamar al controlador para agregar el producto al carrito con la cantidad especificada
+        await controladorServer.añadirProductoCarritoCompras(idUsuario,idproducto, cantidad);
+
+        res.status(201).json('Producto agregado al carrito');
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en agregar producto al carrito:', error);
+        res.status(500).send('Error en server');
+    }
     
-    const { idUsuario,idproducto, cantidad } = req.body;
-
-    // Llamar al controlador para agregar el producto al carrito con la cantidad especificada
-    controladorServer.añadirProductoCarritoCompras(idUsuario,idproducto, cantidad);
-
-    res.send('Producto agregado al carrito');
 });
 
 
 // Ruta para modificar la cantidad de un producto en el carrito
-app.put('/carrito/modificarCantidad', (req, res) => {
+app.put('/carrito/modificarCantidad',async (req, res) => {
     try {
         const { idUsuario,idproducto, cantidad } = req.body;
         controladorServer.modificarCantidadProductoCarritoCompras( idUsuario,idproducto, cantidad);
-
-        res.send('Cantidad de producto en el carrito modificada');
+        res.status(201).json('Cantidad de producto en el carrito modificada');
+      //  res.send('Cantidad de producto en el carrito modificada');
     } catch (error) {
         console.error('Error al modificar la cantidad del producto en el carrito:', error);
         res.status(500).send('Error en el servidor');
@@ -488,7 +516,6 @@ app.get('/carrito/contenido', async (req, res) => {
 
         const subtotal= contenidoCarrito.calcularTotal();
 
-
         // Enviar el contenido del carrito como respuesta
         res.json({carritoCompras:contenidoCarrito , subtotal:subtotal});
     } catch (error) {
@@ -500,13 +527,13 @@ app.get('/carrito/contenido', async (req, res) => {
 
 
 // Ruta para eliminar un producto del carrito
-app.delete('/carrito/eliminar', (req, res) => {
+app.delete('/carrito/eliminar', async (req, res) => {
     try {
         const { idUsuario,idProducto } = req.body;
 
         controladorServer.eliminarProductoCarritoCompras(idUsuario,idProducto);
 
-        res.send(`Producto con ID ${idproducto} eliminado del carrito`);
+        res.status(201).json(`Producto con ID ${idproducto} eliminado del carrito`);
     } catch (error) {
         // Manejar cualquier error que ocurra durante el proceso
         console.error('Error al eliminar producto:', error);

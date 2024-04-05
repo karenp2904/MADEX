@@ -248,6 +248,11 @@ class Inventario {
             });
         }
 
+        buscarProductosPorCategoria(categoria) {
+            const productosEncontrados = this.productos.filter(p => p.idCategoria.toLowerCase() === categoria.toLowerCase());
+            return productosEncontrados.length ? productosEncontrados : null;
+        }
+
         productosPorColor (color){
             return new Promise((resolve, reject) => {
                 
