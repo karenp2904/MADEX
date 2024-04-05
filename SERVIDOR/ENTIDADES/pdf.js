@@ -54,29 +54,30 @@ async function enviarCorreo(usuario, filePath) {
 }
 
 
-/// Función para dibujar la tabla
+// Función para dibujar la tabla
 function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, rowHeight) {
     doc.font('Helvetica-Bold').fontSize(12);
     doc.fillColor('#000'); // Establecer color de texto negro
 
     // Dibujar encabezados de columna con bordes y fondo coloreado
     for (let i = 0; i < tableHeaders.length; i++) {
-        doc.rect(xPositions[i], y, columnWidths[i], rowHeight).fill('#f2f2f2').stroke();
-        doc.text(tableHeaders[i], xPositions[i] + columnWidths[i] / 2, y + rowHeight / 2, {
+        doc.rect(xPositions[i]+10, y, columnWidths[i], rowHeight).fill('#f2f2f2').stroke();
+        doc.fillColor('#000').text(tableHeaders[i], xPositions[i]-40 + columnWidths[i] / 2, y + rowHeight / 2, {
             width: columnWidths[i],
             align: 'center',
             valign: 'center'
-        }); // Establecer color de texto negro;
+        });
     }
+
 
     // Dibujar filas de la tabla con bordes y texto centrado
     doc.font('Helvetica').fontSize(10);
     for (let i = 0; i < tableRows.length; i++) {
         const row = tableRows[i];
-        const yPos = y + (i ) * rowHeight;
+        const yPos = y + (i +1) * rowHeight; // Ajustar para que los encabezados estén en la posición correcta
         for (let j = 0; j < row.length; j++) {
-            doc.rect(xPositions[j], yPos, columnWidths[j], rowHeight).stroke();
-            doc.text(row[j], xPositions[j] + columnWidths[j] / 2, yPos + rowHeight / 2, {
+            doc.rect(xPositions[j]+10, yPos, columnWidths[j], rowHeight).stroke();
+            doc.text(row[j], xPositions[j] -40 + columnWidths[j] / 2, yPos + rowHeight / 2, {
                 width: columnWidths[j],
                 align: 'center',
                 valign: 'center'
@@ -91,7 +92,7 @@ function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, ro
 
 
 
-async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalCompra, filePath) {
+async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra, filePath) {
     const pdfDoc = new PDFDocument();
     const pdfStream = fs.createWriteStream(filePath);
 
@@ -120,14 +121,14 @@ async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalC
      // Insertar la información del cliente y la dirección en paralelo al lado derecho
     //pdfDoc.text(infoX, infoYY);
 
-        // Agregar título
-    pdfDoc.font('Helvetica-Bold').fontSize(13).text('Factura', { align: 'right' });
+    // Agregar título
+    pdfDoc.font('Helvetica-Bold').fontSize(13).text('Factura de Venta', { align: 'right' });
 
     // Obtener el número de factura (aquí lo supondré como una variable)
-    const numeroFactura = 'N° 123456';
+    const numeroFactura = 'N° '+idFactura;
 
     // Definir las coordenadas y dimensiones del recuadro
-    const recuadroX = pdfDoc.x + 400;
+    const recuadroX = pdfDoc.x + 390;
     const recuadroY = pdfDoc.y + 10; // Mover un poco hacia abajo desde la posición actual
     const recuadroWidth = 100;
     const recuadroHeight = 20;
@@ -147,15 +148,29 @@ async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalC
     
 
     // Información del cliente
-    const clienteX = pdfDoc.page.margins.left;
+    const clienteX = pdfDoc.page.margins.left +10;
     const direccionX = pdfDoc.page.width / 2 + 20;
     const infoY = pdfDoc.y;
 
     pdfDoc.moveDown().fontSize(12);
-    pdfDoc.font('Helvetica-Bold').text('Información del Cliente\n', clienteX, infoY, { continued: true });
+   // pdfDoc.font('Helvetica-Bold').text('Información del Cliente\n', clienteX, infoY, { continued: true });
+        /// Definir las coordenadas y dimensiones del rectángulo de fondo
+    const rectX = clienteX - 5; // Ajustar según sea necesario
+    const rectY = infoY - 5; // Ajustar según sea necesario
+    const rectWidth = pdfDoc.widthOfString('Información del Cliente') + 380; // Ancho del rectángulo basado en el texto
+    const rectHeight = 20; // Altura del rectángulo
+
+    // Dibujar el rectángulo de fondo
+    pdfDoc.fillColor('#f2f2f2').rect(rectX, rectY, rectWidth, rectHeight).fill();
+
+    // Escribir el texto encima del rectángulo
+    pdfDoc.fillColor('#000').font('Helvetica-Bold').text('Información del Cliente', clienteX, infoY);
+
+
+
 
     pdfDoc.moveDown().fontSize(12);
-    pdfDoc.font('Helvetica-Bold').text('Nombre:', clienteX-130, infoY+20, { continued: true });
+    pdfDoc.font('Helvetica-Bold').text('\nNombre:', clienteX, infoY+20, { continued: true });
     pdfDoc.font('Helvetica').text(` ${usuario.nombre_usuario}`, { align: 'left' });
 
     pdfDoc.moveDown().fontSize(12);
@@ -173,8 +188,8 @@ async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalC
     // Dirección
     pdfDoc.moveDown().fontSize(12);
     pdfDoc.moveDown().fontSize(12);
-    pdfDoc.font('Helvetica-Bold').text('País:', direccionX, infoY+20, { continued: true });
-    pdfDoc.font('Helvetica').text(` ${'COLOMBIA'}`, { align: 'left' });
+    pdfDoc.font('Helvetica-Bold').text('\nPaís:', direccionX, infoY+20, { continued: true });
+    pdfDoc.font('Helvetica').text(` ${'Colombia'}`, { align: 'left' });
 
     pdfDoc.moveDown().fontSize(12);
     pdfDoc.font('Helvetica-Bold').text('Departamento:', direccionX, pdfDoc.y-10, { continued: true });
@@ -182,16 +197,18 @@ async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalC
 
     pdfDoc.moveDown().fontSize(12);
     pdfDoc.font('Helvetica-Bold').text('Ciudad:', direccionX, pdfDoc.y-10, { continued: true });
-    pdfDoc.font('Helvetica').text(` ${direccion.Ciudad}`, { align: 'left' });
+    pdfDoc.font('Helvetica').text(` ${direccion.ciudad}`, { align: 'left' });
 
     pdfDoc.moveDown().fontSize(12);
     pdfDoc.font('Helvetica-Bold').text('Dirección:', direccionX, pdfDoc.y-10, { continued: true });
-    pdfDoc.font('Helvetica').text(` ${direccion.barrio} ${direccion.Calle}`, { align: 'left' });
+    pdfDoc.font('Helvetica').text(` ${direccion.barrio} ${direccion.calle} \n`, { align: 'left' });
 
-    pdfDoc.moveDown().fontSize(12);
+   
 
     // Agregar método de pago
-    pdfDoc.moveDown().fontSize(12).text(`Método de pago: ${metodoPago}`, { align: 'left' });
+    pdfDoc.moveDown().fontSize(12);
+    //pdfDoc.moveDown().fontSize(12).text(`Método de pago: ${metodoPago}`,direccionX, infoY-10, { continued: true });
+
 
     // Agregar tabla de productos
     
@@ -219,7 +236,7 @@ async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalC
 
     // Calcular las posiciones x para cada columna
     const xPositions = [];
-    let currentX = pdfDoc.page.margins.left -30;
+    let currentX = pdfDoc.page.margins.left;
     for (let i = 0; i < numColumns; i++) {
         xPositions.push(currentX);
         currentX += columnWidths[i];
@@ -228,7 +245,7 @@ async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalC
     // Calcular la altura de cada fila de la tabla
     const fontSize = 10; // Tamaño de la fuente en puntos
     const lineHeight = fontSize * 1.2; // Altura de línea aproximada (ajustable)
-    const rowHeight = lineHeight + 5; // Altura de fila con un pequeño espacio adicional
+    const rowHeight = lineHeight + 10; // Altura de fila con un pequeño espacio adicional
 
 
     // Calcular la posición y inicial
@@ -243,7 +260,31 @@ async function generarPDF(usuario, direccion, metodoPago, listaProductos, totalC
     // Agregar total de la compra
     pdfDoc.moveDown
     pdfDoc.moveDown().fontSize(12);
-    pdfDoc.moveDown().fontSize(10).text(`Total de la compra: $${totalCompra.toFixed(2)}`, { align: 'center' });
+    //pdfDoc.moveDown().fontSize(10).text(`Total de la compra: $${totalCompra.toFixed(2)}`, { align: 'center' });
+
+
+
+    // Definir posición y tamaño del recuadro
+    const boxWidth = 200;
+    const boxHeight = 100;
+    const boxX = pdfDoc.page.width - pdfDoc.page.margins.right - boxWidth;
+    const boxY = pdfDoc.page.height - pdfDoc.page.margins.bottom - boxHeight;
+
+    // Dibujar el recuadro gris
+    pdfDoc.rect(boxX, boxY, boxWidth, boxHeight).fill('#f2f2f2').stroke();
+
+    // Definir contenido de los totales
+    const subtotal = 200.00; // Ejemplo de subtotal
+    const descuento = 100; // Ejemplo de descuento
+    const iva = 20; // Ejemplo de IVA
+    const totalPagar = subtotal - descuento + iva;
+
+    // Escribir totales dentro del recuadro
+    pdfDoc.font('Helvetica-Bold').fontSize(10).fillColor('#000');
+    pdfDoc.text(`Subtotal: $${subtotal.toFixed(2)}`, boxX + 10, boxY + 10);
+    pdfDoc.text(`Descuento: $${descuento.toFixed(2)}`, boxX + 10, boxY + 30);
+    pdfDoc.text(`IVA: $${iva.toFixed(2)}`, boxX + 10, boxY + 50);
+    pdfDoc.text(`Total a Pagar: $${totalPagar.toFixed(2)}`, boxX + 10, boxY + 70);
 
     pdfStream.on('finish', async () => {
         console.log('PDF generado exitosamente.');
@@ -311,10 +352,10 @@ async function guardarPDF(pdfBytes, filePath) {
 }
 
 
-async function generarFacturaYEnviarCorreo(usuario, direccion, metodoPago, listaProductos, totalCompra) {
+async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra) {
     try {
         // Generar el PDF y guardarlo en el sistema de archivos
-        await generarPDF(usuario, direccion, metodoPago, listaProductos, totalCompra, 'factura.pdf');
+        await generarPDF(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra, 'factura.pdf');
 
         // Leer el PDF guardado
         const pdfBytes = await fs.promises.readFile('factura.pdf');

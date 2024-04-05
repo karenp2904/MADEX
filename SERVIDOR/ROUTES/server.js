@@ -109,25 +109,196 @@ async function obtenerProductosConInventario(req, res) {
     }
 }
 //Rutas usuario
-app.post('/usuario/añadir', controladorServer.s_añadirUsuario);
-app.delete('/usuario/eliminar', controladorServer.s_eliminarUsuario);
-app.put('/usuario/actualizar', controladorServer.s_actualizarUsuario);
-app.post('/empresa/añadir', controladorServer.s_añadirEmpresa);
+app.post('/usuario/registro', async function(req, res) {
+    try {
+        const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
+    
+        console.log(nombre_usuario);
+        
+        const usuario= await controladorServer.s_añadirUsuario( id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        // Enviar respuesta al cliente
+        res.send(usuario);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+ // Obtener los datos del cuerpo de la solicitud
+
+app.delete('/usuario/eliminar', async function(req, res) {
+    try {
+        const { id_usuario } = req.body; 
+
+        const usuario= await controladorServer.s_eliminarUsuario(id_usuario);
+    
+        console.log(id_usuario);
+        //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        // Enviar respuesta al cliente
+        res.send(usuario);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.put('/usuario/actualizar', async function(req, res) {
+    try {
+        const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
+    
+        console.log(nombre_usuario);
+
+        const usuario= await controladorServer.s_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+
+        //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        // Enviar respuesta al cliente
+        res.send(usuario);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.post('/empresa/agregar', async function(req, res) {
+    try {
+        const { id_usuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
+    
+        console.log(nombre_usuario);
+        const usuario = await controladorServer.s_añadirEmpresa(id_usuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+        // Enviar respuesta al cliente
+        res.send(usuario);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al generar el catálogo:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
 
 // Rutas para autenticación y autorización
 app.post('/usuario/verificar-credencial', controladorServer.s_verificarCredencialUsuario);
-app.get('/usuario/:id', controladorServer.s_obtenerUsuarioId);
+
+
+app.get('/usuario/:id_usuario',async function(req, res) {
+    try {
+        const id_usuario = req.params.id; // Suponiendo que el ID del usuario está en los parámetros de la solicitud
+        // Busca el usuario por su ID en la base de datos
+        const usuario = await controladorServer.s_obtenerUsuarioId(id_usuario);
+        // Devuelve el usuario encontrado en formato JSON
+        res.json(usuario);
+    } catch (error) {
+        console.error('Error al buscar Usuario por ID:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.get('/usuario/lista', async function(req, res) {
+    try {
+        const usuarios = await controladorServer.s_obtenerTodosUsuarios();
+        // Devuelve el usuario encontrado en formato JSON
+        res.json(usuarios);
+    } catch (error) {
+        console.error('Error al buscar Usuario por ID:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
 
 //Rutas para productos
-app.post('/producto/añadir', controladorServer.s_añadirProducto);
-app.delete('/producto/eliminar', controladorServer.s_eliminarProducto);
-app.post('/producto/descontinuar', controladorServer.s_descontinuarProducto);
-app.post('/producto/actualizar', controladorServer.s_actualizarProducto);
-app.get('/producto/:id', controladorServer.s_obtenerProducto);
+app.post('/producto/agregar', async function(req, res) {
+    try {
+        const { nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria } = req.body;
+            
+        producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
 
-app.get('/usuario/historialCompra/:id', controladorServer.s_obtenerHistorialCompra);
+        res.status(201).json(producto);
+    } catch (error) {
+        console.error('Error al añadir producto:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.delete('/producto/eliminar', async function(req, res) {
+    try {
+        const { idProducto } = req.body; // Suponiendo que el ID del producto está en el cuerpo de la solicitud
+
+        // Elimina el producto utilizando la clase DBManager
+        producto=await controladorServer.s_eliminarProducto(idProducto);
+
+        res.status(200).send('Producto eliminado exitosamente');
+    } catch (error) {
+        console.error('Error al eliminar el producto:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.post('/producto/descontinuar', async function(req, res) {
+    try {
+        const { idProducto } = req.body;
+        producto=await controladorServer.s_descontinuarProducto(idProducto);
+
+        res.status(200).send('Producto descontinuado exitosamente');
+    } catch (error) {
+        console.error('Error al buscar Usuario por ID:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.post('/producto/actualizarStock', async function(req, res) {
+    try {
+        const { idProducto, nuevoStock} = req.body; 
+        const producto = await controladorServer.s_actualizarStockProducto(idProducto, nuevoStock);
+        // Devuelve el usuario encontrado en formato JSON
+        res.json({producto });
+    } catch (error) {
+        console.error('Error al buscar Usuario por ID:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.get('/producto/obtenerProducto', async function(req, res) {
+    try {
+        const { idProducto } = req.body; // ID del producto está en el cuerpo de la solicitud
+        const producto = await controladorServer.s_obtenerProducto(idProducto);
+        // Verifica si se encontró el producto
+        if (!producto) {
+            return res.status(404).send('Producto no encontrado');
+        }
+        // Devuelve el producto encontrado en formato JSON
+        res.status(200).json(producto);
+    } catch (error) {
+        console.error('Error al obtener el producto:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.post('/producto/actualizar', async function(req, res) {
+    try {
+        const { nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria } = req.body;
+        const producto = await controladorServer.s_actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
+        // Devuelve el usuario encontrado en formato JSON
+        res.json({producto });
+    } catch (error) {
+        console.error('Error al buscar Usuario por ID:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+
+app.get('/usuario/historialCompra/:id', async function(req, res) {
+    try {
+        const id_usuario = req.params.id; // Suponiendo que el ID del usuario está en los parámetros de la solicitud
+        const lista = await controladorServer.s_obtenerHistorialCompra(id_usuario);
+        res.json(lista);
+    } catch (error) {
+        console.error('Error al buscar Usuario por ID:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
 
 // Ruta para generar el inventario
 app.get('/producto/inventario', async function(req, res) {
@@ -308,11 +479,10 @@ app.put('/carrito/modificarCantidad', (req, res) => {
 
 
 // Ruta para ver el contenido del carrito y saber el subtotal
-app.get('/carrito/:idUsuario', async (req, res) => {
+app.get('/carrito/contenido', async (req, res) => {
     try {
         // Obtener el ID del usuario de la solicitud
-        const idUsuario = req.params.idUsuario;
-
+        const { idUsuario } = req.body;
         let contenidoCarrito = new carritoDeCompra();
         contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
 
@@ -332,9 +502,9 @@ app.get('/carrito/:idUsuario', async (req, res) => {
 // Ruta para eliminar un producto del carrito
 app.delete('/carrito/eliminar', (req, res) => {
     try {
-        const { idUsuario,idproducto } = req.body;
+        const { idUsuario,idProducto } = req.body;
 
-        controladorServer.eliminarProductoCarritoCompras(idUsuario,idproducto);
+        controladorServer.eliminarProductoCarritoCompras(idUsuario,idProducto);
 
         res.send(`Producto con ID ${idproducto} eliminado del carrito`);
     } catch (error) {
@@ -346,7 +516,7 @@ app.delete('/carrito/eliminar', (req, res) => {
 
 
 // Ruta para añadir una dirección
-app.post('/direccion', async (req, res) => {
+app.post('/direccion/agregar', async (req, res) => {
     try {
         
         const { ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion } = req.body;
@@ -402,7 +572,7 @@ app.get('/resumenCompra/idUsuario', async (req, res) => {
 
 
 // Ruta para agregar una factura
-app.post('/factura/añadir', async (req, res) => {
+app.post('/factura/agregar', async (req, res) => {
     try {
        // const { idUsuario, productos, total } = req.body;
 
@@ -436,10 +606,10 @@ app.get('/factura/generar', async (req, res) => {
     try {
 
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
-
+        const idFactura = '000111';
         const usuario = new Usuario(1097490756, "Karen", "Pérez", "kp3707194@gmail.com", "CC", "contraseña123", "123456789", 2);
         const metodoPago = "Tarjeta de crédito";
-        const direccion = new Direccion(1, 1097490756, 'Calle', 'Ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
+        const direccion = new Direccion(1, 1097490756, 'calle', 'ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
         const listaProductos = [
             {
                 producto: new producto({
@@ -485,6 +655,36 @@ app.get('/factura/generar', async (req, res) => {
                     categoria: 'muebles'
                 }),
                 cantidad: 1 // Cantidad del producto en el carrito
+            },
+            {
+                producto: new producto({
+                    id_producto: 3,
+                    nombre: 'techo',
+                    descripcion: 'techo de madera',
+                    precio: 2000,
+                    estado_producto: 'nuevo',
+                    color: 'marron',
+                    stock: 90,
+                    descuento: 15,
+                    proveedor: 'proveedor',
+                    categoria: 'muebles'
+                }),
+                cantidad: 1 // Cantidad del producto en el carrito
+            },
+            {
+                producto: new producto({
+                    id_producto: 3,
+                    nombre: 'techo',
+                    descripcion: 'techo de madera',
+                    precio: 2000,
+                    estado_producto: 'nuevo',
+                    color: 'marron',
+                    stock: 90,
+                    descuento: 15,
+                    proveedor: 'proveedor',
+                    categoria: 'muebles'
+                }),
+                cantidad: 1 // Cantidad del producto en el carrito
             }
         ];
         
@@ -493,7 +693,7 @@ app.get('/factura/generar', async (req, res) => {
 
         
 
-        const pdfBytes = await pdf(usuario, direccion, metodoPago, listaProductos, totalCompra);
+        const pdfBytes = await pdf(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
         res.send(pdfBytes);
