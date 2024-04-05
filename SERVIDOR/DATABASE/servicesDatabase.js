@@ -138,8 +138,6 @@ async function db_actualizarProducto(idProducto, newData) {
     try {
         const { nombre, precio, descripcion, /* otros atributos */ } = newData;
         //ejecutar sql 
-
-
         console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
 
         return true; // Indica que la actualización fue exitosa
@@ -190,22 +188,57 @@ async function db_verificarClienteActivo(){
 
 
 
-async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
+async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){ //TODO 
   // se manda el producto  con la cantidad que se desea
+  try {
+    const newProducto = await pool.query('CALL db_añadirProductoCarrito($1,$2,$3);', 
+    [idUsuario, idproducto, cantidad]);
+
+  } catch (error) {
+    console.error("Error al insertar el producto en el carrito de compras");
+    throw new Error("Error al insertar el producto en el carrito de compras");
+  }
   }
   
-  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
+  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){ //TODO
   // se manda el idProducto  con la cantidad que se modifica
+  try {
+    const newProducto = await pool.query(
+      'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
+      [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
+    );
+  } catch (error) {
+    console.error("Error al insertar el producto");
+    throw new Error("Error al insertar el producto");
+  }
   }
   
-  async function  db_eliminarProductoCarrito(idUsuario,idProducto){
+  async function  db_eliminarProductoCarrito(idUsuario,idProducto){//TODO
     // se manda el idproducto a eliminar
+    try {
+      const newProducto = await pool.query(
+        'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
+        [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
+      );
+    } catch (error) {
+      console.error("Error al insertar el producto");
+      throw new Error("Error al insertar el producto");
+    }
     }
     
   
-  async function  db_obtenerCarrito(idUsuario){
+  async function  db_obtenerCarrito(idUsuario){//TODO
       // obtener todos los id de producto y la cantidad
       // luego db_obtenerProductoPorId 
+      try {
+        const newProducto = await pool.query(
+          'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
+          [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
+        );
+      } catch (error) {
+        console.error("Error al insertar el producto");
+        throw new Error("Error al insertar el producto");
+      }
   }
 
 async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ //TODO: VERIFICAR FUNCIONAMIENTO
