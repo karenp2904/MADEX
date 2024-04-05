@@ -188,7 +188,7 @@ async function db_verificarClienteActivo(){
 
 
 
-async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){ //TODO 
+async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
   // se manda el producto  con la cantidad que se desea
   try {
     const newProducto = await pool.query('CALL db_añadirProductoCarrito($1,$2,$3);', 
@@ -200,16 +200,15 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){ //TOD
   }
   }
   
-  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){ //TODO
-  // se manda el idProducto  con la cantidad que se modifica
+  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){ 
+  // Busca según el idProducto del usuario y modifica la cantidad
   try {
-    const newProducto = await pool.query(
-      'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
-      [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
-    );
+    const resetProducto = await pool.query('CALL db_modificarCantidadProductoCarrito($1,$2,$3);', 
+    [idUsuario, idproducto, cantidad]);
+
   } catch (error) {
-    console.error("Error al insertar el producto");
-    throw new Error("Error al insertar el producto");
+    console.error("Error al actualizar la cantidad del producto en el carrito de compras");
+    throw new Error("Error al actualizar la cantidad del producto en el carrito de compras");
   }
   }
   
