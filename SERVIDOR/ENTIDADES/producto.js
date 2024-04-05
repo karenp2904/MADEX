@@ -1,6 +1,6 @@
 class producto{
 
-  constructor({ id_producto,nombre, descripcion, precio, estado_producto, color, stock, descuento, proveedor, categoria }) {
+  constructor({ id_producto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria }) {
     this.id_producto = id_producto;
     this.nombre = nombre;
     this.descripcion = descripcion;
@@ -9,12 +9,12 @@ class producto{
     this.color = color;
     this.stock = stock;
     this.descuento = descuento;
-    this.proveedor = proveedor;
-    this.categoria = categoria;
+    this.idProveedor = idProveedor;
+    this.idCategoria = idCategoria;
   }
 
    // Método para actualizar la información del producto
-  actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, proveedor, categoria) {
+  actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria) {
     // Verificar si los nuevos valores no son nulos o indefinidos antes de actualizar
     if (nombre) this.nombre = nombre;
     if (descripcion) this.descripcion = descripcion;
@@ -23,8 +23,8 @@ class producto{
     if (color) this.color = color;
     if (stock) this.stock = stock;
     if (descuento) this.descuento = descuento;
-    if (proveedor) this.proveedor = proveedor;
-    if (categoria) this.categoria = categoria;
+    if (idProveedor) this.idProveedor = idProveedor;
+    if (idCategoria) this.idCategoria = idCategoria;
   }
 
   // Método para aplicar descuento al precio del producto

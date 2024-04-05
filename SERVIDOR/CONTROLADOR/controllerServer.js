@@ -4,12 +4,11 @@ const controllerDB = require('./controllerDatabase.js');
 const CarritoDeCompras = require('../ENTIDADES/carritoDeCompra.js');
 
 
-async function manejarInicioSesion(datosSolicitud) {
+async function manejarInicioSesion(correo, contraseña) {
     try {
-        const { email, password } = datosSolicitud;
 
         // Verificar las credenciales del usuario
-        const usuarioAutenticado = await s_verificarCredencialUsuario(email, password);
+        const usuarioAutenticado = await s_verificarCredencialUsuario(correo, contraseña);
 
         if (usuarioAutenticado) {
             // Si las credenciales son correctas, devuelve un mensaje de éxito y el objeto del usuario autenticado
@@ -24,23 +23,18 @@ async function manejarInicioSesion(datosSolicitud) {
     }
 }
 
-    async function manejarRegistro(req,res) {
-        // Lógica de registro utilizando el controlador de la base de datos
-        s_añadirUsuario(req,res);
-    }
 
 
 
-    async function s_verificarCredencialUsuario(req, res) {
-        const { correo, contraseña } = req.body;
+    async function s_verificarCredencialUsuario(correo, contraseña) {
         try {
             const usuarios = await s_obtenerTodosUsuarios();
             const usuario = usuarios.find(u => u.correo === correo && u.contraseña === contraseña);
             if (!usuario) {
-                return res.status(401).send('Credenciales incorrectas');
+                return 'Credenciales incorrectas';
             } else {
-                req.usuario = usuario;
-                res.json(usuario);
+                s_comprobarRol(usuario);
+                return usuario;
             }
         } catch (error) {
             console.error('Error al verificar las credenciales del usuario:', error);
@@ -89,9 +83,9 @@ async function manejarInicioSesion(datosSolicitud) {
                     stock: parseInt(producto.stock),
                     descuento: parseFloat(producto.descuento),
                     idProveedor: producto.idProveedor,
-                    proveedor: producto.proveedor,
-                    idCategoria: producto.categoria_idcategoria,
-                    categoria: producto.categoria
+                    //proveedor: producto.proveedor,
+                    idCategoria: producto.idCategoria,
+                    //categoria: producto.categoria
                 };
             });
     
@@ -165,10 +159,9 @@ async function manejarInicioSesion(datosSolicitud) {
             };
 
             // Devuelve una respuesta JSON con el usuario añadido
-            res.status(201).json(user);
+            return user;
         } catch (error) {
             console.error('Error al añadir usuario:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
@@ -180,11 +173,10 @@ async function manejarInicioSesion(datosSolicitud) {
             // Implementación para eliminar un usuario en la base de datos
             await controllerDB.eliminarUsuario(idUsuario);
     
-            res.status(200).send('Usuario eliminado correctamente');
+            return 'Usuario eliminado correctamente';
         } catch (error) {
             // Manejar cualquier error que ocurra durante el proceso de eliminación
             console.error('Error al eliminar usuario:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
@@ -195,11 +187,10 @@ async function manejarInicioSesion(datosSolicitud) {
             const usuarioActualizado = await controllerDB.actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
     
             // Enviar una respuesta con el usuario actualizado
-            res.status(200).json(usuarioActualizado);
+            return usuarioActualizado;
         } catch (error) {
             // Manejar cualquier error que ocurra durante el proceso de actualización
             console.error('Error al actualizar usuario:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
@@ -209,10 +200,9 @@ async function manejarInicioSesion(datosSolicitud) {
             // añadir un empresa en la base de datos
     
             const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
-            res.status(201).json(empresa); // Devuelve una respuesta JSON con el usuario añadido
+            return empresa; 
         } catch (error) {
             console.error('Error al añadir usuario:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     async function s_obtenerUsuarioId(usuarioId) {
@@ -221,13 +211,12 @@ async function manejarInicioSesion(datosSolicitud) {
             const usuario = await controllerDB.obtenerUsuario(usuarioId);
             // Verifica si se encontró el usuario
             if (!usuario) {
-                return res.status(404).send('Usuario no encontrado');
+                return 'Usuario no encontrado';
+            }else{
+                return usuario;
             }
-            // Devuelve el usuario encontrado en formato JSON
-            res.status(200).json(usuario);
         } catch (error) {
             console.error('Error al buscar Usuario por ID:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
 
@@ -256,10 +245,9 @@ async function manejarInicioSesion(datosSolicitud) {
     
             // Devuelve el array de objetos "usuario"
             console.log("En server" +usuarios);
-            return usuario;
+            return usuarios;
         } catch (error) {
             console.error('Error al obtener los usuarios:', error);
-            res.status(500).send('Error en el servidor');
             throw error;
         }
 
@@ -272,10 +260,9 @@ async function manejarInicioSesion(datosSolicitud) {
         
             // Devuelve el array de objetos "producto"
             console.log("HistorialCompra" + facturas);
-            return productos;
+            return facturas;
         } catch (error) {
             console.error('Error al obtener los productos:', error);
-            res.status(500).send('Error en el servidor');
             throw error;
         }
     }
@@ -284,7 +271,7 @@ async function manejarInicioSesion(datosSolicitud) {
     async function s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria ) {
         try {
 
-            const producto = {
+            const producto =  {
                 nombre,
                 descripcion,
                 precio,
@@ -300,23 +287,21 @@ async function manejarInicioSesion(datosSolicitud) {
             const productoAñadido = await controllerDB.añadirProducto(producto);
 
             // Devolver una respuesta JSON con el producto añadido
-            res.status(201).json(productoAñadido);
+            return productoAñadido;
         } catch (error) {
 
             console.error('Error al añadir producto:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
     async function s_eliminarProducto(idProducto) {
         try {
             // Elimina el producto utilizando la clase DBManager
-            await controllerDB.eliminarProducto(idProducto);
+            const producto= await controllerDB.eliminarProducto(idProducto);
     
-            res.status(200).send('Producto eliminado exitosamente');
+            return 'Producto eliminado exitosamente ' + producto;
         } catch (error) {
             console.error('Error al eliminar el producto:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
@@ -324,12 +309,11 @@ async function manejarInicioSesion(datosSolicitud) {
         // Suponiendo que el ID del producto está en el cuerpo de la solicitud
         try {
             // Descontinua el producto en controllerDB
-            await controllerDB.descontinuarProducto(idProducto);
+            const producto= await controllerDB.descontinuarProducto(idProducto);
     
-            res.status(200).send('Producto descontinuado exitosamente');
+            return 'Producto descontinuado exitosamente ' + producto;
         } catch (error) {
             console.error('Error al descontinuar el producto:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
 
@@ -339,11 +323,10 @@ async function manejarInicioSesion(datosSolicitud) {
             const productoActualizado = await controllerDB.editarStock(idProducto, nuevoStock);
         
               // Envía el producto actualizado con el nuevo stock como respuesta
-            res.status(200).json({ producto: productoActualizado });
+                return productoActualizado ;
             } catch (error) {
               // Maneja cualquier error y envía una respuesta de error al cliente
             console.error('Error al descontinuar el producto:', error);
-            res.status(500).send('Error en el servidor');
             }
     }
     
@@ -352,57 +335,34 @@ async function manejarInicioSesion(datosSolicitud) {
             const producto = await controllerDB.obtenerProductoPorId(idProducto);
             // Verifica si se encontró el producto
             if (!producto) {
-                return res.status(404).send('Producto no encontrado');
+                return 'Producto no encontrado';
             }
             // Devuelve el producto encontrado en formato JSON
-            res.status(200).json(producto);
+            return producto;
         } catch (error) {
             console.error('Error al obtener el producto:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
-    async function s_actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria ) {
+    async function s_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria ) {
         try {
-            await controllerDB.actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria);
-    
-            res.status(200).send('Producto actualizado exitosamente');
+            const producto = await controllerDB.actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria);
+            return producto + " act producto";
         } catch (error) {
             console.error('Error al actualizar el producto:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
 
-
-    async function s_editarStock(req, res) {
+    async function actualizarInventario(productosActualizados) {
         try {
-            const { idProducto, stock } = req.body;
-          // Llama al controlador para editar el stock del producto y obtiene el producto actualizado
-            const productoActualizado = await controllerDB.editarStock(idProducto, stock);
-            
-          // Envía el producto actualizado con el nuevo stock como respuesta
-            res.status(200).json({ producto: productoActualizado });
-        } catch (error) {
-          // Maneja cualquier error y envía una respuesta de error al cliente
-            console.error('Error al descontinuar el producto:', error);
-            res.status(500).send('Error en el servidor');
-        }
-    }
-
-    async function actualizarInventario(req, res) {
-        try {
-            
-            const { productosActualizados } = req.body;
-    
             // Llamar al controlador de base de datos para almacenar los cambios
-            await controllerDB.actualizarTodosProductos(productosActualizados);
-    
+            const productos= await controllerDB.actualizarTodosProductos(productosActualizados);
+            return productos;
             // Enviar una respuesta al cliente para confirmar que la actualización se realizó con éxito
-            res.status(200).json({ mensaje: 'Inventario actualizado exitosamente' });
+            //res.status(200).json({ mensaje: 'Inventario actualizado exitosamente' });
         } catch (error) {
             // Manejar cualquier error que ocurra durante el proceso de actualización
             console.error('Error al actualizar el inventario:', error);
-            res.status(500).json({ error: 'Error al actualizar el inventario' });
         }
     }
     
@@ -414,10 +374,10 @@ async function manejarInicioSesion(datosSolicitud) {
             const carritoActualizado = await controllerDB.añadirProductoCarrito(idUsuario,idproducto, cantidad);
     
             // Devuelve el carrito actualizado como respuesta
-            res.status(200).json(carritoActualizado);
+            return carritoActualizado;
         } catch (error) {
             console.error('Error al recibir el carrito de compras:', error);
-            res.status(500).send('Error en el servidor');
+            
         }
     }
     
@@ -427,10 +387,10 @@ async function manejarInicioSesion(datosSolicitud) {
             const carritoActualizado = await controllerDB.modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad);
     
             // Devuelve el carrito actualizado como respuesta
-            res.status(200).json(carritoActualizado);
+            return carritoActualizado;
         } catch (error) {
             console.error('Error al recibir el carrito de compras:', error);
-            res.status(500).send('Error en el servidor');
+            
         }
     }
 
@@ -439,10 +399,10 @@ async function manejarInicioSesion(datosSolicitud) {
             const carrito = await controllerDB.obtenerCarrito(idUsuario);
     
             // Devuelve el carrito actualizado como respuesta
-            res.status(200).json(carrito);
+            return carrito;
         } catch (error) {
             console.error('Error al recibir el carrito de compras:', error);
-            res.status(500).send('Error en el servidor');
+            
         }
     }
 
@@ -452,10 +412,10 @@ async function manejarInicioSesion(datosSolicitud) {
             const carritoActualizado = await controllerDB.eliminarProductoCarrito(idUsuario,idProducto);
     
             // Devuelve el carrito actualizado como respuesta
-            res.status(200).json(carritoActualizado);
+            return carritoActualizado;
         } catch (error) {
             console.error('Error al recibir el carrito de compras:', error);
-            res.status(500).send('Error en el servidor');
+            
         }
     }
 
@@ -466,7 +426,6 @@ async function manejarInicioSesion(datosSolicitud) {
 
             return direccion;
         } catch (error) {
-
             console.error('Error al guardar direccion:', error);
             res.status(500).send('Error en el servidor');
         }
@@ -484,45 +443,6 @@ async function manejarInicioSesion(datosSolicitud) {
             res.status(500).send('Error en el servidor');
         }
     }
-
-
-/*
-
-    async function editarCarritoDeCompras(req, res) {
-        try {
-            const { operacion, idProducto, cantidad } = req.body; 
-    
-            const carrito = new CarritoDeCompras();
-    
-            
-            switch (operacion) {
-                case 'agregarProducto':
-                    carrito.agregarProducto(idProducto, cantidad);
-                    break;
-                case 'eliminar':
-                    carrito.eliminarProducto(idProducto);
-                    break;
-                case 'actualizarCantidad':
-                    carrito.actualizarCantidad(idProducto, cantidad);
-                    break;
-                case 'disminuirCantidad':
-                carrito.disminuirCantidad(idProducto, cantidad);
-                break;
-                default:
-                    return res.status(400).send('Operación no válida');
-            }
-
-            const carritoActualizado = await controllerDB.editarCarrito(carrito);
-    
-            // Devolver una respuesta exitosa
-            res.status(200).send('Carrito actualizado correctamente');
-        } catch (error) {
-            console.error('Error al editar el carrito de compras:', error);
-            res.status(500).send('Error en el servidor');
-        }
-    }
-    */
-    
     
 
 
@@ -530,7 +450,7 @@ async function manejarInicioSesion(datosSolicitud) {
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
     listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
-    s_editarStock,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
+    definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra
 };
