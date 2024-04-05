@@ -140,16 +140,25 @@ async function manejarInicioSesion(datosSolicitud) {
     
     
     
-    async function s_añadirUsuario(req, res) {
+    async function s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
         try {
-            // Obtener los datos del cuerpo de la solicitud
-            const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
     
             // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
             const usuario = await controllerDB.añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
     
+            const user = {
+                id_usuario,
+                nombre_usuario,
+                apellido_usuario, 
+                correo, 
+                tipo_documento, 
+                contraseña, 
+                telefono, 
+                idRol
+            };
+
             // Devuelve una respuesta JSON con el usuario añadido
-            res.status(201).json(usuario);
+            res.status(201).json(user);
         } catch (error) {
             console.error('Error al añadir usuario:', error);
             res.status(500).send('Error en el servidor');
@@ -159,10 +168,8 @@ async function manejarInicioSesion(datosSolicitud) {
     
 
 
-    async function s_eliminarUsuario(req, res) {
+    async function s_eliminarUsuario(idUsuario) {
         try {
-            const { idUsuario } = req.body; 
-    
             // Implementación para eliminar un usuario en la base de datos
             await controllerDB.eliminarUsuario(idUsuario);
     
@@ -175,13 +182,10 @@ async function manejarInicioSesion(datosSolicitud) {
     }
     
 
-    async function s_actualizarUsuario(req, res) {
+    async function s_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
         try {
-            const idUsuario = req.params.id;
-            const nuevosDatos = req.body;
-    
             // Implementación para actualizar un usuario en la base de datos
-            const usuarioActualizado = await controllerDB.actualizarUsuario(idUsuario, nuevosDatos);
+            const usuarioActualizado = await controllerDB.actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
     
             // Enviar una respuesta con el usuario actualizado
             res.status(200).json(usuarioActualizado);
@@ -193,51 +197,18 @@ async function manejarInicioSesion(datosSolicitud) {
     }
     
 
-    async function s_añadirEmpresa(req, res) {
+    async function s_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro) {
         try {
             // añadir un empresa en la base de datos
-            const { idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
+    
             const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
-            res.status(201).json(null); // Devuelve una respuesta JSON con el usuario añadido
+            res.status(201).json(empresa); // Devuelve una respuesta JSON con el usuario añadido
         } catch (error) {
             console.error('Error al añadir usuario:', error);
             res.status(500).send('Error en el servidor');
         }
     }
-/*
-    // Middleware de autenticación
-    const autenticarUsuario= (req, res, next)=> {
-        const { username, password } = req.body;
-        const usuario = usuarios.find(u => u.username === username && u.password === password);
-        //de prueba
-        if (!usuario) {
-            return res.status(401).send('Credenciales incorrectas');
-        }else{
-            res.send(usuario);
-        }
-        req.usuario = usuario;
-        next();
-    }
-
-    // Middleware de autorización
-    const autorizarRol= (rol)=>{
-        return (req, res, next) => {
-            if (req.usuario && req.usuario.rol === rol) {
-                next();
-            } else {
-                res.status(403).send('No tienes permiso para acceder a esta ruta');
-            }
-        };
-    }
-*/
-
-
-
-
-
-
-    async function s_obtenerUsuarioId(req, res) {
-        const usuarioId = req.params.id; // Suponiendo que el ID del usuario está en los parámetros de la solicitud
+    async function s_obtenerUsuarioId(usuarioId) {
         try {
             // Busca el usuario por su ID en la base de datos
             const usuario = await controllerDB.obtenerUsuario(usuarioId);
@@ -287,13 +258,11 @@ async function manejarInicioSesion(datosSolicitud) {
 
     }
 
-    async function s_obtenerHistorialCompra(req, res) {
+    async function s_obtenerHistorialCompra(id_usuario) {
         try {
-            const idUsuario = req.params.id; // Suponiendo que el ID del usuario está en los parámetros de la solicitud
 
-            const facturas = await controllerDB.obtenerHistorialDeCompra(idUsuario);
-            
-
+            const facturas = await controllerDB.obtenerHistorialDeCompra(id_usuario);
+        
             // Devuelve el array de objetos "producto"
             console.log("HistorialCompra" + facturas);
             return productos;
@@ -305,11 +274,10 @@ async function manejarInicioSesion(datosSolicitud) {
     }
 
 
-    async function s_añadirProducto(req, res) {
+    async function s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria ) {
         try {
-            const { nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria } = req.body;
-            
-            const productoData = {
+
+            const producto = {
                 nombre,
                 descripcion,
                 precio,
@@ -317,12 +285,12 @@ async function manejarInicioSesion(datosSolicitud) {
                 color,
                 stock,
                 descuento,
-                Proveedores_id_Proveedores,
-                Categoria_idCategoria
+                idProveedor,
+                idCategoria
             };
-    
+
             // Llama al método de controllerDB pasando los datos del producto
-            const producto = await controllerDB.añadirProducto(productoData);
+            const productoAñadido = await controllerDB.añadirProducto(producto);
 
             // Devolver una respuesta JSON con el producto añadido
             res.status(201).json(productoAñadido);
@@ -333,8 +301,7 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
     
-    async function s_eliminarProducto(req, res) {
-        const { idProducto } = req.body; // Suponiendo que el ID del producto está en el cuerpo de la solicitud
+    async function s_eliminarProducto(idProducto) {
         try {
             // Elimina el producto utilizando la clase DBManager
             await controllerDB.eliminarProducto(idProducto);
@@ -346,8 +313,8 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
     
-    async function s_descontinuarProducto(req, res) {
-        const { idProducto } = req.body; // Suponiendo que el ID del producto está en el cuerpo de la solicitud
+    async function s_descontinuarProducto(idProducto) {
+        // Suponiendo que el ID del producto está en el cuerpo de la solicitud
         try {
             // Descontinua el producto en controllerDB
             await controllerDB.descontinuarProducto(idProducto);
@@ -359,12 +326,9 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
 
-    async function s_actualizarStockProducto(req, res) {
-            const { idProducto } = req.body; 
+    async function s_actualizarStockProducto(idProducto, nuevoStock) {
+        
             try {
-            
-            const { nuevoStock } = req.body;
-    
             const productoActualizado = await controllerDB.editarStock(idProducto, nuevoStock);
         
               // Envía el producto actualizado con el nuevo stock como respuesta
@@ -376,8 +340,7 @@ async function manejarInicioSesion(datosSolicitud) {
             }
     }
     
-    async function s_obtenerProducto(req, res) {
-        const { idProducto } = req.body; // ID del producto está en el cuerpo de la solicitud
+    async function s_obtenerProducto(idProducto) { 
         try {
             const producto = await controllerDB.obtenerProductoPorId(idProducto);
             // Verifica si se encontró el producto
@@ -392,10 +355,9 @@ async function manejarInicioSesion(datosSolicitud) {
         }
     }
     
-    async function s_actualizarProducto(req, res) {
-        const { idProducto, nuevosDatos } = req.body; // se proporcionan el ID del producto y los nuevos datos en el cuerpo de la solicitud
+    async function s_actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria ) {
         try {
-            await controllerDB.actualizarProducto(idProducto, nuevosDatos);
+            await controllerDB.actualizarProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria);
     
             res.status(200).send('Producto actualizado exitosamente');
         } catch (error) {
@@ -561,7 +523,7 @@ async function manejarInicioSesion(datosSolicitud) {
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
     listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
-    s_editarStock,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,
+    s_editarStock,definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra
 };

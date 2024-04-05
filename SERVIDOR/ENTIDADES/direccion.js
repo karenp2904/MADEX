@@ -1,10 +1,10 @@
 class Direccion {
-    constructor({ ID_Direccion, ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion }) {
+    constructor({ ID_Direccion, ID_Usuario, calle, ciudad, codigoPostal, departamento, barrio, descripcion }) {
         this.ID_Direccion = ID_Direccion;
         this.ID_Usuario = ID_Usuario;
-        this.Calle = Calle;
-        this.Ciudad = Ciudad;
-        this.Codigo_Postal = Codigo_Postal;
+        this.calle = calle;
+        this.ciudad = ciudad;
+        this.codigoPostal = codigoPostal;
         this.departamento = departamento;
         this.barrio = barrio;
         this.descripcion = descripcion;
