@@ -171,11 +171,6 @@ async function db_logInventario(){
 }
 
 
-async function db_logFacturas(){
-
-}
-
-
 async function db_logUsuarios(){
 
 }

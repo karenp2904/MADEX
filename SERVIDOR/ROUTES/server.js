@@ -136,7 +136,7 @@ app.get('/usuario/login', async function(req, res) {
         console.log(correo);
         
         const usuario= await controladorServer.manejarInicioSesion(correo,contraseña);        // Enviar respuesta al cliente
-        res.send(usuario);
+        res.send(usuario , correo , contraseña);
     } catch (error) {
         // Manejo de errores
         console.error('Error al generar el catálogo:', error);
