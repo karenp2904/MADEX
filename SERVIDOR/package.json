@@ -10,6 +10,7 @@
     "nodemon": "^3.1.0"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.18.3",
     "helmet": "^7.1.0",
     "nodemailer": "^6.9.13",

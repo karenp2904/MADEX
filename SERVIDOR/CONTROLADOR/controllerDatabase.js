@@ -118,14 +118,21 @@ async function  añadirUsuario (id_usuario, nombre_usuario, apellido_usuario, co
   try {
     //  para añadir el usuario
     const añadido= await services.db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+    console.log('en controllerdb')
+
+     // Cifra la contraseña
+      const contraseñaCifrada = await cifrarContraseña(contraseña);
+      console.log('Contraseña cifrada:', contraseñaCifrada);
+
     console.log('usuario añadido correctamente' );
     return añadido;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir usuario:', error.message);
-    res.status(500).json({ error: 'Error al añadir usuario' });
   }
 }
+
+
 
 // Función para eliminar un usuario
 async function  eliminarUsuario (idUsuario)  {
@@ -143,18 +150,16 @@ async function  eliminarUsuario (idUsuario)  {
 }
 
 // Función para actualizar un usuario
-async function actualizarUsuario(idUsuario,nuevosDatos) {
+async function actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
   try {
-
     // Llama al servicio para actualizar el usuario
-    const usuario= await services.db_actualizarUsuario(idUsuario, nuevosDatos);
+    const usuario= await services.db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
     console.log('usuario actualizado correctamente' );
     // Envía una respuesta de éxito
     return usuario;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al actualizar usuario:', error.message);
-    res.status(500).json({ error: 'Error al actualizar usuario' });
   }
 }
 
@@ -165,12 +170,15 @@ async function añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, 
     //  para añadir el empresa
     const empresa= await services.db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
     console.log('Empresa añadido correctamente' );
+     // Cifra la contraseña
+    const contraseñaCifrada = await cifrarContraseña(contraseña);
+    console.log('Contraseña cifrada:', contraseñaCifrada);
+
     return empresa;
     //  respuesta de éxito
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir empresa:', error.message);
-    res.status(500).json({ error: 'Error al añadir empresa' });
   }
 }
 
@@ -187,6 +195,7 @@ async function obtenerUsuario(idUsuario){
 
 async function obtenerTodosUsuarios(){
   try {
+    /*
     // Consulta el servicio de los usuaios
     let allUsers = await services.db_obtenerTodosUsuarios();
     
@@ -194,6 +203,38 @@ async function obtenerTodosUsuarios(){
     if (!Array.isArray(allUsers)) {
       throw new Error('El servicio db_obtenerTodosUsuarios no devolvió una lista de usuarios.');
     }
+    */
+    
+      // Simulamos la obtención de usuarios de una base de datos o de algún otro origen de datos
+      const allUsers = [
+        {
+            id_usuario: "1000",
+            nombre_usuario: "Karen",
+            apellido_usuario: "Perez",
+            correo: "karen@gmail.com",
+            tipo_documento: "DNI",
+            contraseña: "contraseña123",
+            telefono: "123456789",
+            idRol: 2
+        },
+        {
+            id_usuario: "2",
+            nombre_usuario: "Otro",
+            apellido_usuario: "Usuario",
+            correo: "otro@gmail.com",
+            tipo_documento: "Cédula",
+            contraseña: "otro",
+            telefono: "987654321",
+            idRol: 1
+        },
+        // Puedes agregar más usuarios si lo deseas
+    ];
+    const contraseñaCifrada = await cifrarContraseña('otro');
+    const contraseñaCifrada2 = await cifrarContraseña('contraseña123');
+          // Simulamos un retardo para simular una operación asíncrona
+          await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      
 
     return allUsers;
   } catch (error) {
@@ -252,7 +293,6 @@ async function añadirProducto(producto) {
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir producto:', error.message);
-    res.status(500).send('Error al añadir producto');
   }
 };
 
@@ -264,7 +304,6 @@ async function eliminarProducto(idProducto){
     return producto;
   } catch (error) {
     console.error('Error al eliminar Producto:', error.message);
-    res.status(500).json({ error: 'Error al eliminar Producto' });
   }
     
 }
@@ -281,7 +320,6 @@ async function descontinuarProducto(idProducto){
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al descontinuar producto:', error.message);
-    res.status(500).json({ error: 'Error al actualizar producto' });
   }
     
 }
@@ -297,7 +335,6 @@ async function actualizarProducto(idProducto,nombre, descripcion, precio, estado
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al actualizar producto:', error.message);
-    res.status(500).json({ error: 'Error al actualizar producto' });
   }
 }
 
@@ -329,7 +366,6 @@ async function editarStock(id_producto, stock){
   } catch (error) {
     // Manejar cualquier error y enviar una respuesta de error al cliente
     console.error('Error al actualizar el producto:', error.message);
-    res.status(500).json({ error: 'Error al actualizar el producto' });
   }
 }
 
@@ -341,7 +377,6 @@ async function logInventario(){
     return lista;
   }catch (error) {
     console.error('Error al obtener el log inventario:', error.message);
-    res.status(500).json({ error: 'Error al obtener el log inventarioo' });
   }
 }
 
@@ -364,7 +399,6 @@ async function añadirProductoCarrito(idUsuario,idproducto, cantidad){
     return carrito;
   }catch (error) {
     console.error('Error al añadir producto:', error.message);
-    res.status(500).json({ error: 'Error al controllerDatabase' });
   }
 }
 
@@ -375,7 +409,6 @@ async function modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
     return carrito;
   }catch (error) {
     console.error('Error al modficar producto Carrito:', error.message);
-    res.status(500).json({ error: 'Error al controllerDatabase' });
   }
 }
 
@@ -386,7 +419,6 @@ async function eliminarProductoCarrito(idUsuario,idproducto){
     return carrito;
   }catch (error) {
     console.error('Error al eliminar producto Carrito:', error.message);
-    res.status(500).json({ error: 'Error al controllerDatabase' });
   }
 }
   
@@ -410,7 +442,6 @@ async function obtenerCarrito(idUsuario){
     return carrito;
   }catch (error) {
     console.error('Error al añadir producto:', error.message);
-    res.status(500).json({ error: 'Error al controllerDatabase' });
   }
 
   
@@ -452,7 +483,6 @@ async function guardarDireccionEnvio(nuevaDireccion){
       return { message: 'Dirección guardada correctamente' };
   }catch (error) {
     console.error('Error al obtener al guardar direccion:', error.message);
-    res.status(500).json({ error: 'Error al obtener al guardar direccion' });
   }
 }
 
@@ -471,12 +501,44 @@ async function obtenerDireccionPorUsuario(idUsuario) {
   }
 }
 
+//------- PROCESO DE CIFRADO ----------
+
+const bcrypt = require('bcrypt');
+
+// Método para cifrar la contraseña
+async function cifrarContraseña(contraseña) {
+  try {
+
+      // Genera un hash de la contraseña con una sal (salt) aleatoria
+      const hash = await bcrypt.hash(contraseña, 10); // 10 es el costo del hash (el número de rondas de encriptación)
+      console.log(contraseña);
+      return hash;
+  } catch (error) {
+      throw new Error('Error al cifrar la contraseña');
+  }
+}
+
+// Método para comparar la contraseña proporcionada con la contraseña almacenada cifrada
+async function compararContraseña(contraseña, hashCifrada) {
+  try {
+    const resultado = contraseña.localeCompare(hashCifrada, undefined, { sensitivity: 'accent' }) === 0;
+
+    console.log('Resultado de la comparación:', resultado);
+
+      return resultado;
+
+  } catch (error) {
+      throw new Error('Error al comparar las contraseñas');
+  }
+}
+
+// Ejecuta el ejemplo
 
 module.exports = {
   obtenerTodosLosProductos,
   obtenerProductoDatos, obtenerProductoPorId, obtenerCategoria,
   actualizarUsuario,
-  añadirUsuario,
+  añadirUsuario,compararContraseña,
   añadirUsuario,
   eliminarUsuario,
   actualizarUsuario,

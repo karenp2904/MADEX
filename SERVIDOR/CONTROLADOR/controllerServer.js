@@ -10,12 +10,12 @@ async function manejarInicioSesion(correo, contraseña) {
         // Verificar las credenciales del usuario
         const usuarioAutenticado = await s_verificarCredencialUsuario(correo, contraseña);
 
-        if (usuarioAutenticado) {
-            // Si las credenciales son correctas, devuelve un mensaje de éxito y el objeto del usuario autenticado
-            return { success: true, message: 'Inicio de sesión exitoso', usuario: usuarioAutenticado };
-        } else {
+        if(usuarioAutenticado === false || usuarioAutenticado === null) {
             // Si las credenciales son incorrectas o el usuario no existe, devuelve un mensaje de error
             return { success: false, message: 'Credenciales incorrectas' };
+        } else {
+            // Si las credenciales son correctas, devuelve un mensaje de éxito y el objeto del usuario autenticado
+            return { success: true, message: 'Inicio de sesión exitoso', usuario: usuarioAutenticado };
         }
     } catch (error) {
         console.error('Error al manejar el inicio de sesión:', error);
@@ -26,40 +26,65 @@ async function manejarInicioSesion(correo, contraseña) {
 
 
 
-    async function s_verificarCredencialUsuario(correo, contraseña) {
-        try {
-            const usuarios = await s_obtenerTodosUsuarios();
-            const usuario = usuarios.find(u => u.correo === correo && u.contraseña === contraseña);
-            if (!usuario) {
+
+
+async function s_verificarCredencialUsuario(correo, contraseña) {
+    try {
+        const usuarios = await controllerDB.obtenerTodosUsuarios();
+
+        // Encuentra el usuario con el correo proporcionado
+        const usuario = usuarios.find(u => u.correo === correo);
+        console.log('correo del login:' + usuario.correo);
+        if (!usuario) {
+            return 'Credenciales incorrectas';
+        }
+        else{
+            console.log('coontraseña del login:' + usuario.contraseña);
+            const contraseñaCorrecta = await controllerDB.compararContraseña(contraseña, usuario.contraseña);
+            console.log('Contraseña correctaaa:', contraseñaCorrecta);
+            
+            if (!contraseñaCorrecta|| contraseñaCorrecta==null) {
                 return 'Credenciales incorrectas';
-            } else {
+                }
+            else{
+                // Verificar el rol del usuario
                 s_comprobarRol(usuario);
+
                 return usuario;
             }
-        } catch (error) {
-            console.error('Error al verificar las credenciales del usuario:', error);
-            res.status(500).send('Error al verificar las credenciales del usuario');
-        }
+        }   
+
+
+    } catch (error) {
+        console.error('Error al verificar las credenciales del usuario:', error);
+        throw new Error('Error al verificar las credenciales del usuario');
     }
+}
 
     async function s_comprobarRol(usuario) {
-        if (usuario.idRol === 1) {
-            console.log('El usuario es un administrador');
-            return "admin";
-        } else if (usuario.idRol === 2) {
-            // El usuario es un cliente
-            console.log('El usuario es un cliente');
-            return "cliente";
-        } else if(usuario.idRol === 3){
-            console.log('El usuario es un empresa');
-            return "empresa";
-        }else{
-            // El usuario tiene un rol desconocido
-            console.log('El usuario tiene un rol desconocido');
-            res.status(403).send('Rol de usuario desconocido');
-            return "otro";
+        try {
+            console.log("rol" + usuario.idRol);
+
+            if (usuario.idRol === 1) {
+                console.log('El usuario es un administrador');
+                return "admin";
+            } else if (usuario.idRol === 2) {
+                console.log('El usuario es un cliente');
+                return "cliente";
+            } else if (usuario.idRol === 3) {
+                console.log('El usuario es una empresa');
+                return "empresa";
+            } else {
+                console.log('El usuario tiene un rol desconocido');
+                return "otro";
+            }
+        } catch (error) {
+            // Manejo de errores
+            console.error('Error al comprobar el rol del usuario:', error);
+            throw new Error('Error al comprobar el rol del usuario');
         }
     }
+    
 
     
     async function listaDeProductos(req, res) {
@@ -94,7 +119,6 @@ async function manejarInicioSesion(correo, contraseña) {
             return productos;
         } catch (error) {
             console.error('Error al obtener los productos:', error);
-            res.status(500).send('Error en el servidor');
             throw error;
         }
     }
@@ -157,7 +181,7 @@ async function manejarInicioSesion(correo, contraseña) {
                 telefono, 
                 idRol
             };
-
+            console.log('en controllerServer');
             // Devuelve una respuesta JSON con el usuario añadido
             return user;
         } catch (error) {
@@ -172,7 +196,7 @@ async function manejarInicioSesion(correo, contraseña) {
         try {
             // Implementación para eliminar un usuario en la base de datos
             await controllerDB.eliminarUsuario(idUsuario);
-    
+            console.log('en controllerServer');
             return 'Usuario eliminado correctamente';
         } catch (error) {
             // Manejar cualquier error que ocurra durante el proceso de eliminación
@@ -185,7 +209,7 @@ async function manejarInicioSesion(correo, contraseña) {
         try {
             // Implementación para actualizar un usuario en la base de datos
             const usuarioActualizado = await controllerDB.actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
-    
+            console.log('en controllerServer');
             // Enviar una respuesta con el usuario actualizado
             return usuarioActualizado;
         } catch (error) {
@@ -198,8 +222,8 @@ async function manejarInicioSesion(correo, contraseña) {
     async function s_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro) {
         try {
             // añadir un empresa en la base de datos
-    
             const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+            console.log('en controllerServer');
             return empresa; 
         } catch (error) {
             console.error('Error al añadir usuario:', error);
@@ -259,6 +283,7 @@ async function manejarInicioSesion(correo, contraseña) {
             const facturas = await controllerDB.obtenerHistorialDeCompra(id_usuario);
         
             // Devuelve el array de objetos "producto"
+            console.log('en controllerServer');
             console.log("HistorialCompra" + facturas);
             return facturas;
         } catch (error) {
@@ -285,7 +310,7 @@ async function manejarInicioSesion(correo, contraseña) {
 
             // Llama al método de controllerDB pasando los datos del producto
             const productoAñadido = await controllerDB.añadirProducto(producto);
-
+            console.log('en controllerServer');
             // Devolver una respuesta JSON con el producto añadido
             return productoAñadido;
         } catch (error) {
@@ -298,7 +323,7 @@ async function manejarInicioSesion(correo, contraseña) {
         try {
             // Elimina el producto utilizando la clase DBManager
             const producto= await controllerDB.eliminarProducto(idProducto);
-    
+            console.log('en controllerServer');
             return 'Producto eliminado exitosamente ' + producto;
         } catch (error) {
             console.error('Error al eliminar el producto:', error);
@@ -310,7 +335,7 @@ async function manejarInicioSesion(correo, contraseña) {
         try {
             // Descontinua el producto en controllerDB
             const producto= await controllerDB.descontinuarProducto(idProducto);
-    
+            console.log('en controllerServer');
             return 'Producto descontinuado exitosamente ' + producto;
         } catch (error) {
             console.error('Error al descontinuar el producto:', error);
@@ -427,7 +452,6 @@ async function manejarInicioSesion(correo, contraseña) {
             return direccion;
         } catch (error) {
             console.error('Error al guardar direccion:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
@@ -440,7 +464,6 @@ async function manejarInicioSesion(correo, contraseña) {
             return direccion;
         } catch (error) {
             console.error('Error al retornar direccion:', error);
-            res.status(500).send('Error en el servidor');
         }
     }
     
@@ -449,7 +472,7 @@ async function manejarInicioSesion(correo, contraseña) {
 
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
-    listaDeProductos,manejarInicioSesion,manejarRegistro,s_actualizarProducto,s_actualizarStockProducto,
+    listaDeProductos,manejarInicioSesion,s_actualizarProducto,s_actualizarStockProducto,
     definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra
