@@ -135,7 +135,6 @@ async function db_actualizarProducto(idProducto,nombre, descripcion, precio, est
     try {
         //ejecutar sql 
 
-        
         console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
 
         return true; // Indica que la actualización fue exitosa
@@ -183,20 +182,50 @@ async function db_verificarClienteActivo(){
 
 async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
   // se manda el producto  con la cantidad que se desea
+  try {
+    const newProducto = await pool.query('CALL db_añadirProductosCarrito($1,$2,$3);', 
+    [idUsuario, idproducto, cantidad]);
+
+  } catch (error) {
+    console.error("Error al insertar el producto en el carrito de compras");
+    throw new Error("Error al insertar el producto en el carrito de compras");
+  }
   }
   
-  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
-  // se manda el idProducto  con la cantidad que se modifica
+  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){ 
+  // Busca según el idProducto del usuario y modifica la cantidad
+  try {
+    const resetProducto = await pool.query('CALL db_modificarCantidadProductoCarrito($1,$2,$3);', 
+    [idUsuario, idproducto, cantidad]);
+
+  } catch (error) {
+    console.error("Error al actualizar la cantidad del producto en el carrito de compras");
+    throw new Error("Error al actualizar la cantidad del producto en el carrito de compras");
+  }
   }
   
-  async function  db_eliminarProductoCarrito(idUsuario,idProducto){
-    // se manda el idproducto a eliminar
+  async function  db_eliminarProductoCarrito(idUsuario,idProducto){//TODO
+    // se manda el idproducto a eliminar del usuario
+    try {
+      const newProducto = await pool.query('CALL db_eliminarProductoCarrito($1,$2);', 
+      [idUsuario, idProducto]);
+  
+    } catch (error) {
+      console.error("Error al eliminar el producto del carrito de compras");
+      throw new Error("Error al eliminar el producto en del carrito de compras");
+    }
     }
     
   
-  async function  db_obtenerCarrito(idUsuario){
+  async function  db_obtenerCarrito(idUsuario){//TODO
       // obtener todos los id de producto y la cantidad
       // luego db_obtenerProductoPorId 
+      try {
+        const carrito = await pool.query('SELECT * FROM db_obtenerCarrito($1);',[idUsuario]);
+      } catch (error) {
+        console.error("Error al obtener el carrito");
+        throw new Error("Error al obtener el carrito");
+      }
   }
 
 async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ //TODO: VERIFICAR FUNCIONAMIENTO

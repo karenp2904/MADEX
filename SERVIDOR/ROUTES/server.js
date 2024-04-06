@@ -112,11 +112,12 @@ async function obtenerProductosConInventario(req, res) {
 //Rutas usuario
 app.post('/usuario/registro', async function(req, res) {
     try {
-        const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
+        const {id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol} = req.body;
     
         console.log(nombre_usuario);
         
-        const usuario= await controladorServer.s_añadirUsuario( id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        const usuario= await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
         res.status(200).json(usuario);
