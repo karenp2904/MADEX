@@ -94,7 +94,7 @@ async function db_eliminarUsuario(idUsuario){
 
 }
 
-async function db_actualizarUsuario(idUsuario, nuevosDatos){
+async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol){
 
 }
 
@@ -236,7 +236,6 @@ module.exports = { db_añadirUsuario,
   db_eliminarUsuario,
   db_actualizarUsuario,
   db_añadirEmpresa,
-  db_verificarCredencialUsuario,
   db_obtenerUsuario,
   db_obtenerTodosUsuarios,
   db_añadirProducto,
@@ -245,7 +244,6 @@ module.exports = { db_añadirUsuario,
   db_actualizarProducto,
   db_editarStock,
   db_logInventario,
-  db_logFacturas,
   db_logUsuarios,
   db_añadirProductoCarrito,db_modificarCantidadProductoCarrito,
   db_eliminarProductoCarrito,
