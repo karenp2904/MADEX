@@ -191,7 +191,7 @@ async function db_verificarClienteActivo(){
 async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
   // se manda el producto  con la cantidad que se desea
   try {
-    const newProducto = await pool.query('CALL db_añadirProductoCarrito($1,$2,$3);', 
+    const newProducto = await pool.query('CALL db_añadirProductosCarrito($1,$2,$3);', 
     [idUsuario, idproducto, cantidad]);
 
   } catch (error) {
@@ -219,8 +219,8 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       [idUsuario, idProducto]);
   
     } catch (error) {
-      console.error("Error al insertar el producto en el carrito de compras");
-      throw new Error("Error al insertar el producto en el carrito de compras");
+      console.error("Error al eliminar el producto del carrito de compras");
+      throw new Error("Error al eliminar el producto en del carrito de compras");
     }
     }
     
@@ -229,13 +229,10 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       // obtener todos los id de producto y la cantidad
       // luego db_obtenerProductoPorId 
       try {
-        const newProducto = await pool.query(
-          'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
-          [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
-        );
+        const carrito = await pool.query('SELECT * FROM db_obtenerCarrito($1);',[idUsuario]);
       } catch (error) {
-        console.error("Error al insertar el producto");
-        throw new Error("Error al insertar el producto");
+        console.error("Error al obtener el carrito");
+        throw new Error("Error al obtener el carrito");
       }
   }
 
