@@ -141,7 +141,13 @@ async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, c
 
 
 async function db_obtenerUsuario(idUsuario){
-
+  try {
+    let usuario = await pool.query('SELECT * FROM db_obtenerUsuario($1)', [idUsuario]);
+    return usuario.rows;
+  } catch (error) {
+    console.error("Error al obtener usuario", error);
+    throw new Error("Error al obtener usuario");
+  }
 }
 
 async function db_obtenerTodosUsuarios(){
