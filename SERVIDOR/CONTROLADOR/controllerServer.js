@@ -165,25 +165,14 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     
     
     
-    async function s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
+    async function s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol) {
         try {
-
             // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
-            const usuario = await controllerDB.añadirUsuario(id_usuario,nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
-    
-            const user = {
-                id_usuario,
-                nombre_usuario,
-                apellido_usuario, 
-                correo, 
-                tipo_documento, 
-                contraseña, 
-                telefono, 
-                idRol
-            };
+            const usuario = await controllerDB.añadirUsuario(id_usuario,nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol);
+            
             console.log('en controllerServer');
             // Devuelve una respuesta JSON con el usuario añadido
-            return user;
+            return usuario;
         } catch (error) {
             console.error('Error al añadir usuario:', error);
         }
@@ -257,12 +246,12 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             // Mapea los usuarios para convertirlos en objetos "usuario"
             const usuarios = listaUsuarios.map(usuario => {
                 return {
-                    id_usuario: usuario.id_usuario,
+                    id_usuario: parseInt(usuario.id_usuario),
                     nombre_usuario: usuario.nombre_usuario,
                     apellido_usuario: usuario.apellido_usuario,
                     correo: usuario.correo,
-                    tipo_documento: usuario.tipo_documento,
                     contraseña: usuario.contraseña,
+                    tipo_documento: usuario.tipo_documento,
                     telefono: usuario.telefono,
                     idRol: usuario.idRol,
                     nitEmpresa: usuario.nitEmpresa,
@@ -299,7 +288,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     }
 
 
-    async function s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria ) {
+    async function s_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria) {
         try {
 
             const producto =  {
@@ -315,8 +304,8 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             };
 
             // Llama al método de controllerDB pasando los datos del producto
-            const productoAñadido = await controllerDB.añadirProducto(producto);
-            console.log('en controllerServer');
+            const productoAñadido = await controllerDB.añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria);
+            console.log('en controllerServer' + producto);
             // Devolver una respuesta JSON con el producto añadido
             return productoAñadido;
         } catch (error) {
