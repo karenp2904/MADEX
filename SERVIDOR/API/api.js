@@ -83,6 +83,28 @@ async function obtenerInventario() {
 
 
 //--------------------------------------------------------------------------------------
+//metodos para la escritura de la solicitud de la alianza
+
+async function solicitudAlianza(cotizacion) {
+    const fs = require('fs');
+
+    // Convertir el objeto a JSON
+    const cotizacionJSON = JSON.stringify(cotizacion, null, 2);
+
+    // Escribir el JSON en un archivo de manera asíncrona
+    fs.writeFile('./SERVIDOR/API/cotizacion.json', cotizacionJSON, (err) => {
+        if (err) {
+            console.error('Error al escribir el archivo:', err);
+            // Puedes manejar el error de acuerdo a tus necesidades, por ejemplo, lanzando una excepción
+            throw err;
+        }
+        console.log('Archivo cotizacion.json creado correctamente.');
+    });
+}
+
+
+
+//----------------------------------------------------------------------------------------
 
 // metodos para definit la rutina de lectura de la transaccion Alianza
 
@@ -171,6 +193,7 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
         return null;
     }
 }
+
 
 
 
@@ -265,7 +288,7 @@ async function obtenerFechaEstimadaEntrega() {
 
 
 
-module.exports = {leerProductos,guardarProductos,obtenerInventario,recibirProductos,calcularCotizacion, guardarRespuesta,leerCotizacion, actualizarInventario};
+module.exports = {leerProductos,guardarProductos,obtenerInventario,recibirProductos,solicitudAlianza,calcularCotizacion, guardarRespuesta,leerCotizacion, actualizarInventario};
 
 
 /*

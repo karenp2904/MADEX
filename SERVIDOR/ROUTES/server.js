@@ -789,6 +789,32 @@ app.get('/Alianza/obtenerCatalogo', async function (req, res) {
     }
 });
 
+app.post('/Alianza/solicitarCotizacion', async (req, res) => {
+    try {
+        // Recibir la información del cuerpo de la solicitud POST
+        const productos = req.body;
+
+        // Crear un objeto con el formato requerido
+        const cotizacion = {
+            productos: productos.map(producto => ({
+                id_producto: producto.id_producto,
+                cantidad: producto.cantidad
+            }))
+        };
+
+        await archivos.solicitudAlianza(cotizacion);
+
+
+        // Enviar una respuesta al cliente
+        res.status(200).send('Cotización generada y guardada correctamente.');
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error en la solicitud de cotización:', error);
+        res.status(500).send('Error en la solicitud de cotización');
+    }
+});
+
+
 app.get('/Alianza/presupuestoCotizacion', async (req, res) => {
     try {
         const costo = await archivos.calcularCotizacion();
@@ -816,7 +842,7 @@ app.get('/Alianza/respuesta', async (req, res) => {
 });
 
 
-app.get('/Alianza/actualizarInventario', async (req, res) => {
+app.post('/Alianza/actualizarInventario', async (req, res) => {
     try {
 
         inventario = await archivos.actualizarInventario();
