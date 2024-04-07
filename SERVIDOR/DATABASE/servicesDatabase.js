@@ -85,12 +85,32 @@ async function db_obtenerProductoPorId (id) {
 };
 
 
-async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol){
+async function db_añadirUsuario(idUsuario, nombre, apellido, correo,contraseña, idRol,nitEmpresa,nombreEmpresa,razonSocial,cargo,rubro,tipo_documento, telefono ){
 
+  //secuencia sql
+  // lo que no corresponde al usuario/cliente, se envia hacia el service null
+
+  //prueba
+  const user = {
+    idUsuario, 
+    nombre, 
+    apellido, 
+    correo, 
+    tipo_documento, 
+    contraseña, 
+    telefono, 
+    idRol
+  };
+  return user;
 }
 
 
 async function db_eliminarUsuario(idUsuario){
+  //secuencia sql
+  
+  //prueba
+  const user ={idUsuario};
+  return user;
 
 }
 
@@ -98,8 +118,26 @@ async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario
 
 }
 
-async function db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
+async function db_añadirEmpresa(idUsuario, nombre, apellido, correo,contraseña, idRol,nitEmpresa,nombreEmpresa,razonSocial,cargo,rubro,tipo_documento, telefono){
 
+
+//prueba 
+const empresa={
+    idUsuario, 
+    nombre, 
+    apellido, 
+    correo, 
+    tipo_documento, 
+    contraseña, 
+    telefono, 
+    idRol,
+    nitEmpresa,
+    nombreEmpresa,
+    razonSocial,
+    cargo,
+    rubro
+}
+return empresa;
 }
 
 
@@ -157,10 +195,15 @@ async function db_descontinuarProducto(idProducto,estado){
 /*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
 async function db_editarStock(id_producto, stock){ //TODO VERIFICAR
   try {
+    /*
     const historial = await pool.query('CALL db_editarStock($1,$2);', [id_producto], [stock]);
+    return historial;
+    */
+   console.log(id_producto + ' - service');
+    return id_producto; //
   } catch (error) {
-    console.error("Error al obtener el historial :", error);
-    throw new Error("Error al obtener el historial");
+    console.error("Error al editar el stock:", error);
+    throw new Error("Error service");
   }
 
 }

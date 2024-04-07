@@ -81,9 +81,12 @@ class CarritoDeCompras {
     calcularTotal() {
         let total = 0;
         for (const producto of this.productos) {
-            total += producto.precio * producto.cantidad;
+            // Calcula el precio del producto con descuento aplicado
+            const precioConDescuento = producto.precio - (producto.precio * producto.descuento / 100);
+            // Añade el precio del producto con descuento multiplicado por la cantidad al total
+            total += precioConDescuento * producto.cantidad;
         }
-        return total;
+    return total;
     }
 
     vaciarCarrito() {

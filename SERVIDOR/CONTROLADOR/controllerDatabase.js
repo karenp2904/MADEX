@@ -117,7 +117,7 @@ async function obtenerProveedorId(id){
 async function  añadirUsuario (id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol)  {
   try {
     //  para añadir el usuario
-    const añadido= await services.db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+    const añadido= await services.db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo,contraseña, idRol,null,null,null,null,null,tipo_documento, telefono );
     console.log('en controllerdb')
 
      // Cifra la contraseña
@@ -150,10 +150,10 @@ async function  eliminarUsuario (idUsuario)  {
 }
 
 // Función para actualizar un usuario
-async function actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
+async function actualizarUsuario(idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
   try {
     // Llama al servicio para actualizar el usuario
-    const usuario= await services.db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+    const usuario= await services.db_actualizarUsuario(idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
     console.log('usuario actualizado correctamente' );
     // Envía una respuesta de éxito
     return usuario;
@@ -164,11 +164,11 @@ async function actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, c
 }
 
 
-async function añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
+async function añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
   try {
 
     //  para añadir el empresa
-    const empresa= await services.db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+    const empresa= await services.db_añadirEmpresa(idUsuario, nombre, apellido, correo,contraseña, idRol,nitEmpresa,nombreEmpresa,razonSocial,cargo,rubro,tipo_documento, telefono );
     console.log('Empresa añadido correctamente' );
      // Cifra la contraseña
     const contraseñaCifrada = await cifrarContraseña(contraseña);
@@ -195,7 +195,7 @@ async function obtenerUsuario(idUsuario){
 
 async function obtenerTodosUsuarios(){
   try {
-    /*
+    
     // Consulta el servicio de los usuaios
     let allUsers = await services.db_obtenerTodosUsuarios();
     
@@ -203,7 +203,7 @@ async function obtenerTodosUsuarios(){
     if (!Array.isArray(allUsers)) {
       throw new Error('El servicio db_obtenerTodosUsuarios no devolvió una lista de usuarios.');
     }
-    */
+    /*
     
       // Simulamos la obtención de usuarios de una base de datos o de algún otro origen de datos
       const allUsers = [
@@ -234,7 +234,7 @@ async function obtenerTodosUsuarios(){
           // Simulamos un retardo para simular una operación asíncrona
           await new Promise(resolve => setTimeout(resolve, 1000));
       
-      
+      */
 
     return allUsers;
   } catch (error) {
