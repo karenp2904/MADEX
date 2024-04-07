@@ -1,9 +1,11 @@
+
 import Logo from "/icon/icon-primary.svg";
 import Arrow from "/arrow/arrow-left-primary.svg";
 import { Router } from "../../router/Router";
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 export const Register = () => {
     const [formData, setFormData] = useState({
@@ -15,10 +17,43 @@ export const Register = () => {
         correo: '',
         idRol: '1',
         contraseña: '',
+        confirmar_contraseña: ''
     });
 
 
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [passwordsMatch, setPasswordsMatch] = useState(false);
+    
+    useEffect(() => {
+        // Verificar si las contraseñas coinciden
+        setPasswordsMatch(formData.contraseña === formData.confirmar_contraseña);
+    }, [formData.contraseña, formData.confirmar_contraseña]);
+    
+    // Función para manejar el cambio en la aceptación de términos
+    const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTermsAccepted(e.target.checked);
+    };
+    
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+    
     const handleSubmit = async () => {
+        // Validar que todos los campos obligatorios estén completos
+        if (!formData.nombre_usuario || !formData.apellido_usuario || !formData.telefono || !formData.correo || !formData.contraseña || !formData.confirmar_contraseña) {
+            alert('Por favor complete todos los campos obligatorios');
+            return;
+        }
+
+        // Verificar si las contraseñas coinciden
+        if (!passwordsMatch) {
+            alert('Las contraseñas no coinciden');
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:3000/usuario/registro', {
@@ -29,12 +64,10 @@ export const Register = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                // Manejar la respuesta exitosa
                 console.log(response);
                 console.log('Registro exitoso');
-                Router.login
+                Router.login;
             } else {
-                // Manejar la respuesta de error
                 console.error('Error en el registro:', response.statusText);
             }
         } catch (error) {
@@ -42,47 +75,65 @@ export const Register = () => {
         }
     };
 
+    const Input = ({ name, label, isPasswordInput = false, hasError = false }: { name?: string, label?: string, isPasswordInput?: boolean, hasError?: boolean }) => {        const [inputType, setInputType] = useState(isPasswordInput ? 'password' : 'text');
+    
+        const togglePasswordVisibility = () => {
+            setInputType((prevInputType) => (prevInputType === 'password' ? 'text' : 'password'));
+        };
 
-
-    const Input = ({
-        name, label
-    }: { name?: string, label?: string }) => {
+        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            e.preventDefault(); // Evitar el comportamiento predeterminado del navegador
+            const { name, value } = e.target;
+            setFormData({
+                ...formData,
+                [name]: value
+            });
+        };
+        
+    
         return (
-            <div className="w-full h-22 mb-2">
-                <div className="w-full flex flex-col">
-                    <label
-                        htmlFor={name}
-                        className="text-primary-color text-sm font-semibold"
-                    >{label}</label>
-                    <input
-                        name={name}
-                        className="indent-2 h-8 rounded-xl placeholder:text-primary-color"
-                        style={{
-                            boxShadow: "-2px 2px 2px gray"
-                        }}
-                        type=""
-                    />
-                </div>
+            <div className="mb-4">
+            <label htmlFor={name} className="block text-sm font-semibold text-primary-color">
+                {label}
+            </label>
+            <div className="relative">
+                <input
+                    name={name}
+                    type={isPasswordInput ? inputType : 'text'}
+                    value={formData[name]}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 mt-1 rounded-xl placeholder-text-primary-color border border-gray-300 focus:outline-none focus:ring focus:ring-blue-200"
+                />
+                {isPasswordInput && (
+                    <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400"
+                        onClick={togglePasswordVisibility}
+                    >
+                        {inputType === 'password' ? <EyeIcon className="w-5 h-5" /> : <EyeSlashIcon className="w-5 h-5" />}
+                    </button>
+                )}
             </div>
-        )
-    }
+        </div>
+        );
+    };
 
     return (
         <div
-            className="w-full h-[900px] mb-10 flex justify-center items-center"
+        className="w-full h-[1000px] mb-10 flex justify-center items-center"
+    >
+        <div
+            className="relative flex flex-col w-96 h-[1000px] rounded-3xl bg-secondary-color px-10"
+            style={{
+                boxShadow: "-5px 5px 2.5px gray"
+            }}
         >
-            <div
-                className="relative flex flex-col w-96 h-[800px] rounded-3xl bg-secondary-color px-10"
-                style={{
-                    boxShadow: "-5px 5px 2.5px gray"
-                }}
-            >
-                <div className="absolute left-4 top-4">
-                    <img className="w-12" src={Arrow} />
-                </div>
-                <div className="h-48 flex justify-center items-center">
-                    <img className="max-h-full" src={Logo} />
-                </div>
+            <div className="absolute left-4 top-4">
+                <img className="w-12" src={Arrow} />
+            </div>
+            <div className="h-48 flex justify-center items-center">
+                <img className="max-h-full" src={Logo} />
+            </div>
                 {/* Contenido del formulario */}
                 <form onSubmit={handleSubmit}>
                     <Input name="nombre_usuario" label="Nombres" />
@@ -91,42 +142,54 @@ export const Register = () => {
                     <Input name="idUsuario" label="Número de Documento" />
                     <Input name="telefono" label="Teléfono" />
                     <Input name="correo" label="Correo electrónico" />
-                    <Input name="contraseña" label="Contraseña" />
-                    <Input name="confirm_password" label="Confirmar contraseña" />
+                    <Input name="contraseña" label="Contraseña" isPasswordInput={true} hasError={!passwordsMatch}/>
+                    <Input name="confirmar_contraseña" label="Confirmar contraseña" isPasswordInput={true} hasError={!passwordsMatch}/>
+                    
+                    {!passwordsMatch && (
+                        <div className="text-red-600 text-xs mt-1 mb-4">Las contraseñas no coinciden</div>
+                    )}
+
                     <div className="w-full h-32">
                         {/* Contenido adicional */}
-                        <div className="text-[8px] flex">
+                        <div className="text-[8px] flex mb-4">
                             <div className="w-6 flex justify-center items-center">
-                                <input className="scale-110" type="checkbox" />
-                            </div>
+                            <input
+                                className="scale-110"
+                                type="checkbox"
+                                checked={termsAccepted}
+                                onChange={handleTermsChange}
+                            />
+                        </div>
                             <span className="text-primary-color">
                                 Acepto los <span className="text-black font-bold">Términos y Condiciones</span> y Autorizo el <span className="text-black font-bold">Tratamiento de mis Datos Personales</span> de MADEX S.A
                             </span>
                         </div>
                         <div className="w-full h-14 flex justify-center items-center">
-                        <button
-                            type="submit"
-                            className="w-28 h-8 text-[14px] rounded-3xl bg-primary-color text-white"
-                            style={{
-                                boxShadow: "-2px 2px 2px gray"
-                            }}
-                        >
-                            Enviar
-                        </button>
-
-                    </div>
-                    <div className="flex justify-center items-center">
-                        <strong>
-                            <a
-                                className="underline text-[12px] text-primary-color"
-                                href={Router.registeEmpresa}
-                            >Crear cuenta de empresa</a>
-                        </strong>
+                            <button
+                                type="submit"
+                                className={`w-28 h-8 text-[14px] rounded-3xl bg-primary-color text-white ${!termsAccepted && 'opacity-50 cursor-not-allowed'}`}
+                                style={{
+                                    boxShadow: "-2px 2px 2px gray"
+                                }}
+                                disabled={!termsAccepted || !passwordsMatch}
+                            >
+                                Enviar
+                            </button>
                         </div>
+                        <div className="flex justify-center items-center">
+                            <strong>
+                                <a
+                                    className="underline text-[12px] text-primary-color"
+                                    href={Router.registeEmpresa}
+                                >Crear cuenta de empresa</a>
+                            </strong>
+                        </div>
+
                     </div>
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
+
 
