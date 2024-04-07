@@ -169,7 +169,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
         try {
 
             // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
-            const usuario = await controllerDB.añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+            const usuario = await controllerDB.añadirUsuario(id_usuario,nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
     
             const user = {
                 id_usuario,
