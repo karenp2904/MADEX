@@ -114,7 +114,7 @@ async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario
                                       contraseña, tipo_documento, telefono, idRol){
   try {
     const usuario = await pool.query(
-      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
+      'CALL db_actualizarUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
                                                             correo, contraseña, tipo_documento, telefono, idRol]);
 
   } catch (error) {
