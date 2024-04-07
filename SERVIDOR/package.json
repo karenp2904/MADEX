@@ -4,13 +4,17 @@
   "description": "PROYECTO DE MADERA",
   "main": "ROUTES/server.js",
   "scripts": {
-    "start": "nodemon SERVIDOR/ROUTES/server.js"
+    "start:client": "cd ../CLIENTE && npm run dev",
+    "start:server": "cd ../SERVIDOR && node ROUTES/server.js",
+    "start": "concurrently \"npm run start:client\" \"npm run start:server\""
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.1.0"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "express": "^4.18.3",
     "helmet": "^7.1.0",
     "nodemailer": "^6.9.13",
