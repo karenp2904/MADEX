@@ -89,7 +89,7 @@ async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, c
                                     contraseña, tipo_documento, telefono, idRol){
   try {
     const newusuario = await pool.query(
-      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8,$9);',[id_usuario, nombre_usuario, apellido_usuario,
+      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
                                                             correo, contraseña, tipo_documento, telefono, idRol]);
 
   } catch (error) {
@@ -109,12 +109,12 @@ async function db_eliminarUsuario(idUsuario){
   }
 }
 
-//El id de usuario es una llave promaria, no se puede editar
+//El id de usuario es una llave promaria, no se puede editar!!!
 async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
                                       contraseña, tipo_documento, telefono, idRol){
   try {
     const usuario = await pool.query(
-      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8,$9);',[id_usuario, nombre_usuario, apellido_usuario,
+      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
                                                             correo, contraseña, tipo_documento, telefono, idRol]);
 
   } catch (error) {
@@ -123,7 +123,19 @@ async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario
   }
 }
 
-async function db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
+async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo, 
+                                contraseña, tipo_documento, telefono, idRol, nitEmpresa, 
+                                nombreEmpresa, razonSocial, cargo, rubro){
+  try {
+      const usuario = await pool.query(
+        'CALL db_añadirEmpresa($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);',[id_usuario, nombre_usuario, apellido_usuario,
+                                                              correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa,
+                                                              nombreEmpresa, razonSocial, cargo, rubro]);
+
+    } catch (error) {
+      console.error("Error al actualizar usuario");
+      throw new Error("Error al actualizar usuario");
+    }
 
 }
 
