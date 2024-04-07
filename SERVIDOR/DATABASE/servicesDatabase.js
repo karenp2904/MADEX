@@ -94,7 +94,7 @@ async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, c
 
   } catch (error) {
     console.error("Error al añadir usuario");
-    throw new Error("Error al al añadir usuario");
+    throw new Error("Error al añadir usuario");
   }
 }
 
@@ -109,8 +109,18 @@ async function db_eliminarUsuario(idUsuario){
   }
 }
 
-async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol){
+//El id de usuario es una llave promaria, no se puede editar
+async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
+                                      contraseña, tipo_documento, telefono, idRol){
+  try {
+    const usuario = await pool.query(
+      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8,$9);',[id_usuario, nombre_usuario, apellido_usuario,
+                                                            correo, contraseña, tipo_documento, telefono, idRol]);
 
+  } catch (error) {
+    console.error("Error al actualizar usuario");
+    throw new Error("Error al actualizar usuario");
+  }
 }
 
 async function db_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
