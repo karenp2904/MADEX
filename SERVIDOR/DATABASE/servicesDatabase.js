@@ -100,7 +100,13 @@ async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, c
 
 
 async function db_eliminarUsuario(idUsuario){
+  try{
+    const usuario = await pool.query('CALL db_eliminarUsuario($1);', [idUsuario]);
 
+  }catch(error){
+    console.error("No se pudo eliminar el usuario");
+    throw new Error("No se pudo eliminar el usuario");
+  }
 }
 
 async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol){
