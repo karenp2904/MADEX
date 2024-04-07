@@ -161,7 +161,8 @@ async function db_obtenerTodosUsuarios(){
 }
 
 
-async function db_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria){
+async function db_añadirProducto(nombre, descripcion, precio, estado_producto, color, 
+                                stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria){
   try {
     const newProducto = await pool.query(
       'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
@@ -173,14 +174,13 @@ async function db_añadirProducto(nombre, descripcion, precio, estado_producto, 
   }
 };
 
-
-async function db_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria) {
+//TODO actualizar producto
+async function db_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, 
+                                      stock, descuento, idProveedor, idCategoria) {
     try {
-        //ejecutar sql 
-
-        console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
-
-        return true; // Indica que la actualización fue exitosa
+        const producto = await pool.query('CALL db_actualizarProducto($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)', 
+                                         [idProducto,nombre, descripcion, precio, estado_producto, color,
+                                          stock, descuento, idProveedor, idCategoria]);
     } catch (error) {
         console.error('Error al actualizar el producto:', error);
         throw error;
