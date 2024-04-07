@@ -91,17 +91,19 @@ async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, c
     const newusuario = await pool.query(
       'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
                                                             correo, contraseña, tipo_documento, telefono, idRol]);
-
+    return newusuario;
   } catch (error) {
     console.error("Error al añadir usuario");
     throw new Error("Error al añadir usuario");
   }
+
 }
 
 
 async function db_eliminarUsuario(idUsuario){
   try{
     const usuario = await pool.query('CALL db_eliminarUsuario($1);', [idUsuario]);
+    return usuario;
 
   }catch(error){
     console.error("No se pudo eliminar el usuario");
@@ -110,8 +112,7 @@ async function db_eliminarUsuario(idUsuario){
 }
 
 //El id de usuario es una llave promaria, no se puede editar!!!
-async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
-                                      contraseña, tipo_documento, telefono, idRol){
+async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo,contraseña, tipo_documento, telefono, idRol){
   try {
     const usuario = await pool.query(
       'CALL db_actualizarUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
@@ -123,21 +124,23 @@ async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario
   }
 }
 
-async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo, 
-                                contraseña, tipo_documento, telefono, idRol, nitEmpresa, 
+
+async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, 
                                 nombreEmpresa, razonSocial, cargo, rubro){
   try {
       const usuario = await pool.query(
         'CALL db_añadirEmpresa($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);',[id_usuario, nombre_usuario, apellido_usuario,
-                                                              correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa,
-                                                              nombreEmpresa, razonSocial, cargo, rubro]);
+        correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro]);
+
+    return usuario;
 
     } catch (error) {
       console.error("Error al actualizar usuario");
       throw new Error("Error al actualizar usuario");
     }
+  }
 
-}
+
 
 
 async function db_obtenerUsuario(idUsuario){
@@ -199,10 +202,15 @@ async function db_descontinuarProducto(idProducto,estado){
 /*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
 async function db_editarStock(id_producto, stock){ //TODO VERIFICAR
   try {
+    /*
     const historial = await pool.query('CALL db_editarStock($1,$2);', [id_producto], [stock]);
+    return historial;
+    */
+    console.log(id_producto + ' - service');
+    return id_producto; //
   } catch (error) {
-    console.error("Error al obtener el historial :", error);
-    throw new Error("Error al obtener el historial");
+    console.error("Error al editar el stock:", error);
+    throw new Error("Error service");
   }
 
 }
@@ -265,6 +273,7 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       // luego db_obtenerProductoPorId 
       try {
         const carrito = await pool.query('SELECT * FROM db_obtenerCarrito($1);',[idUsuario]);
+
       } catch (error) {
         console.error("Error al obtener el carrito");
         throw new Error("Error al obtener el carrito");
