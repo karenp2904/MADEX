@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const cors = require('cors');
 const path = require('path');
 const app = express();
 const PORT = 3000;
@@ -14,6 +15,7 @@ const Direccion = require('../ENTIDADES/direccion');
 const Usuario = require('../ENTIDADES/usuario'); 
 const carritoDeCompra = require('../ENTIDADES/carritoDeCompra'); 
 const Factura = require('../ENTIDADES/factura'); 
+const producto = require('../ENTIDADES/producto');
 const pdf = require('../ENTIDADES/pdf'); 
  //  instancia de la clase Inventario
 
@@ -26,9 +28,21 @@ app.use(express.urlencoded({ extended: false }));
 
 //seguridad de la app
 const helmet = require('helmet');
-const CarritoDeCompras = require('../ENTIDADES/carritoDeCompra');
-const producto = require('../ENTIDADES/producto');
+
 app.use(helmet());
+
+app.use(cors());
+
+// Configurar middleware para servir archivos estáticos
+app.use(express.static(path.join(__dirname, 'ruta/a/tu/carpeta/build')));
+
+// Middleware para permitir solicitudes CORS (si es necesario)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5174'); // Cambia a la URL de tu aplicación React
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Cambia a la URL de tu aplicación Reac
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
 
 
 // Iniciar el servidor
@@ -155,7 +169,7 @@ app.delete('/usuario/eliminar', async function(req, res) {
         console.log(id_usuario);
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
-        res.status(200).json({ success: true, message: 'Usuario eliminado correctamente', resultado });
+        res.status(200).json({ success: true, message: 'Usuario eliminado correctamente', usuario });
     } catch (error) {
         // Manejo de errores
         console.error('Error al eliminar usuario:', error);
@@ -183,10 +197,10 @@ app.post('/usuario/actualizar', async function(req, res) {
 
 app.post('/empresa/registro', async function(req, res) {
     try {
-        const { id_usuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
+        const { idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
     
         console.log(nombre);
-        const usuario = await controladorServer.s_añadirEmpresa(id_usuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+        const usuario = await controladorServer.s_añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
         // Enviar respuesta al cliente
         res.status(200).json({ success: true, usuario });
     } catch (error) {
@@ -227,9 +241,10 @@ app.get('/usuario/lista', async function(req, res) {
 app.post('/producto/agregar', async function(req, res) {
     try {
         const { nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria } = req.body;
+       
             
-        producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
-
+        const producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
+        console.log(producto);
         res.status(200).json(producto);
     } catch (error) {
         console.error('Error al añadir producto:', error);
@@ -805,9 +820,28 @@ app.post('/Alianza/solicitarCotizacion', async (req, res) => {
 
         await archivos.solicitudAlianza(cotizacion);
 
+        const respuesta = await archivos.guardarRespuesta();
+
+        // por cada cotizacion se actualiza el inventario
+        inventario = await archivos.actualizarInventario();
+        console.log(Array.isArray(inventario.productos)); // Debería devolver true si es un array
+
+        const inventarioArray = Array.from(inventario.productos);
+
+
+       // controladorServer.actualizarInventario(inventario);
+       //const inventarioArray = Object.values(inventario);
+        // Iterar sobre el inventario para actualizar solo el stock de cada producto
+        for (const producto of inventarioArray) {
+            await controladorServer.s_actualizarStockProducto(producto.id_producto, producto.stock);
+            console.log(producto.id_producto +' ->' +producto.stock);
+        }
+
+        // Devolver los resultados como respuesta
+        res.json(respuesta);
 
         // Enviar una respuesta al cliente
-        res.status(200).send('Cotización generada y guardada correctamente.');
+       // res.status(200).send('Cotización generada y guardada correctamente.');
     } catch (error) {
         // Manejar cualquier error que ocurra durante el proceso
         console.error('Error en la solicitud de cotización:', error);
@@ -859,7 +893,6 @@ app.post('/Alianza/actualizarInventario', async (req, res) => {
 });
 
 
-module.exports = app;
 
 //metodos que han funcionado pero los he renovado - posible copia
 
