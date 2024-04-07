@@ -174,7 +174,7 @@ async function db_añadirProducto(nombre, descripcion, precio, estado_producto, 
   }
 };
 
-//TODO actualizar producto
+//TODO actualizar producto: NO está listo
 async function db_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, 
                                       stock, descuento, idProveedor, idCategoria) {
     try {
