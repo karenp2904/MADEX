@@ -126,11 +126,20 @@ async function obtenerProductosConInventario(req, res) {
 //Rutas usuario
 app.post('/usuario/registro', async function(req, res) {
     try {
+<<<<<<< HEAD
         const {nombre_usuario, apellido_usuario, tipo_documento,idUsuario,telefono,correo, idRol,contraseña } = req.body;
         console.log('EN SERVER' + nombre_usuario+ apellido_usuario+ tipo_documento+idUsuario+telefono+correo+ idRol+contraseña);
         console.log(nombre_usuario);
         
         const usuario= await controladorServer.s_añadirUsuario( idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+=======
+        const {id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol} = req.body;
+    
+        console.log(nombre_usuario);
+        
+        const usuario= await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        
+>>>>>>> dbbfa7bf2ceb409a22a9e32ef1bcb77f98051127
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
         res.status(200).json(usuario);

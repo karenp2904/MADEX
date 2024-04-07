@@ -85,6 +85,7 @@ async function db_obtenerProductoPorId (id) {
 };
 
 
+<<<<<<< HEAD
 async function db_añadirUsuario(idUsuario, nombre, apellido, correo,contraseña, idRol,nitEmpresa,nombreEmpresa,razonSocial,cargo,rubro,tipo_documento, telefono ){
 
   //secuencia sql
@@ -102,23 +103,71 @@ async function db_añadirUsuario(idUsuario, nombre, apellido, correo,contraseña
     idRol
   };
   return user;
+=======
+async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
+                                    contraseña, tipo_documento, telefono, idRol){
+  try {
+    const newusuario = await pool.query(
+      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
+                                                            correo, contraseña, tipo_documento, telefono, idRol]);
+
+  } catch (error) {
+    console.error("Error al añadir usuario");
+    throw new Error("Error al añadir usuario");
+  }
+>>>>>>> dbbfa7bf2ceb409a22a9e32ef1bcb77f98051127
 }
 
 
 async function db_eliminarUsuario(idUsuario){
+<<<<<<< HEAD
   //secuencia sql
   
   //prueba
   const user ={idUsuario};
   return user;
+=======
+  try{
+    const usuario = await pool.query('CALL db_eliminarUsuario($1);', [idUsuario]);
+>>>>>>> dbbfa7bf2ceb409a22a9e32ef1bcb77f98051127
 
+  }catch(error){
+    console.error("No se pudo eliminar el usuario");
+    throw new Error("No se pudo eliminar el usuario");
+  }
 }
 
-async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol){
+//El id de usuario es una llave promaria, no se puede editar!!!
+async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
+                                      contraseña, tipo_documento, telefono, idRol){
+  try {
+    const usuario = await pool.query(
+      'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
+                                                            correo, contraseña, tipo_documento, telefono, idRol]);
 
+  } catch (error) {
+    console.error("Error al actualizar usuario");
+    throw new Error("Error al actualizar usuario");
+  }
 }
 
+<<<<<<< HEAD
 async function db_añadirEmpresa(idUsuario, nombre, apellido, correo,contraseña, idRol,nitEmpresa,nombreEmpresa,razonSocial,cargo,rubro,tipo_documento, telefono){
+=======
+async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo, 
+                                contraseña, tipo_documento, telefono, idRol, nitEmpresa, 
+                                nombreEmpresa, razonSocial, cargo, rubro){
+  try {
+      const usuario = await pool.query(
+        'CALL db_añadirEmpresa($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);',[id_usuario, nombre_usuario, apellido_usuario,
+                                                              correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa,
+                                                              nombreEmpresa, razonSocial, cargo, rubro]);
+
+    } catch (error) {
+      console.error("Error al actualizar usuario");
+      throw new Error("Error al actualizar usuario");
+    }
+>>>>>>> dbbfa7bf2ceb409a22a9e32ef1bcb77f98051127
 
 
 //prueba 
@@ -142,7 +191,13 @@ return empresa;
 
 
 async function db_obtenerUsuario(idUsuario){
-
+  try {
+    let usuario = await pool.query('SELECT * FROM db_obtenerUsuario($1)', [idUsuario]);
+    return usuario.rows;
+  } catch (error) {
+    console.error("Error al obtener usuario", error);
+    throw new Error("Error al obtener usuario");
+  }
 }
 
 async function db_obtenerTodosUsuarios(){
@@ -173,7 +228,6 @@ async function db_actualizarProducto(idProducto,nombre, descripcion, precio, est
     try {
         //ejecutar sql 
 
-        
         console.log(`Producto con ID ${idProducto} actualizado correctamente.`);
 
         return true; // Indica que la actualización fue exitosa
@@ -226,20 +280,50 @@ async function db_verificarClienteActivo(){
 
 async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
   // se manda el producto  con la cantidad que se desea
+  try {
+    const newProducto = await pool.query('CALL db_añadirProductosCarrito($1,$2,$3);', 
+    [idUsuario, idproducto, cantidad]);
+
+  } catch (error) {
+    console.error("Error al insertar el producto en el carrito de compras");
+    throw new Error("Error al insertar el producto en el carrito de compras");
+  }
   }
   
-  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
-  // se manda el idProducto  con la cantidad que se modifica
+  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){ 
+  // Busca según el idProducto del usuario y modifica la cantidad
+  try {
+    const resetProducto = await pool.query('CALL db_modificarCantidadProductoCarrito($1,$2,$3);', 
+    [idUsuario, idproducto, cantidad]);
+
+  } catch (error) {
+    console.error("Error al actualizar la cantidad del producto en el carrito de compras");
+    throw new Error("Error al actualizar la cantidad del producto en el carrito de compras");
+  }
   }
   
-  async function  db_eliminarProductoCarrito(idUsuario,idProducto){
-    // se manda el idproducto a eliminar
+  async function  db_eliminarProductoCarrito(idUsuario,idProducto){//TODO
+    // se manda el idproducto a eliminar del usuario
+    try {
+      const newProducto = await pool.query('CALL db_eliminarProductoCarrito($1,$2);', 
+      [idUsuario, idProducto]);
+  
+    } catch (error) {
+      console.error("Error al eliminar el producto del carrito de compras");
+      throw new Error("Error al eliminar el producto en del carrito de compras");
+    }
     }
     
   
-  async function  db_obtenerCarrito(idUsuario){
+  async function  db_obtenerCarrito(idUsuario){//TODO
       // obtener todos los id de producto y la cantidad
       // luego db_obtenerProductoPorId 
+      try {
+        const carrito = await pool.query('SELECT * FROM db_obtenerCarrito($1);',[idUsuario]);
+      } catch (error) {
+        console.error("Error al obtener el carrito");
+        throw new Error("Error al obtener el carrito");
+      }
   }
 
 async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ //TODO: VERIFICAR FUNCIONAMIENTO
