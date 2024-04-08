@@ -92,7 +92,7 @@ function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, ro
 
 
 
-async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra, filePath) {
+async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, filePath) {
     const pdfDoc = new PDFDocument();
     const pdfStream = fs.createWriteStream(filePath);
 
@@ -109,7 +109,7 @@ async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProduct
     const logoHeight = 150;
 
     // Insertar el logo de la empresa en la parte izquierda
-    const logoPath = './SERVIDOR/ENTIDADES/logo.png'; // Ruta al archivo de imagen del logo
+    const logoPath = './ENTIDADES/logo.png';
     pdfDoc.image(logoPath, logoX, logoY, { width: logoWidth, height: logoHeight });
 
     // Definir la posición y tamaño del área de texto para la información
@@ -213,19 +213,22 @@ async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProduct
     // Agregar tabla de productos
     
     pdfDoc.moveDown().fontSize(12);
-    const tableHeaders = ['ID Producto', 'Nombre', 'Cantidad', 'Precio'];
+    const tableHeaders = ['ID Producto', 'Nombre', 'Cantidad', 'Precio Unit', 'Total'];
     const tableRows = listaProductos.map(producto => {
         if (producto && producto.producto) {
+            const totalProducto = producto.cantidad * producto.producto.precio;
             return [
                 producto.producto.id_producto.toString(),
                 producto.producto.nombre.toString(),
                 producto.cantidad.toString(),
                 `$${producto.producto.precio.toFixed(2)}`,
+                `$${totalProducto.toFixed(2)}`, // Calcular y mostrar el total del producto
             ];
         } else {
             return ['Producto no definido', '', '', ''];
         }
     });
+    
 
     // Calcular el ancho total de la tabla
     const totalTableWidth = pdfDoc.page.width - pdfDoc.page.margins.left - pdfDoc.page.margins.right;
@@ -273,18 +276,14 @@ async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProduct
     // Dibujar el recuadro gris
     pdfDoc.rect(boxX, boxY, boxWidth, boxHeight).fill('#f2f2f2').stroke();
 
-    // Definir contenido de los totales
-    const subtotal = 200.00; // Ejemplo de subtotal
-    const descuento = 100; // Ejemplo de descuento
-    const iva = 20; // Ejemplo de IVA
-    const totalPagar = subtotal - descuento + iva;
+   
 
     // Escribir totales dentro del recuadro
     pdfDoc.font('Helvetica-Bold').fontSize(10).fillColor('#000');
     pdfDoc.text(`Subtotal: $${subtotal.toFixed(2)}`, boxX + 10, boxY + 10);
     pdfDoc.text(`Descuento: $${descuento.toFixed(2)}`, boxX + 10, boxY + 30);
     pdfDoc.text(`IVA: $${iva.toFixed(2)}`, boxX + 10, boxY + 50);
-    pdfDoc.text(`Total a Pagar: $${totalPagar.toFixed(2)}`, boxX + 10, boxY + 70);
+    pdfDoc.text(`Total a Pagar: $${totalCompra.toFixed(2)}`, boxX + 10, boxY + 70);
 
     pdfStream.on('finish', async () => {
         console.log('PDF generado exitosamente.');
@@ -325,10 +324,13 @@ async function guardarPDF(pdfBytes, filePath) {
 }
 
 
-async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra) {
+async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra) {
     try {
         // Generar el PDF y guardarlo en el sistema de archivos
-        await generarPDF(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra, 'factura.pdf');
+       
+        await generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, 'factura.pdf');
+        
+        
 
         // Leer el PDF guardado
         const pdfBytes = await fs.promises.readFile('factura.pdf');

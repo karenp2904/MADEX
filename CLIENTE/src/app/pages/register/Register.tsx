@@ -63,17 +63,19 @@ export const Register = () => {
                 },
                 body: JSON.stringify(formData)
             });
+        
             if (response.ok) {
-                console.log(response);
-                console.log('Registro exitoso');
-                Router.login;
+                const data = await response.json();
+                console.log('Registro exitoso:', data.message); // Muestra el mensaje del servidor
+                Router.login; // Redirige al usuario a la página de inicio de sesión
             } else {
-                console.error('Error en el registro:', response.statusText);
+                // Si la respuesta no es exitosa, muestra el mensaje de error del servidor
+                const errorMessage = await response.text();
+                console.error('Error en el registro:', errorMessage);
             }
         } catch (error) {
             console.error('Error en la solicitud de registro:', error);
         }
-    };
 
     const Input = ({ name, label, isPasswordInput = false, hasError = false }: { name?: string, label?: string, isPasswordInput?: boolean, hasError?: boolean }) => {        const [inputType, setInputType] = useState(isPasswordInput ? 'password' : 'text');
     
@@ -192,4 +194,4 @@ export const Register = () => {
     );
 };
 
-
+}
