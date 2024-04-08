@@ -294,7 +294,7 @@ async function añadirProducto(nombre, descripcion, precio, estado_producto, col
 
     const newProducto = await services.db_añadirProducto(nombre, descripcion, Number(precio), estado_producto, color, Number(stock), Number(descuento), Number(idProveedor), Number(idCategoria));
     // Envía una respuesta con el nuevo producto
-    return newProducto;
+    return {message: '¿producto añadido?' ,newProducto };
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir producto controlldb ', error.message);

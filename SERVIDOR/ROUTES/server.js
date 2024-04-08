@@ -246,7 +246,7 @@ app.post('/producto/agregar', async function(req, res) {
         const producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
         console.log(nombre + " " + descripcion );
 
-        res.status(200).json(producto);
+        res.status(200).json({success: true, message: 'Producto añadido correctamente', producto});
     } catch (error) {
         console.error('Error al añadir producto:', error);
         res.status(500).send('Error en el servidor');
