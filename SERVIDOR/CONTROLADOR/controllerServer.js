@@ -169,7 +169,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
         try {
 
             // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
-            const usuario = await controllerDB.añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+            const usuario = await controllerDB.añadirUsuario(id_usuario,nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
     
             const user = {
                 id_usuario,
@@ -195,9 +195,9 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     async function s_eliminarUsuario(idUsuario) {
         try {
             // Implementación para eliminar un usuario en la base de datos
-            await controllerDB.eliminarUsuario(idUsuario);
+            const user= await controllerDB.eliminarUsuario(idUsuario);
             console.log('en controllerServer');
-            return 'Usuario eliminado correctamente';
+            return user;
         } catch (error) {
             // Manejar cualquier error que ocurra durante el proceso de eliminación
             console.error('Error al eliminar usuario:', error);
@@ -219,10 +219,10 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     }
     
 
-    async function s_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro) {
+    async function s_añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro) {
         try {
             // añadir un empresa en la base de datos
-            const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+            const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
             console.log('en controllerServer');
             return empresa; 
         } catch (error) {
@@ -253,17 +253,23 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             if (!Array.isArray(listaUsuarios)) {
                 throw new Error('El servicio db_obtenerTodosLosProductos no devolvió una lista de productos.');
             }
-            // Mapea los productos para convertirlos en objetos "producto"
-            const usuarios = listaUsuarios.map( usuario => {
+
+            // Mapea los usuarios para convertirlos en objetos "usuario"
+            const usuarios = listaUsuarios.map(usuario => {
                 return {
                     id_usuario: usuario.id_usuario,
                     nombre_usuario: usuario.nombre_usuario,
                     apellido_usuario: usuario.apellido_usuario,
-                    correo : usuario.correo,
-                    tipo_documento : usuario.tipo_documento,
-                    contraseña : usuario.contraseña,
-                    telefono : usuario.telefono,
-                    idRol: usuario.idRol
+                    correo: usuario.correo,
+                    tipo_documento: usuario.tipo_documento,
+                    contraseña: usuario.contraseña,
+                    telefono: usuario.telefono,
+                    idRol: usuario.idRol,
+                    nitEmpresa: usuario.nitEmpresa,
+                    nombreEmpresa: usuario.nombreEmpresa,
+                    razonSocial: usuario.razonSocial,
+                    cargo: usuario.cargo,
+                    rubro: usuario.rubro
                 };
             });
     

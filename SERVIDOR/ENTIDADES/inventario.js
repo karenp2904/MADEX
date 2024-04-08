@@ -291,6 +291,7 @@ class Inventario {
             return producto.stock >= cantidad; //rertorna true si es mayor y false si es menor
         }
 
+
         // Método que descuenta el stock de cada producto
         descontarStock(idProducto, cantidad) {
             const producto = this.productos.find(producto => producto.id_producto === idProducto);
@@ -305,6 +306,36 @@ class Inventario {
             return true;
         }
 
+        descontarStockAdmin(permiso, idProducto, cantidad) {
+            const producto = this.productos.find(producto => producto.id_producto === idProducto);
+            if (!producto) {
+                throw new Error('El producto no se encuentra en el inventario.');
+            }
+            if (producto.stock < cantidad) {
+                if (permiso) {
+                    this.actualizarStockAdmin(idProducto, cantidad + 200);
+                } else {
+                    throw new Error('No hay suficiente stock disponible para realizar la operación.');
+                }
+            }
+        
+            // Actualizar el stock
+            producto.stock -= cantidad;
+        
+            // Verificar si el stock es negativo
+            if (producto.stock < 0) {
+                // Actualizar el stock agregando la cantidad necesaria para que sea no negativo
+                const cantidadAjuste = Math.abs(producto.stock);
+                this.actualizarStockAdmin(idProducto, cantidadAjuste+100);
+                console.log(`Stock ajustado para el producto con ID ${idProducto}. Nuevo stock: ${producto.stock}`);
+            } else {
+                console.log(`Stock descontado correctamente para el producto con ID ${idProducto}. Nuevo stock: ${producto.stock}`);
+            }
+        
+            return true;
+        }
+        
+
         
         eliminarProducto(idProducto) {
             this.productos = this.productos.filter(producto => producto.id_producto !== idProducto);
@@ -314,6 +345,7 @@ class Inventario {
             const producto = this.productos.find(p => p.id_producto === idProducto);
             if (producto) {
                     producto.stock = nuevaCantidad;
+                    console.log('SE HA RESTAURADO EL STOCK' + producto);
             }
         }
 

@@ -67,6 +67,7 @@ async function obtenerInventario() {
             });
     
             // Agregar los productos al inventario y actualizar la caché
+            inventario = new Inventario();
             productos.forEach(producto => inventario.agregarProducto(producto));
             productosCache = productos;
     
@@ -152,9 +153,17 @@ async function calcularCotizacion(){
 
 async function calcularCostoPresupuesto(archivoCotizacion) {
     try {
+        // Leer el archivo de productos de manera asíncrona
         const data = await fs.readFile(archivoCotizacion, 'utf8');
-        // Parsear el contenido del archivo a un objeto JSON
-        const cotizacion = JSON.parse(data);
+        const jsonData = JSON.parse(data);
+
+        // Verifica si hay productos en el archivo JSON
+        if (!jsonData || !jsonData.productos || !Array.isArray(jsonData.productos)) {
+            throw new Error('El archivo JSON no contiene una lista de productos válida.');
+        }
+
+        const cotizacion = jsonData.productos;
+
         // Verificar si cotizacion es un array antes de usar forEach
         if (Array.isArray(cotizacion)) {
             let costoTotal = 0;
@@ -175,7 +184,7 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
                     console.log(costoTotal);
                 }
                 // Descuenta el stock del producto
-                inventario.descontarStock(idProducto, cantidad);
+                inventario.descontarStockAdmin(true,idProducto, cantidad);
                 
             }
 
