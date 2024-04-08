@@ -235,10 +235,17 @@ async function db_logUsuarios(){
 
 }
 
+//Retorna un booleano
+async function db_verificarClienteActivo(idUsuario){
+  try {
+    const existe = await pool.query('CALL db_verificarClienteActivo($1);', [idUsuario]);
+    return existe;
 
-async function db_verificarClienteActivo(){
+  } catch (error) {
+    console.error("Error al verificar cliente activo");
+    throw new Error("Error al verificar cliente activo");
+  }
 } 
-
 
 
 async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
