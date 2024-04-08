@@ -202,7 +202,13 @@ async function db_eliminarProducto(idProducto){
 
 
 async function db_descontinuarProducto(idProducto,estado){
-    
+  try {
+    const producto = await pool.query('CALL db_descontinuarProducto($1,$2);', [id_producto], [estado]);
+
+  } catch (error) {
+    console.error("Error al descontinuar el producto", error);
+    throw new Error("Error service");
+  }
 }
 
 
