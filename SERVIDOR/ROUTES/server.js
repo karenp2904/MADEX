@@ -126,23 +126,16 @@ async function obtenerProductosConInventario(req, res) {
 //Rutas usuario
 app.post('/usuario/registro', async function(req, res) {
     try {
-<<<<<<< HEAD
-        const {nombre_usuario, apellido_usuario, tipo_documento,idUsuario,telefono,correo, idRol,contraseña } = req.body;
-        console.log('EN SERVER' + nombre_usuario+ apellido_usuario+ tipo_documento+idUsuario+telefono+correo+ idRol+contraseña);
-        console.log(nombre_usuario);
+
+        const {nombre_usuario, apellido_usuario, tipo_documento,idUsuario,telefono,correo, idRol,password } = req.body;
+        //console.log('EN SERVER' + nombre_usuario+ apellido_usuario+ tipo_documento+idUsuario+telefono+correo+ idRol+ password);
+        console.log('contraseña server' + password);
         
-        const usuario= await controladorServer.s_añadirUsuario( idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
-=======
-        const {id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol} = req.body;
-    
-        console.log(nombre_usuario);
-        
-        const usuario= await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
-        
->>>>>>> dbbfa7bf2ceb409a22a9e32ef1bcb77f98051127
+        const usuario= await controladorServer.s_añadirUsuario( idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol);
+
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
-        res.status(200).json(usuario);
+        res.status(200).json({message: 'Usuario agregado '+ usuario});
     } catch (error) {
         // Manejo de errores
         console.error('Error al al registro de usuario:', error);
@@ -187,11 +180,11 @@ app.delete('/usuario/eliminar', async function(req, res) {
 
 app.post('/usuario/actualizar', async function(req, res) {
     try {
-        const { id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol } = req.body;
+        const {nombre_usuario, apellido_usuario, tipo_documento,idUsuario,telefono,correo, idRol,password } = req.body;
     
         console.log(nombre_usuario);
 
-        const usuario= await controladorServer.s_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+        const usuario= await controladorServer.s_actualizarUsuario(idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol);
 
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
@@ -249,10 +242,10 @@ app.get('/usuario/lista', async function(req, res) {
 app.post('/producto/agregar', async function(req, res) {
     try {
         const { nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria } = req.body;
-       
-            
+        
         const producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
-        console.log(producto);
+        console.log(nombre + " " + descripcion );
+
         res.status(200).json(producto);
     } catch (error) {
         console.error('Error al añadir producto:', error);
@@ -738,11 +731,15 @@ app.get('/factura/generar', async (req, res) => {
         ];
         
         
-        const totalCompra = 500; 
+        // Definir contenido de los totales
+        const subtotal = 200.00; // Ejemplo de subtotal
+        const descuento = 100; // Ejemplo de descuento
+        const iva = 20; // Ejemplo de IVA
+        const totalCompra = subtotal - descuento + iva;
 
         
 
-        const pdfBytes = await pdf(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra);
+        const pdfBytes = await pdf(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
         res.send(pdfBytes);
