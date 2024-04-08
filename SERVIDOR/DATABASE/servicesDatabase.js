@@ -124,7 +124,7 @@ async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario
   }
 }
 
-//TODO ACTUALIZAR USUARIO EMPRESA
+
 async function db_actualizarUsuarioEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo,contraseña, tipo_documento, telefono, idRol, 
                                       nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
   try {
@@ -318,19 +318,23 @@ async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){
   }
 }
 
+
+//TODO db_añadirFactura
 async function db_añadirFactura(){
 
 }
 
-
+//TODO db_obtenerFactura
 async function db_obtenerFactura(idFactura){
 
 }
 
+//TODO db_guardarDireccionEnvio
 async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
 
 }
 
+//TODO db_obtenerDireccionPorUsuario
 async function db_obtenerDireccionPorUsuario(idUsuario) {
 
 }
