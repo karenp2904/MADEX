@@ -125,7 +125,18 @@ async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario
 }
 
 //TODO ACTUALIZAR USUARIO EMPRESA
+async function db_actualizarUsuarioEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo,contraseña, tipo_documento, telefono, idRol, 
+                                      nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
+  try {
+    const usuario = await pool.query(
+      'CALL db_actualizarUsuarioEmpresa($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);',[id_usuario, nombre_usuario, apellido_usuario,
+      correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro]);
 
+  } catch (error) {
+    console.error("Error al actualizar usuario");
+    throw new Error("Error al actualizar usuario");
+  }
+}
 
 async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, 
                                 nombreEmpresa, razonSocial, cargo, rubro){
