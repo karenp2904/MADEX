@@ -5,7 +5,7 @@
   "main": "ROUTES/server.js",
   "scripts": {
     "start:client": "cd ../CLIENTE && npm run dev",
-    "start:server": "cd ../SERVIDOR && node ROUTES/server.js",
+    "start:server": "cd ../SERVIDOR && nodemon ROUTES/server.js",
     "start": "concurrently \"npm run start:client\" \"npm run start:server\""
   },
   "devDependencies": {
