@@ -321,8 +321,18 @@ async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){
 
 
 //TODO db_añadirFactura
-async function db_añadirFactura(){
-
+//El id de la factura y la fecha se generan automáticamente
+//el idProducto es una lista
+async function db_añadirFactura(valor_total, idMetodoDePago, 
+                                idDireccion, idUsuario, idProducto){
+  try {
+    const factura = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', [valor_total], [idMetodoDePago],
+                                    [idDireccion], [idUsuario], [idProducto]); 
+    return true;
+  } catch (error) {
+    console.error("Error al añadir la factura", error);
+    throw new Error("Error al añadir la factura"+ error.message);
+  }
 }
 
 //TODO db_obtenerFactura
