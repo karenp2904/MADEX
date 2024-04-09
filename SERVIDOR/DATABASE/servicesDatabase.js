@@ -386,7 +386,15 @@ async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,de
 
 //TODO db_obtenerDireccionPorUsuario
 async function db_obtenerDireccionPorUsuario(idUsuario) {
+  try {
+    const direccion = await pool.query('SELECT * FROM db_obtenerDireccionPorUsuario($1);', [idUsuario]); 
 
+    return direccion.rows;
+
+  } catch (error) {
+    console.error("Error al obtener la dirección de envio", error);
+    throw new Error("Error al obtener la dirección de envio"+ error.message);
+  }
 }
 
 
