@@ -25,7 +25,7 @@ export const Register = () => {
         idUsuario: '',
         telefono: '',
         correo: '',
-        idRol: '2',
+        idRol: '1',
         contraseña: '',
         confirmar_contraseña: ''
     });

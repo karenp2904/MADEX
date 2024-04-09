@@ -133,7 +133,7 @@ function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, ro
 
 
 
-async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, qrContent,filePath) {
+async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra,filePath) {
     const pdfDoc = new PDFDocument();
     const pdfStream = fs.createWriteStream(filePath);
 
@@ -388,7 +388,7 @@ async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoP
         // Generar el PDF y guardarlo en el sistema de archivos
             
 
-            await generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra,qrContent, 'factura.pdf');
+            await generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, 'factura.pdf');
             const pdfBytes = await fs.promises.readFile('factura.pdf');
 
             //const contenidoPDF = pdfBytes.toString(); // Convierte los bytes del PDF a una cadena
