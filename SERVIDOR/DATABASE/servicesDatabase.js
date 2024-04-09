@@ -86,15 +86,15 @@ async function db_obtenerProductoPorId (id) {
 
 
 async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
-  contraseña, tipo_documento, telefono, idRol){
+  password, tipo_documento, telefono, idRol){
     try {
     const newusuario = await pool.query(
     'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
-                              correo, contraseña, tipo_documento, telefono, idRol]);
-
+                              correo, password, tipo_documento, telefono, idRol]);
+      return true;
     } catch (error) {
     console.error("Error al añadir usuario");
-    throw new Error("Error al añadir usuario");
+    throw new Error("Error al añadir usuario service"+ error.message);
 }
 }
 

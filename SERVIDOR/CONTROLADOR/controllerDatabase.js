@@ -114,14 +114,15 @@ async function obtenerProveedorId(id){
 
 
 // Función para añadir un usuario
-async function  añadirUsuario (id_usuario,nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol)  {
+async function  añadirUsuario (id_usuario,nombre_usuario, apellido_usuario, correo,  password, tipo_documento,telefono, idRol)  {
   try {
     // Cifra la contraseña
-    const passwordCifrada = await cifrarContraseña(contraseña);
+    const passwordCifrada = await cifrarContraseña(password);
 
     console.log('Contraseña cifrada:', passwordCifrada.length);
 
     console.log(id_usuario + ':', idRol);
+
     const user = {
       id_usuario,
       nombre_usuario,
@@ -294,7 +295,7 @@ async function añadirProducto(nombre, descripcion, precio, estado_producto, col
 
     const newProducto = await services.db_añadirProducto(nombre, descripcion, Number(precio), estado_producto, color, Number(stock), Number(descuento), Number(idProveedor), Number(idCategoria));
     // Envía una respuesta con el nuevo producto
-    return newProducto;
+    return {message: '¿producto añadido?' ,newProducto };
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al añadir producto controlldb ', error.message);
@@ -508,9 +509,9 @@ const bcrypt = require('bcrypt');
 async function cifrarContraseña(contraseña) {
   try {
       const hash = await bcrypt.hash(contraseña, 8); // Costo de hash: 8
-      const hashCortado = hash.slice(0, 40); // Cortar el hash a 40 caracteres
-      console.log(hashCortado);
-      return hashCortado;
+     // const hashCortado = hash.slice(0, 40); // Cortar el hash a 40 caracteres
+    
+      return hash;
   } catch (error) {
       throw new Error('Error al cifrar la contraseña');
   }
@@ -518,18 +519,22 @@ async function cifrarContraseña(contraseña) {
 
 
 
-
-// Método para comparar la contraseña proporcionada con la contraseña almacenada cifrada
 async function compararContraseña(contraseña, hashCifrada) {
   try {
-    const resultado = contraseña.localeCompare(hashCifrada, undefined, { sensitivity: 'accent' }) === 0;
+   
+
+    console.log('Contraseña :', contraseña);
+    console.log('Hash cifrado almacenado:', hashCifrada);
+
+    // Comparar los dos hashes resultantes
+    const resultado = await bcrypt.compare(contraseña, hashCifrada);
 
     console.log('Resultado de la comparación:', resultado);
 
-      return resultado;
-
+    return resultado;
   } catch (error) {
-      throw new Error('Error al comparar las contraseñas');
+    console.error('Error al comparar las contraseñas:', error);
+    throw new Error('Error al comparar las contraseñas');
   }
 }
 

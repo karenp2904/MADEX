@@ -131,7 +131,7 @@ app.post('/usuario/registro', async function(req, res) {
         //console.log('EN SERVER' + nombre_usuario+ apellido_usuario+ tipo_documento+idUsuario+telefono+correo+ idRol+ password);
         console.log('contraseña server' + password);
         
-        const usuario= await controladorServer.s_añadirUsuario( idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol);
+        const usuario= await controladorServer.s_añadirUsuario( idUsuario, nombre_usuario, apellido_usuario, correo,  password, tipo_documento,telefono, idRol);
 
         //const usuario = await controladorServer.s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
         // Enviar respuesta al cliente
@@ -149,10 +149,11 @@ app.post('/usuario/login', async function(req, res) {
     try {
         const {correo,contraseña} = req.body;
     
-        console.log(correo + "" + contraseña );
+        console.log(correo + " - " + contraseña );
         
         const usuario= await controladorServer.manejarInicioSesion(correo,contraseña);        // Enviar respuesta al cliente
-        res.send(usuario , correo , contraseña);
+        console.log(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
         // Manejo de errores
         console.error('Error al iniciar sesion usuario:', error);
@@ -246,7 +247,7 @@ app.post('/producto/agregar', async function(req, res) {
         const producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
         console.log(nombre + " " + descripcion );
 
-        res.status(200).json(producto);
+        res.status(200).json({success: true, message: 'Producto añadido correctamente', producto});
     } catch (error) {
         console.error('Error al añadir producto:', error);
         res.status(500).send('Error en el servidor');

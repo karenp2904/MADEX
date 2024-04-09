@@ -6,16 +6,15 @@ const CarritoDeCompras = require('../ENTIDADES/carritoDeCompra.js');
 
 async function manejarInicioSesion(correo, contraseña) {
     try {
-
         // Verificar las credenciales del usuario
-        const usuarioAutenticado = await s_verificarCredencialUsuario(correo, contraseña);
+        const resultadoAutenticacion = await s_verificarCredencialUsuario(correo, contraseña);
 
-        if(usuarioAutenticado === false || usuarioAutenticado === null) {
+        if (resultadoAutenticacion.success === false) {
             // Si las credenciales son incorrectas o el usuario no existe, devuelve un mensaje de error
-            return { success: false, message: 'Credenciales incorrectas' };
+            return { success: false, message: resultadoAutenticacion.message };
         } else {
             // Si las credenciales son correctas, devuelve un mensaje de éxito y el objeto del usuario autenticado
-            return { success: true, message: 'Inicio de sesión exitoso', usuario: usuarioAutenticado };
+            return { success: true, message: resultadoAutenticacion.message, usuario: resultadoAutenticacion.usuario };
         }
     } catch (error) {
         console.error('Error al manejar el inicio de sesión:', error);
@@ -26,33 +25,31 @@ async function manejarInicioSesion(correo, contraseña) {
 
 
 
-
-
 async function s_verificarCredencialUsuario(correo, contraseña) {
     try {
-        const usuarios = await controllerDB.obtenerTodosUsuarios();
+        const usuarios = await s_obtenerTodosUsuarios();
 
         // Encuentra el usuario con el correo proporcionado
         const usuario = usuarios.find(u => u.correo === correo);
         console.log('correo del login:' + usuario.correo);
         if (!usuario) {
-            return 'Credenciales incorrectas';
+            return { success: false, message: "Credenciales incorrectas" }; // Usuario no encontrado
         }
-        else{
-            console.log('coontraseña del login:' + usuario.contraseña);
+        else {
+            console.log('contraseña del login:' + usuario.contraseña);
             const contraseñaCorrecta = await controllerDB.compararContraseña(contraseña, usuario.contraseña);
-            console.log('Contraseña correctaaa:', contraseñaCorrecta);
-            
-            if (!contraseñaCorrecta|| contraseñaCorrecta==null) {
-                return 'Credenciales incorrectas';
-                }
-            else{
+            console.log('Contraseña correcta:', contraseñaCorrecta);
+
+            if (!contraseñaCorrecta || contraseñaCorrecta == null) {
+                return { success: false, message: "Credenciales incorrectas" }; // Contraseña incorrecta
+            }
+            else {
                 // Verificar el rol del usuario
                 s_comprobarRol(usuario);
 
-                return usuario;
+                return { success: true, message: "Inicio de sesión exitoso", usuario: usuario };
             }
-        }   
+        }
 
 
     } catch (error) {
@@ -60,6 +57,8 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
         throw new Error('Error al verificar las credenciales del usuario');
     }
 }
+
+
 
     async function s_comprobarRol(usuario) {
         try {
@@ -165,10 +164,10 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     
     
     
-    async function s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol) {
+    async function s_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo,  password,tipo_documento, telefono, idRol) {
         try {
             // Llama al método añadirUsuario de controllerDB y pasa los datos obtenidos
-            const usuario = await controllerDB.añadirUsuario(id_usuario,nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol);
+            const usuario = await controllerDB.añadirUsuario(id_usuario,nombre_usuario, apellido_usuario, correo,password,tipo_documento, telefono, idRol);
             
             console.log('en controllerServer');
             // Devuelve una respuesta JSON con el usuario añadido
