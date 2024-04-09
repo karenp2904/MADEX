@@ -341,21 +341,6 @@ async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, lista
    // pdfDoc.moveDown().fontSize(8);
    // pdfDoc.font('Helvetica-Bold').text('Teléfono de la Empresa:', empresaX, pdfDoc.y, { continued: true });
     pdfDoc.font('Helvetica').text(` TEL: 3105962547 \n`,empresaX, pdfDoc.y, { align: 'left' });
-
-    try {
-        // Generamos el código QR
-        const qrDataURL = await generarQR(qrContent, 'M', 0);
-
-        // Insertamos el código QR en el PDF
-        pdfDoc.image(qrDataURL, 400, 10, { width: 150 });
-
-        // Finalizamos el documento
-        pdfDoc.end();
-
-        console.log('Documento PDF con QR generado:', 'factura.pdf');
-    } catch (error) {
-        console.error('Error al generar el PDF con QR:', error);
-    }
    
     pdfDoc.end();
 
@@ -401,11 +386,10 @@ async function guardarPDF(pdfBytes, filePath) {
 async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra) {
     try {
         // Generar el PDF y guardarlo en el sistema de archivos
-            const qrContent = `HOLA`;
+            
 
             await generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra,qrContent, 'factura.pdf');
             const pdfBytes = await fs.promises.readFile('factura.pdf');
-            console.log(pdfBytes);
 
             //const contenidoPDF = pdfBytes.toString(); // Convierte los bytes del PDF a una cadena
 
@@ -419,7 +403,7 @@ async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoP
 
             
     
-
+            return pdfBytes;
         // Enviar el correo electrónico con el PDF adjunto
        // await enviarCorreo(usuario, pdfBytes);
     } catch (error) {
