@@ -2,58 +2,282 @@
   "productos": [
     {
       "id_producto": 1,
-      "nombre": "Mesa de madera",
-      "descripcion": "Mesa de comedor hecha de madera de roble resistente",
-      "precio": 299.99,
-      "color": "Marr¢n",
-      "stock": 20,
-      "descuento": 15,
-      "proveedor": "Proveedor A",
-      "categoria": "Pisos"
+      "nombre": "Estante entretenimiento",
+      "descripcion": "Con su organización inteligente y su aspecto elegante, el centro de entretenimiento para TV \"Cler\" es la elección perfecta para aquellos que buscan mejorar su experiencia de entretenimiento en casa. Haz de tus noches de cine en casa una experiencia inolvidable con este impresionante mueble.",
+      "precio": "490.000",
+      "color": "Marrón",
+      "stock": 50,
+      "descuento": 15
     },
     {
       "id_producto": 2,
-      "nombre": "Silla de madera",
-      "descripcion": "Silla de madera maciza con respaldo alto",
-      "precio": 79.99,
-      "color": "Marr¢n",
+      "nombre": "Repisa Flotante Indi",
+      "descripcion": "Construida con materiales de alta calidad, la repisa \"Indi\" ofrece durabilidad y resistencia, asegurando que tus objetos decorativos estén seguros y bien exhibidos. Su diseño flotante crea la ilusión de espacio y ligereza, perfecto para espacios pequeños o para dar un toque minimalista a cualquier ambiente.",
+      "precio": "310.000",
+      "color": "Marrón",
       "stock": 50,
-      "descuento": 15,
-      "proveedor": "Proveedor A",
-      "categoria": "Pisos"
+      "descuento": 15
     },
     {
       "id_producto": 3,
-      "nombre": "Estante de madera",
-      "descripcion": "Estante de pared con varios niveles de almacenamiento",
-      "precio": 149.99,
-      "color": "Marr¢n",
-      "stock": 30,
-      "descuento": 15,
-      "proveedor": "Proveedor A",
-      "categoria": "Pisos"
+      "nombre": "Mesita",
+      "descripcion": "mesa de comedor",
+      "precio": "22.000",
+      "color": "Blanco",
+      "stock": 34,
+      "descuento": 15
     },
     {
       "id_producto": 4,
-      "nombre": "Cama de madera",
-      "descripcion": "Cama doble de madera de pino con cabecero y pie de cama",
-      "precio": 349.99,
-      "color": "Marr¢n",
-      "stock": 10,
-      "descuento": 15,
-      "proveedor": "Proveedor A",
-      "categoria": "Techos"
+      "nombre": "Casa de madera para gato",
+      "descripcion": "La Casa de Madera para Gato presenta un diseño elegante y moderno, construido con madera de alta calidad para garantizar durabilidad y resistencia. Elevada sobre patas, esta casa proporciona a tu gato una sensación de seguridad y comodidad, además de protegerlo del frío y la humedad del suelo.",
+      "precio": "370.000",
+      "color": "Marrón",
+      "stock": 50,
+      "descuento": 15
     },
     {
       "id_producto": 5,
-      "nombre": "Banqueta de madera",
-      "descripcion": "Banqueta de madera maciza con asiento acolchado",
-      "precio": 59.99,
-      "color": "Marr¢n",
-      "stock": 20,
-      "descuento": 15,
-      "proveedor": "Proveedor A",
-      "categoria": "Techos"
+      "nombre": "Taburete",
+      "descripcion": "silla comedor",
+      "precio": "89.000",
+      "color": "negro",
+      "stock": 65,
+      "descuento": 15
+    },
+    {
+      "id_producto": 6,
+      "nombre": "Biblioteca Asher",
+      "descripcion": "Construida con materiales de alta calidad, la biblioteca \"Ascher\" garantiza durabilidad y resistencia para soportar el peso de tus pertenencias durante años. Su combinación de colores beige y blanco añade un toque de frescura y luminosidad a tu ambiente, mientras que su diseño contemporáneo se integra fácilmente en cualquier estilo de decoración",
+      "precio": "450.000",
+      "color": "Negro/Blanco/Beige",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 7,
+      "nombre": "Cama semi doble",
+      "descripcion": "La cama semi doble es la elección perfecta para maximizar el espacio en habitaciones más pequeñas o para uso individual en dormitorios, habitaciones de invitados o apartamentos. Con dimensiones ligeramente más pequeñas que una cama doble estándar, esta cama ofrece comodidad y funcionalidad sin ocupar demasiado espacio en la habitación.",
+      "precio": "600.000",
+      "color": "Negro",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 8,
+      "nombre": "Camarote",
+      "descripcion": "¡Dale un toque de estilo único y funcionalidad a la habitación de tus niños con nuestro camarote flamenco de madera en color cobre! Este impresionante mueble no solo ofrece un lugar acogedor para dormir, sino que también añade un toque de elegancia y diversión al ambiente.",
+      "precio": "1200.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 9,
+      "nombre": "Cama doble",
+      "descripcion": "¡¡Experimenta la elegancia y la comodidad con nuestra cama doble de madera! Diseñada meticulosamente para brindar un equilibrio perfecto entre estilo y funcionalidad, esta cama será el punto focal de tu dormitorio. Fabricada con madera de alta calidad, esta cama ofrece una robustez excepcional y una durabilidad garantizada. Su diseño atemporal se adapta a una amplia gama de estilos de decoración, desde lo clásico hasta lo contemporáneo, agregando un toque de calidez natural a cualquier espacio.",
+      "precio": "800.000",
+      "color": "Negro/Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 11,
+      "nombre": "Mueble Lavadero",
+      "descripcion": "Facilita tus tareas de lavandería con el elegante y funcional mueble lavadero en cocoa y chocolate. Este mueble combina estilo y practicidad en un diseño moderno que transformará tu espacio de lavandería. Las dos puertas batientes ofrecen un fácil acceso al interior del mueble, donde encontrarás espacio de almacenamiento para detergentes, suavizantes, y otros productos de limpieza. Además, las patas metálicas proporcionan una base sólida y estable para el mueble, elevándolo del suelo para facilitar la limpieza debajo.",
+      "precio": "390.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 12,
+      "nombre": "Repisa Frello",
+      "descripcion": "Construida con materiales de alta calidad, la repisa \"Frello\" ofrece durabilidad y resistencia para sostener tus objetos decorativos, libros, plantas u otros elementos con seguridad. Su diseño simple y contemporáneo presenta cuatro espacios abiertos, proporcionando amplio espacio de almacenamiento para exhibir tus artículos favoritos de manera ordenada y accesible.",
+      "precio": "250.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 13,
+      "nombre": "Escritorio en L",
+      "descripcion": "Construido con materiales de alta calidad, el escritorio en L Tiny es resistente y duradero, asegurando un soporte estable para tu computadora, impresora, documentos y otros accesorios de oficina. Su diseño en forma de L te permite aprovechar las esquinas de la habitación, optimizando el espacio disponible sin comprometer el estilo ni la funcionalidad. Además, el diseño en L ofrece dos áreas separadas de trabajo, lo que te permite organizar tus tareas de manera eficiente y mantener tu espacio de trabajo ordenado y libre de desorden. Ya sea que necesites espacio adicional para escribir, estudiar o trabajar en proyectos creativos, el escritorio en L Tiny te brinda la versatilidad que necesitas para ser productivo.",
+      "precio": "370.000",
+      "color": "Marron/Negro",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 14,
+      "nombre": "Combo para Sala Inti",
+      "descripcion": "Construido con materiales de alta calidad, el escritorio en L Tiny es resistente y duradero, asegurando un soporte estable para tu computadora, impresora, documentos y otros accesCombo para sala inti, incluye mesa para tv, biblioteca cubo, mesa auxiliar y mesa de centro. La mesa para TV proporciona un soporte estable y elegante para tu televisor, mientras que sus estantes abiertos ofrecen espacio adicional para dispositivos multimedia y accesorios de entretenimiento. La mesa auxiliar es el complemento perfecto para colocar al lado de tu sofá o sillón, proporcionando un lugar conveniente para colocar bebidas, aperitivos o controles remotos.",
+      "precio": "1700.000",
+      "color": "Negro/Blanco",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 15,
+      "nombre": "Armario Bariloche",
+      "descripcion": "Maximiza el espacio de almacenamiento en tu hogar con el closet \"Bariloche Bombay\". Este impresionante mueble combina funcionalidad y estilo en un diseño elegante que se adapta a cualquier decoración interior.",
+      "precio": "1000.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 16,
+      "nombre": "Armario Saga",
+      "descripcion": "Optimiza el espacio de almacenamiento en tu hogar con el armario \"Saga\" de 180 cm. Este armario espacioso y elegante es la solución perfecta para mantener tus prendas y accesorios organizados y fácilmente accesibles. Construido con materiales de alta calidad, el armario \"Saga\" ofrece durabilidad y resistencia para soportar el uso diario. Sus puertas correderas maximizan el espacio disponible en la habitación, ideal para habitaciones con dimensiones limitadas.",
+      "precio": "900.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 17,
+      "nombre": "Armario Star ",
+      "descripcion": "Construido con materiales de alta calidad, el armario \"Star\" garantiza durabilidad y resistencia a lo largo del tiempo. Sus puertas correderas permiten un fácil acceso al interior del armario sin ocupar espacio adicional en la habitación. En su interior, encontrarás compartimentos y estantes bien distribuidos que te ayudarán a organizar tus prendas y accesorios de manera eficiente. Además, su tamaño compacto lo hace ideal para habitaciones pequeñas o espacios donde se requiere maximizar el almacenamiento.",
+      "precio": "300.000",
+      "color": "Marron/Negro",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 18,
+      "nombre": "Sillas clásicas ",
+      "descripcion": "Construidas con materiales de alta calidad, las sillas \"Concept X4\" garantizan durabilidad y resistencia para soportar el uso diario. Su diseño clásico presenta un cómodo espaldar que brinda un apoyo ergonómico, permitiéndote disfrutar de largas horas en la mesa sin sacrificar la comodidad.",
+      "precio": "600.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 19,
+      "nombre": "Comedor Volder",
+      "descripcion": "La mesa, con su amplia superficie en color wengué, ofrece un espacio generoso para disfrutar de tus comidas en familia o para celebrar reuniones con amigos. Su diseño moderno y minimalista se adapta fácilmente a una variedad de estilos de decoración, añadiendo un toque de elegancia a tu comedor.",
+      "precio": "350.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 20,
+      "nombre": "Mesas de noche Tuto",
+      "descripcion": "La mesa de noche cuenta con un amplio espacio de almacenamiento en su superficie superior y en su cajón deslizable, proporcionando un lugar conveniente para guardar tus libros, dispositivos electrónicos, gafas u otros objetos personales cerca de tu cama.",
+      "precio": "100.000",
+      "color": "Negro",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 21,
+      "nombre": "Mesas para TV ",
+      "descripcion": "La mesa para TV \"Túnez\" cuenta con un diseño espacioso que ofrece amplio espacio de almacenamiento para tus dispositivos electrónicos, accesorios y colecciones multimedia. Sus estantes abiertos son ideales para colocar reproductores de DVD, consolas de videojuegos o decoraciones, mientras que sus puertas correderas ocultan de forma elegante los elementos que prefieras mantener fuera de la vista.",
+      "precio": "200.000",
+      "color": "Negro",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 22,
+      "nombre": "Gabinete superior Ursa",
+      "descripcion": "Construido con materiales de alta calidad, el gabinete \"Ursa\" garantiza durabilidad y resistencia para resistir el uso diario en un entorno de cocina ocupado. Su diseño moderno presenta una combinación de colores blanco y cobre que agrega un toque de elegancia y sofisticación a tu espacio.",
+      "precio": "480.000",
+      "color": "Negro",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 23,
+      "nombre": "Chimeneas",
+      "descripcion": "Construida con madera de caoba de alta calidad, esta chimenea presenta detalles intrincados y adornos elaborados que son característicos del estilo victoriano. Desde molduras decorativas hasta tallas ornamentales, cada detalle está diseñado para reflejar la opulencia y el lujo de la época victoriana. a sea como pieza central en una sala de estar formal o como un punto de reunión acogedor en una biblioteca o estudio, una chimenea de madera de caoba de estilo victoriano agrega un toque de elegancia y calidez a cualquier espacio. Es el complemento perfecto para crear una atmósfera acogedora y lujosa en tu hogar.",
+      "precio": "460.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 24,
+      "nombre": "Bar esquinero",
+      "descripcion": "Construido con materiales de alta calidad, el bar garantiza durabilidad y resistencia para resistir el uso diario. Su acabado en blanco nevado añade un toque de luminosidad y frescura a tu espacio, mientras que su diseño compacto maximiza el almacenamiento disponible. La puerta abatible del bar revela un amplio espacio interior para almacenar botellas de licor, copas y otros accesorios de bar. Además, los dos cajones ofrecen espacio adicional para guardar utensilios de bar y otros elementos esenciales.",
+      "precio": "710.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 25,
+      "nombre": "Comedor azalea",
+      "descripcion": " La mesa, con su acabado en wengué, ofrece un punto focal impresionante para tus comidas familiares o reuniones con amigos. Su diseño rectangular proporciona un amplio espacio para servir y disfrutar de tus platos favoritos con comodidad. Cuatro sillas negras complementan perfectamente la mesa, ofreciendo asientos cómodos y elegantes para tus invitados. Tapizadas en un elegante tono negro, estas sillas añaden un toque de contraste al conjunto, mientras que su diseño ergonómico garantiza comodidad durante las largas horas de las comidas",
+      "precio": "1550.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 26,
+      "nombre": "Cama Sencilla",
+      "descripcion": "El tendido de tablones incluido proporciona un sólido soporte para tu colchón, asegurando una base estable y confortable para tus noches de sueño. Además, su diseño sencillo y moderno se adapta fácilmente a una variedad de estilos de decoración, desde lo contemporáneo hasta lo tradicional.",
+      "precio": "700.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 27,
+      "nombre": "Asiento Oslo",
+      "descripcion": "El asiento acolchado de la silla \"Oslo\" proporciona una experiencia de asiento cómoda y ergonómica, ideal para largas conversaciones en la mesa o para relajarse después de una larga jornada. Su tapizado en un atractivo color gris agrega un toque de sofisticación y versatilidad a cualquier espacio.",
+      "precio": "200.000",
+      "color": "Negro",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 28,
+      "nombre": "Muebles tocador",
+      "descripcion": "El mueble tocador ofrece un amplio espacio para ubicar tu colección de maquillaje, desde bases y sombras de ojos hasta brochas y lápices labiales. Sus cajones y compartimentos te permiten organizar tus productos de belleza de manera ordenada y accesible, facilitando tu rutina de maquillaje diaria.",
+      "precio": "620.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 29,
+      "nombre": "Armarios Multiusosr",
+      "descripcion": "Este versátil mueble combina estilo y organización en un diseño moderno que se adapta a tus necesidades diarias. Las cuatro puertas abatibles ofrecen acceso fácil a tu ropa, manteniéndola protegida del polvo y la luz. Además, los cuatro cajones multiusos proporcionan espacio adicional para guardar objetos pequeños, como accesorios, ropa interior o documentos importantes.",
+      "precio": "1200.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 30,
+      "nombre": "Mesa Auxiliar Aureli",
+      "descripcion": "Añade un toque de elegancia y funcionalidad a la entrada de tu hogar con la mesa auxiliar \"Aureli\" en miel y blanco. Este encantador mueble combina estilo y practicidad en un diseño moderno que será el complemento perfecto para tu recibidor.",
+      "precio": "460.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 31,
+      "nombre": "Oragnizador Bajo Baño",
+      "descripcion": "Construido con materiales de alta calidad y diseñado pensando en la funcionalidad, el organizador bajo de baño Tallin ofrece una forma conveniente de almacenar tus productos de cuidado personal, toallas, papel higiénico y otros elementos esenciales del baño. Su diseño compacto y estilizado permite colocarlo fácilmente debajo del lavamanos o en cualquier rincón del baño, aprovechando al máximo cada centímetro de espacio disponible.",
+      "precio": "150.000",
+      "color": "Negro/Marron",
+      "stock": 50,
+      "descuento": 15
+    },
+    {
+      "id_producto": 32,
+      "nombre": "Comoda",
+      "descripcion": "Construidas con materiales de alta calidad, las sillas \"Concept X2\" garantizan durabilidad y resistencia para soportar el uso diario. Su cómodo espaldar proporciona un excelente soporte lumbar, permitiéndote disfrutar de largas horas en la mesa sin sacrificar la comodidad.",
+      "precio": "160.000",
+      "color": "Marron",
+      "stock": 50,
+      "descuento": 15
     }
   ]
 }

@@ -131,11 +131,11 @@ async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, c
         'CALL db_añadirEmpresa($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);',[id_usuario, nombre_usuario, apellido_usuario,
         correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro]);
 
-      return usuario;
+      return true;
 
     } catch (error) {
       console.error("Error al actualizar usuario");
-      throw new Error("Error al actualizar usuario"+ error.message);
+      throw new Error("Error al actualizar usuario "+ error.message);
     }
   }
 
@@ -201,18 +201,15 @@ async function db_descontinuarProducto(idProducto,estado){
 
 
 /*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
-async function db_editarStock(id_producto, stock){ //TODO VERIFICAR
-    try {
-      const historial = await pool.query('CALL db_editarStock($1,$2);', [id_producto], [stock]);
-      console.log(id_producto + ' - service');
-      return historial;
-      
-      return id_producto; //
-    } catch (error) {
-      console.error("Error al editar el stock:", error);
-      throw new Error("Error service"+ error.message);
-    }
-
+async function db_editarStock(id_producto, stock) {
+  try {
+      const historial = await pool.query('CALL db_editarStock($1, $2);', [id_producto, stock]);
+      // console.log(id_producto + ' - service');
+      return true;
+  } catch (error) {
+      console.error("Error al editar el stock:", error.message); 
+      throw new Error("Error service" + error.message);
+  }
 }
 
 
@@ -236,7 +233,7 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
     try {
       const newProducto = await pool.query('CALL db_añadirProductosCarrito($1,$2,$3);', 
       [idUsuario, idproducto, cantidad]);
-
+      return true;
     } catch (error) {
       console.error("Error al insertar el producto en el carrito de compras");
       throw new Error("Error service "+ error.message);
@@ -248,7 +245,7 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
     try {
       const resetProducto = await pool.query('CALL db_modificarCantidadProductoCarrito($1,$2,$3);', 
       [idUsuario, idproducto, cantidad]);
-
+      return true;
     } catch (error) {
       console.error("Error al actualizar la cantidad del producto en el carrito de compras");
       throw new Error("Error al actualizar service "+ error.message); 
@@ -260,6 +257,7 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       try {
         const newProducto = await pool.query('CALL db_eliminarProductoCarrito($1,$2);', 
         [idUsuario, idProducto]);
+        return true;
     
       } catch (error) {
         console.error("Error al eliminar el producto del carrito de compras");
@@ -273,7 +271,7 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       // luego db_obtenerProductoPorId 
       try {
         const carrito = await pool.query('SELECT * FROM db_obtenerCarrito($1);',[idUsuario]);
-
+        return carrito.rows;
       } catch (error) {
         console.error("Error al obtener el carrito");
         throw new Error("Error al obtener el carrito service"+ error.message);

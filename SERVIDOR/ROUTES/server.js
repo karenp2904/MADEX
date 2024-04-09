@@ -202,7 +202,7 @@ app.post('/empresa/registro', async function(req, res) {
         const { idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
     
         console.log(nombre);
-        const usuario = await controladorServer.s_añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+        const usuario = await controladorServer.s_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
         // Enviar respuesta al cliente
         res.status(200).json({ success: true, usuario });
     } catch (error) {
@@ -283,6 +283,7 @@ app.post('/producto/descontinuar', async function(req, res) {
 app.post('/producto/actualizarStock', async function(req, res) {
     try {
         const { idProducto, nuevoStock} = req.body; 
+        console.log(idProducto, nuevoStock);
         const producto = await controladorServer.s_actualizarStockProducto(idProducto, nuevoStock);
         // Devuelve el usuario encontrado en formato JSON
         res.status(201).json({producto });
@@ -322,9 +323,9 @@ app.post('/producto/actualizar', async function(req, res) {
 
 
 
-app.get('/usuario/historialCompra/:id', async function(req, res) {
+app.get('/usuario/historialCompra', async function(req, res) {
     try {
-        const id_usuario = req.params.id; // Suponiendo que el ID del usuario está en los parámetros de la solicitud
+        const { id_usuario} = req.body; 
         const lista = await controladorServer.s_obtenerHistorialCompra(id_usuario);
         res.json(lista);
     } catch (error) {
@@ -369,11 +370,11 @@ app.get('/producto/catalogo', async function(req, res) {
 });
 
 // verifica la cantidad de unidades de stock
-app.get('/producto/verificarStock/:idProducto/:cantidad', async function(req, res) {
+app.get('/producto/verificarStock', async function(req, res) {
     try {
+
+        const { idProducto, cantidad} = req.body; 
         // Obtener los parámetros de la solicitud (ID del producto y cantidad)
-        const idProducto = parseInt(req.params.idProducto);
-        const cantidad = parseInt(req.params.cantidad);
 
 
         console.log(idProducto + " | "+cantidad);
@@ -412,17 +413,15 @@ app.get('/buscar-producto/:nombre', async (req, res) => {
     }
 });
 
-app.get('/filtrarCategoria/:categoria', async (req, res) => {
-    const categoriaAbuscar = req.params.categoria;
-    console.log('Categoría a buscar:', categoriaAbuscar);
-
+app.get('/filtrarCategoria', async (req, res) => {
     try {
-        inventario = await obtenerProductosConInventario(req, res);
-        const lista = await inventario.productosPorCategoria(categoriaAbuscar);
+        const { categoria } = req.body; // Obtener la categoría de los parámetros de consulta
 
-        const listaId= await inventario.buscarProductosPorCategoria(categoriaAbuscar);
-
-        console.log('Lista de productos:', lista);
+        console.log('Categoría a buscar:', categoria);
+        const inventario = await obtenerProductosConInventario(req, res);
+        
+        // Filtrar productos por categoría
+        const listaId = await inventario.buscarProductosPorCategoria(categoria);
 
         console.log('Lista de productos:', listaId);
 
@@ -433,6 +432,7 @@ app.get('/filtrarCategoria/:categoria', async (req, res) => {
         res.status(500).send('Error en la búsqueda del producto');
     }
 });
+
 
 app.get('/producto/filtrarColor/:color', async (req, res) => {
     const color = req.params.color;
@@ -496,9 +496,9 @@ app.post('/carrito/agregar', async (req, res) => {
         const { idUsuario,idproducto, cantidad } = req.body;
 
         // Llamar al controlador para agregar el producto al carrito con la cantidad especificada
-        await controladorServer.añadirProductoCarritoCompras(idUsuario,idproducto, cantidad);
+        const carrito=await controladorServer.añadirProductoCarritoCompras(idUsuario,idproducto, cantidad);
 
-        res.status(201).json('Producto agregado al carrito');
+        res.status(201).json(carrito);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error en agregar producto al carrito:', error);
@@ -512,8 +512,8 @@ app.post('/carrito/agregar', async (req, res) => {
 app.put('/carrito/modificarCantidad',async (req, res) => {
     try {
         const { idUsuario,idproducto, cantidad } = req.body;
-        controladorServer.modificarCantidadProductoCarritoCompras( idUsuario,idproducto, cantidad);
-        res.status(201).json('Cantidad de producto en el carrito modificada');
+        const accion= await controladorServer.modificarCantidadProductoCarritoCompras( idUsuario,idproducto, cantidad);
+        res.status(201).json('Cantidad de producto en el carrito modificada' + accion);
       //  res.send('Cantidad de producto en el carrito modificada');
     } catch (error) {
         console.error('Error al modificar la cantidad del producto en el carrito:', error);
@@ -530,10 +530,10 @@ app.get('/carrito/contenido', async (req, res) => {
         let contenidoCarrito = new carritoDeCompra();
         contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
 
-        const subtotal= contenidoCarrito.calcularTotal();
+       // const subtotal= contenidoCarrito.calcularTotal();
 
         // Enviar el contenido del carrito como respuesta
-        res.json({carritoCompras:contenidoCarrito , subtotal:subtotal});
+        res.json({carritoCompras:contenidoCarrito , subtotal:100});
     } catch (error) {
         console.error('Error al obtener el contenido del carrito de compras:', error);
         res.status(500).send('Error en el servidor');
@@ -547,12 +547,12 @@ app.delete('/carrito/eliminar', async (req, res) => {
     try {
         const { idUsuario,idProducto } = req.body;
 
-        controladorServer.eliminarProductoCarritoCompras(idUsuario,idProducto);
+        const eliminado = await controladorServer.eliminarProductoCarritoCompras(idUsuario,idProducto);
 
-        res.status(201).json(`Producto con ID ${idproducto} eliminado del carrito`);
+        res.status(201).json(`Producto con ID  ${idProducto} eliminado del carrito ` + eliminado);
     } catch (error) {
         // Manejar cualquier error que ocurra durante el proceso
-        console.error('Error al eliminar producto:', error);
+        console.error('Error al eliminar producto: ', error);
         res.status(500).send('Error en el servidor');
     }
 });

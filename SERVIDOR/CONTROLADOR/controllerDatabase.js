@@ -24,7 +24,7 @@ async function obtenerTodosLosProductos() {
 
     console.log('Productos:', productosCompletos);
 
-    return productosCompletos;
+    return allProductos;
   } catch (error) {
     // Propaga el error para que sea manejado por la función que llama a obtenerTodosLosProductos
     throw error;
@@ -56,11 +56,11 @@ async function obtenerProductoDatos(producto) {
       id_producto: producto.id_producto || '',
       nombre: producto.nombre || '',
       descripcion: producto.descripcion || '',
-      precio: producto.precio || 0,
+      precio:parseFloat(producto.precio)  || '',
       estado_producto: producto.estado_producto || '',
       color: producto.color || '',
       stock: producto.stock || 0,
-      descuento: producto.descuento || '',
+      descuento: parseFloat(producto.descuento) || '',
       idProveedor: producto.Proveedores_id_Proveedores || '',
       //  proveedor: proveedor || '',
       idCategoria: producto.categoria_idcategoria || '',
@@ -191,11 +191,8 @@ async function añadirEmpresa(idUsuario, nombre, apellido, correo, password, tip
     //  para añadir el empresa
     const empresa= await services.db_añadirEmpresa(Number(idUsuario), nombre, apellido, correo,  passwordCifrada, tipo_documento, telefono, Number(idRol), nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
     console.log('Empresa añadido correctamente' );
-     // Cifra la contraseña
-    const contraseñaCifrada = await cifrarContraseña(contraseña);
-    console.log('Contraseña cifrada:', contraseñaCifrada.length);
 
-    return true;
+    return {message: 'Empresa'};
     //  respuesta de éxito
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
@@ -367,8 +364,8 @@ async function editarStock(id_producto, stock){
     // Llama al servicio para actualizar el producto
     const producto= await services.db_editarStock( Number(id_producto),  Number(stock));
     // Envía una respuesta de éxito
-    console.log('Producto actualizado correctamente '+producto );
-    return producto;
+    console.log('Producto actualizado correctamente ControllerDatabase' );
+    return {message: 'Producto actualizado'};
   } catch (error) {
     // Manejar cualquier error y enviar una respuesta de error al cliente
     console.error('Error al actualizar el producto:', error.message);
@@ -407,7 +404,7 @@ async function modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
 // se manda el idProducto  con la cantidad que se modifica
   try{
     const carrito= await services.db_modificarCantidadProductoCarrito( Number(idUsuario), Number(idproducto),  Number(cantidad));
-    return { message: 'Producto modificado correctamente' };
+    return { message: 'Producto modificado correctamente' , carrito};
   }catch (error) {
     console.error('Error al modficar producto Carrito:', error.message);
   }
@@ -428,19 +425,31 @@ async function obtenerCarrito(idUsuario){
   try{
     // paso 1: obtener los id de producto y la cantidad
     const carrito= await services.db_obtenerCarrito( Number(idUsuario));
-     //paso 2: buscar al producto por el id
+    //paso 2: buscar al producto por el id
+    const productosEnCarrito = [];
 
-     //paso 3: recolectar la info del producto
-  /* 
-  const productosCompletosPromises = allProductos.map(producto =>
-      obtenerProductoDatos(producto)
-    );
-
-    // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
-    const productosCompletos = await Promise.all(productosCompletosPromises);
-  */
+      for (const item of carrito) {
+          const idProducto = item.id_producto;
+          const cantidad = item.cantidad;
+    //paso 3: recolectar la info del producto
+          // Busca el producto en la lista de productos por su ID
+          const productoEncontrado = await services.db_obtenerProductoPorId(idProducto);
+      
+          if (productoEncontrado) {
+              // Añade el producto encontrado al arreglo de productos en el carrito
+              productosEnCarrito.push({
+                  producto: productoEncontrado,
+                  cantidad: cantidad
+              });
+          } else {
+              console.error(`El producto con ID ${idProducto} no fue encontrado.`);
+          }
+      }
+      
+      console.log('Productos en el carrito:', productosEnCarrito);
+      
   //paso 4: enviar todo
-    return carrito;
+    return productosEnCarrito;
   }catch (error) {
     console.error('Error al añadir producto:', error.message);
   }
