@@ -360,7 +360,6 @@ async function db_añadirFactura(valor_total, idMetodoDePago,
   }
 }
 
-//TODO db_obtenerFactura
 async function db_obtenerFactura(idFactura){
   try {
     const factura = await pool.query('SELECT * FROM db_obtenerFactura($1);', [idFactura]); 
@@ -372,9 +371,17 @@ async function db_obtenerFactura(idFactura){
   }
 }
 
-//TODO db_guardarDireccionEnvio
 async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
+  try {
+    const direccion = await pool.query('CALL db_guardarDireccionEnvio($1,$2,$3,$4,$5,$6,$7);', [ID_Usuario],
+    [Calle], [Ciudad], [Codigo_Postal], [departamento], [barrio], [descripcion]); 
 
+    return direccion.rows;
+
+  } catch (error) {
+    console.error("Error al guardar la dirección de envio", error);
+    throw new Error("Error al guardar la dirección de envio"+ error.message);
+  }
 }
 
 //TODO db_obtenerDireccionPorUsuario
