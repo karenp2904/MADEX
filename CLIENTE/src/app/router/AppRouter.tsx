@@ -18,7 +18,7 @@ const AppRoutes: FC = () => {
       <Routes>
         <Route element={<Layout1 />}>
           <Route path={Router.login} element={<Login />} />
-          <Route path={Router.register} element={<Register />} />
+          <Route path={Router.register} element={<Register/>} />
           <Route path={Router.registeEmpresa} element={<RegisterEmpresa />} />
 
           <Route path="*" element={<Navigate to={Router.login} />} />
