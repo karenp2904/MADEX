@@ -362,7 +362,14 @@ async function db_añadirFactura(valor_total, idMetodoDePago,
 
 //TODO db_obtenerFactura
 async function db_obtenerFactura(idFactura){
-  
+  try {
+    const factura = await pool.query('SELECT * FROM db_obtenerFactura($1);', [idFactura]); 
+    return factura.rows;
+
+  } catch (error) {
+    console.error("Error al añadir la factura", error);
+    throw new Error("Error al añadir la factura"+ error.message);
+  }
 }
 
 //TODO db_guardarDireccionEnvio
