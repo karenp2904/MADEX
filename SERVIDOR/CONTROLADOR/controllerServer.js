@@ -101,11 +101,11 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
                     id_producto: producto.id_producto,
                     nombre: producto.nombre,
                     descripcion: producto.descripcion,
-                    precio: parseFloat(producto.precio),
+                    precio:(producto.precio),
                     estado: producto.estado_producto,
                     color: producto.color,
-                    stock: parseInt(producto.stock),
-                    descuento: parseFloat(producto.descuento),
+                    stock: parseFloat(producto.stock),
+                    descuento: (producto.descuento),
                     idProveedor: producto.idProveedor,
                     //proveedor: producto.proveedor,
                     idCategoria: producto.idCategoria,
@@ -210,7 +210,8 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     async function s_añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro) {
         try {
             // añadir un empresa en la base de datos
-            const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+            const empresa =await controllerDB.añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, 
+                nombreEmpresa, razonSocial, cargo, rubro);
             console.log('en controllerServer');
             return empresa; 
         } catch (error) {

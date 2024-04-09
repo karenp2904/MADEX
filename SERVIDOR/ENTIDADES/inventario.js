@@ -249,10 +249,30 @@ class Inventario {
         }
 
         buscarProductosPorCategoria(categoria) {
-            const productosEncontrados = this.productos.filter(p => p.idCategoria.toLowerCase() === categoria.toLowerCase());
-            return productosEncontrados.length ? productosEncontrados : null;
+            // Verifica si categoria es un número válido
+            if (!isNaN(categoria)) {
+                // Filtra los productos por categoría
+                const productosEncontrados = this.productos.filter(producto => {
+                    // Convierte idCategoria a número y compara
+                    return producto.idCategoria === parseInt(categoria);
+                });
+        
+                // Verifica si se encontraron productos
+                if (productosEncontrados.length > 0) {
+                    return productosEncontrados;
+                } else {
+                    // No se encontraron productos en la categoría especificada
+                    console.log(`No se encontraron productos en la categoría ${categoria}`);
+                    return null;
+                }
+            } else {
+                // La categoría proporcionada no es un número válido
+                console.log(`La categoría ${categoria} no es un número válido`);
+                return null;
+            }
         }
-
+        
+        
         productosPorColor (color){
             return new Promise((resolve, reject) => {
                 
