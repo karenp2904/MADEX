@@ -297,7 +297,7 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
         console.error("Error al eliminar el producto del carrito de compras");
         throw new Error("Error al eliminar el producto en del carrito de compras service"+ error.message);
       }
-
+  }
     
   
   async function  db_obtenerCarrito(idUsuario){
@@ -334,7 +334,7 @@ async function db_obtenerFactura(idFactura){
 }
 
 //TODO db_guardarDireccionEnvio
-async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
+async function db_guardarDireccionEnvio(idUsuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
 
 }
 

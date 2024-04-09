@@ -284,9 +284,9 @@ app.post('/producto/actualizarStock', async function(req, res) {
     try {
         const { idProducto, nuevoStock} = req.body; 
         console.log(idProducto, nuevoStock);
-        const producto = await controladorServer.s_actualizarStockProducto(idProducto, nuevoStock);
+        const respuesta = await controladorServer.s_actualizarStockProducto(idProducto, nuevoStock);
         // Devuelve el usuario encontrado en formato JSON
-        res.status(201).json({producto });
+        res.status(201).json({respuesta });
     } catch (error) {
         console.error('Error al buscar Usuario por ID:', error);
         res.status(500).send('Error en el servidor');
@@ -451,18 +451,31 @@ app.get('/producto/filtrarColor/:color', async (req, res) => {
     }
 });
 
-
-app.get('/producto/Imagenes/:nombre', async (req, res) => {
-    const nombre = req.params.nombre; 
-
+app.get('/producto/CatalogoImagenes', async (req, res) => {
     try {
-        // Realizar la búsqueda del producto en el inventario
-        inventario =  await obtenerProductosConInventario(req, res);
-        console.log(nombre);
-        const lista = await inventario.obtenerRutasbase64(nombre);
+        // Realizar la búsqueda del inventario de productos
+        inventario = await obtenerProductosConInventario(req, res);
+        
+        // Crear un arreglo para almacenar todas las imágenes de productos
+        const listaTotal = [];
 
-        // Devolver los resultados como respuesta
-        res.json(lista);
+        // Iterar sobre cada producto en el inventario
+        for (const producto of inventario.productos) {
+            // Obtener el nombre del producto
+            const nombreProducto = producto.nombre;
+
+            // Obtener la lista de imágenes base64 para el producto actual
+            const listaImagenes = await inventario.obtenerUnaImagenbase64(nombreProducto);
+
+            // Agregar la lista de imágenes al arreglo total
+            listaTotal.push({
+                producto: nombreProducto,
+                imagenes: listaImagenes
+            });
+        }
+
+        // Devolver el arreglo total de imágenes para todos los productos en el inventario
+        res.json(listaTotal);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error en la búsqueda de la ruta:', error);
@@ -471,14 +484,17 @@ app.get('/producto/Imagenes/:nombre', async (req, res) => {
 });
 
 
+
+
 app.get('/producto/rutas/:nombre', async (req, res) => {
-    const nombre = req.params.nombre; 
+   
 
     try {
+        const nombre = req.params.nombre; 
         // Realizar la búsqueda del producto en el inventario
         inventario =  await obtenerProductosConInventario(req, res);
         console.log(nombre);
-        const lista = await inventario.obtenerRutasImagenesPorNombreProducto(nombre);
+        const lista = await inventario.obtenerRutasbase64(nombre);
 
         // Devolver los resultados como respuesta
         res.json(lista);

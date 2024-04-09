@@ -40,11 +40,11 @@ async function obtenerProductoDatos(producto) {
       return null;
     }
   
-    console.log(producto.categoria_idcategoria + " c");
+   // console.log(producto.categoria_idcategoria + " c");
     const descripcionCategoria = await services.db_obtenerCategoriaPorId( Number(producto.categoria_idcategoria));
     const categoria = descripcionCategoria ? descripcionCategoria.nombre : '' ;
 
-    console.log(producto.proveedores_id_proveedores + " p");
+   // console.log(producto.proveedores_id_proveedores + " p");
     let nombreProveedor = await services.db_obtenerNombreProveedorPorId( Number(producto.proveedores_id_proveedores));
     const proveedor = nombreProveedor ? nombreProveedor.nombreempresa : '';
     
@@ -359,13 +359,13 @@ async function actualizarTodosProductos(productos) {
 
 
 
-async function editarStock(id_producto, stock){
+async function editarStock(idProducto, nuevoStock){
   try {
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_editarStock( Number(id_producto),  Number(stock));
+    const producto= await services.db_editarStock(parseInt(idProducto), parseInt(nuevoStock));
     // Envía una respuesta de éxito
     console.log('Producto actualizado correctamente ControllerDatabase' );
-    return {message: 'Producto actualizado'};
+    return {message: 'Producto actualizado ' + producto};
   } catch (error) {
     // Manejar cualquier error y enviar una respuesta de error al cliente
     console.error('Error al actualizar el producto:', error.message);
@@ -453,11 +453,6 @@ async function obtenerCarrito(idUsuario){
   }catch (error) {
     console.error('Error al añadir producto:', error.message);
   }
-
-  
-
-  
-
 }
 
 async function obtenerHistorialDeCompra(idUsuario){
