@@ -11,7 +11,7 @@ const pool = new Pool({
     port: 5432 ,// Reemplaza este número con el puerto en el que PostgreSQL está escuchando, por lo general es 5432
     ssl: {
         rejectUnauthorized: false // Configuración necesaria para la conexión SSL en Azure
-      }
+    }
 });
 
 

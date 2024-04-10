@@ -1,22 +1,63 @@
 const nodemailer = require('nodemailer');
-const QRCode = require('qrcode-generator');
+const QRCode = require('qrcode');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
 
 
-async function generarQR(contenidoPDF, nivelCorreccion, tipoNumero) {
+async function generarQR(contenidoQR, nivelCorreccion, tipoNumero) {
     try {
-        const qr = QRCode(0, tipoNumero);
-        qr.addData(contenidoPDF);
-        qr.make();
-        const qrDataURL = qr.createDataURL(nivelCorreccion);
+        const qrDataURL = await QRCode.toDataURL(contenidoQR, { errorCorrectionLevel: nivelCorreccion, type: tipoNumero });
         return qrDataURL;
     } catch (error) {
         console.error('Error al generar el código QR:', error);
         throw error;
     }
 }
+
+async function generarPDFConQR(contenidoPDF, qrContent, nombreArchivo) {
+    const doc = new Document();
+
+    // Creamos el stream de escritura del PDF
+    const stream = fs.createWriteStream(nombreArchivo);
+    doc.pipe(stream);
+
+    // Insertamos el contenido del PDF
+    try {
+        // Generamos el código QR
+        const qrDataURL = await generarQR(qrContent, 'M', 0);
+
+        // Insertamos el código QR en el PDF
+        doc.image(qrDataURL, 400, 10, { width: 150 });
+
+        // Finalizamos el documento
+        doc.end();
+
+        console.log('Documento PDF con QR generado:', nombreArchivo);
+    } catch (error) {
+        console.error('Error al generar el PDF con QR:', error);
+    }
+}
+
+async function generarQRyPDFRandom() {
+    try {
+        // Lee el contenido del archivo PDF
+        const contenidoPDF = 'contenido';
+
+
+        // Contenido aleatorio para el código QR
+        const contenidoQR = 'Contenido del código QR aleatorio';
+
+        // Nombre del archivo PDF
+        const nombreArchivo = 'factura.pdf';
+
+        // Genera el PDF con QR
+        await generarPDFConQR(contenidoPDF, contenidoQR, nombreArchivo);
+    } catch (error) {
+        console.error('Error al leer el archivo PDF:', error);
+    }
+}
+
 
 
 // Configuración del transporte para enviar correos
@@ -92,7 +133,7 @@ function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, ro
 
 
 
-async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra, filePath) {
+async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra,filePath) {
     const pdfDoc = new PDFDocument();
     const pdfStream = fs.createWriteStream(filePath);
 
@@ -109,7 +150,7 @@ async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProduct
     const logoHeight = 150;
 
     // Insertar el logo de la empresa en la parte izquierda
-    const logoPath = './SERVIDOR/ENTIDADES/logo.png'; // Ruta al archivo de imagen del logo
+    const logoPath = './ENTIDADES/logo.png';
     pdfDoc.image(logoPath, logoX, logoY, { width: logoWidth, height: logoHeight });
 
     // Definir la posición y tamaño del área de texto para la información
@@ -212,20 +253,23 @@ async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProduct
 
     // Agregar tabla de productos
     
-    pdfDoc.moveDown().fontSize(12);
-    const tableHeaders = ['ID Producto', 'Nombre', 'Cantidad', 'Precio'];
+    pdfDoc.moveDown().fontSize(10);
+    const tableHeaders = ['ID Producto', 'Nombre', 'Cantidad', 'Precio Unitario', 'Total'];
     const tableRows = listaProductos.map(producto => {
         if (producto && producto.producto) {
+            const totalProducto = producto.cantidad * producto.producto.precio;
             return [
                 producto.producto.id_producto.toString(),
                 producto.producto.nombre.toString(),
                 producto.cantidad.toString(),
                 `$${producto.producto.precio.toFixed(2)}`,
+                `$${totalProducto.toFixed(2)}`, // Calcular y mostrar el total del producto
             ];
         } else {
             return ['Producto no definido', '', '', ''];
         }
     });
+    
 
     // Calcular el ancho total de la tabla
     const totalTableWidth = pdfDoc.page.width - pdfDoc.page.margins.left - pdfDoc.page.margins.right;
@@ -273,31 +317,41 @@ async function generarPDF(idFactura,usuario, direccion, metodoPago, listaProduct
     // Dibujar el recuadro gris
     pdfDoc.rect(boxX, boxY, boxWidth, boxHeight).fill('#f2f2f2').stroke();
 
-    // Definir contenido de los totales
-    const subtotal = 200.00; // Ejemplo de subtotal
-    const descuento = 100; // Ejemplo de descuento
-    const iva = 20; // Ejemplo de IVA
-    const totalPagar = subtotal - descuento + iva;
+   
 
     // Escribir totales dentro del recuadro
     pdfDoc.font('Helvetica-Bold').fontSize(10).fillColor('#000');
     pdfDoc.text(`Subtotal: $${subtotal.toFixed(2)}`, boxX + 10, boxY + 10);
     pdfDoc.text(`Descuento: $${descuento.toFixed(2)}`, boxX + 10, boxY + 30);
     pdfDoc.text(`IVA: $${iva.toFixed(2)}`, boxX + 10, boxY + 50);
-    pdfDoc.text(`Total a Pagar: $${totalPagar.toFixed(2)}`, boxX + 10, boxY + 70);
+    pdfDoc.text(`Total a Pagar: $${totalCompra.toFixed(2)}`, boxX + 10, boxY + 70);
 
-    pdfStream.on('finish', async () => {
-        console.log('PDF generado exitosamente.');
-    });
+
+    // Definir posición de la información de la empresa
+    const empresaX = boxX - boxWidth - 100; // Ajusta la posición según sea necesario
+    const empresaY = boxY;
+
+    // Escribir información de la empresa
+    pdfDoc.moveDown().fontSize(8);
+   // pdfDoc.font('Helvetica-Bold').text('Nombre de la Empresa:', empresaX, empresaY+10, { continued: true });
+    pdfDoc.font('Helvetica').text(` MADEX - Estructuras y Materiales \n`, empresaX, empresaY+10, { align: 'left' });
+    //pdfDoc.moveDown().fontSize(8);
+   // pdfDoc.font('Helvetica-Bold').text('Dirección de la Empresa:', empresaX, pdfDoc.y, { continued: true });
+    pdfDoc.font('Helvetica').text(`Carrera 33 # 48-38,\nBucaramanga, Santander, Colombia \n`,empresaX, pdfDoc.y,  { align: 'left' });
+   // pdfDoc.moveDown().fontSize(8);
+   // pdfDoc.font('Helvetica-Bold').text('Teléfono de la Empresa:', empresaX, pdfDoc.y, { continued: true });
+    pdfDoc.font('Helvetica').text(` TEL: 3105962547 \n`,empresaX, pdfDoc.y, { align: 'left' });
+   
+    pdfDoc.end();
+
     
-
-// Finalizar el documento PDF
-pdfDoc.end();
+    // Devolver la cadena de datos del PDF
 
     return new Promise((resolve, reject) => {
         pdfStream.on('finish', () => {
             console.log('PDF generado exitosamente');
             resolve();
+            
         });
         pdfStream.on('error', (error) => {
             console.error('Error al generar el PDF:', error);
@@ -305,7 +359,11 @@ pdfDoc.end();
         });
     });
     
+    
 }
+
+
+
 
 
 
@@ -325,14 +383,27 @@ async function guardarPDF(pdfBytes, filePath) {
 }
 
 
-async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra) {
+async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra) {
     try {
         // Generar el PDF y guardarlo en el sistema de archivos
-        await generarPDF(idFactura,usuario, direccion, metodoPago, listaProductos, totalCompra, 'factura.pdf');
+            
 
-        // Leer el PDF guardado
-        const pdfBytes = await fs.promises.readFile('factura.pdf');
+            await generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, 'factura.pdf');
+            const pdfBytes = await fs.promises.readFile('factura.pdf');
 
+            //const contenidoPDF = pdfBytes.toString(); // Convierte los bytes del PDF a una cadena
+
+            // Definir el contenido del código QR
+    
+            // Genera el nuevo PDF con el contenido del archivo PDF y el código QR
+           // await generarPDFConQR('contenidoPDF', contenidoQR, 'prueba.pdf');
+
+            // Genera el PDF con QR
+           // await generarPDFConQR(contenidoPDF, contenidoQR, 'factura.pdf');
+
+            
+    
+            return pdfBytes;
         // Enviar el correo electrónico con el PDF adjunto
        // await enviarCorreo(usuario, pdfBytes);
     } catch (error) {

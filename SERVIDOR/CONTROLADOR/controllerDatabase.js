@@ -24,7 +24,7 @@ async function obtenerTodosLosProductos() {
 
     console.log('Productos:', productosCompletos);
 
-    return productosCompletos;
+    return allProductos;
   } catch (error) {
     // Propaga el error para que sea manejado por la función que llama a obtenerTodosLosProductos
     throw error;
@@ -41,11 +41,11 @@ async function obtenerProductoDatos(producto) {
     }
   
     console.log(producto.categoria_idcategoria + " c");
-    const descripcionCategoria = await services.db_obtenerCategoriaPorId(producto.categoria_idcategoria);
+    const descripcionCategoria = await services.db_obtenerCategoriaPorId( Number(producto.categoria_idcategoria));
     const categoria = descripcionCategoria ? descripcionCategoria.nombre : '' ;
 
     console.log(producto.proveedores_id_proveedores + " p");
-    let nombreProveedor = await services.db_obtenerNombreProveedorPorId(producto.proveedores_id_proveedores);
+    let nombreProveedor = await services.db_obtenerNombreProveedorPorId( Number(producto.proveedores_id_proveedores));
     const proveedor = nombreProveedor ? nombreProveedor.nombreempresa : '';
     
 
@@ -56,11 +56,11 @@ async function obtenerProductoDatos(producto) {
       id_producto: producto.id_producto || '',
       nombre: producto.nombre || '',
       descripcion: producto.descripcion || '',
-      precio: producto.precio || 0,
+      precio:parseFloat(producto.precio)  || '',
       estado_producto: producto.estado_producto || '',
       color: producto.color || '',
       stock: producto.stock || 0,
-      descuento: producto.descuento || '',
+      descuento: parseFloat(producto.descuento) || '',
       idProveedor: producto.Proveedores_id_Proveedores || '',
       //  proveedor: proveedor || '',
       idCategoria: producto.categoria_idcategoria || '',
@@ -82,7 +82,7 @@ async function obtenerProductoDatos(producto) {
 
 async function obtenerProductoPorId(id){
   try {
-    let producto = await services.db_obtenerProductoPorId(id); //buscaporid
+    let producto = await services.db_obtenerProductoPorId( Number(id)); //buscaporid
     return producto;
   } catch (error) {
     console.error(error.message);
@@ -92,7 +92,7 @@ async function obtenerProductoPorId(id){
 
 async function obtenerCategoriaID(id){
   try {
-    let categoria = await services.db_obtenerCategoriaPorId(id); //buscaporid
+    let categoria = await services.db_obtenerCategoriaPorId( Number(id)); //buscaporid
     console.log('Categoria');
     return categoria;
   } catch (error) {
@@ -103,7 +103,7 @@ async function obtenerCategoriaID(id){
 
 async function obtenerProveedorId(id){
   try {
-    let proveedor = await services.db_obtenerNombreProveedorPorId(id); //buscaporid
+    let proveedor = await services.db_obtenerNombreProveedorPorId( Number(id)); //buscaporid
     return proveedor;
   } catch (error) {
     console.error(error.message);
@@ -114,22 +114,35 @@ async function obtenerProveedorId(id){
 
 
 // Función para añadir un usuario
-async function  añadirUsuario (id_usuario,nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol)  {
+async function  añadirUsuario (id_usuario,nombre_usuario, apellido_usuario, correo,  password, tipo_documento,telefono, idRol)  {
   try {
-    //  para añadir el usuario
-    const añadido= await services.db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
-      contraseña, tipo_documento, telefono, idRol);
-    console.log('en controllerdb')
+    // Cifra la contraseña
+    const passwordCifrada = await cifrarContraseña(password);
 
-     // Cifra la contraseña
-      const contraseñaCifrada = await cifrarContraseña(contraseña);
-      console.log('Contraseña cifrada:', contraseñaCifrada);
+    console.log('Contraseña cifrada:', passwordCifrada.length);
 
-    console.log('usuario añadido correctamente' );
-    return añadido;
+    console.log(id_usuario + ':', idRol);
+
+    const user = {
+      id_usuario,
+      nombre_usuario,
+      apellido_usuario,
+      correo,
+      tipo_documento,
+      contraseña: passwordCifrada, // Utiliza la contraseña cifrada aquí
+      telefono,
+      idRol
+    };
+    console.log(user);
+
+    // Añade el usuario
+    const añadido = await services.db_añadirUsuario(parseInt(id_usuario), nombre_usuario, apellido_usuario, correo,  passwordCifrada, tipo_documento,telefono, parseInt(idRol));
+    console.log('Usuario añadido correctamente');
+
+    return true;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
-    console.error('Error al añadir usuario:', error.message);
+    console.error('Error al añadir usuario ControllerDb: ', error.message);
   }
 }
 
@@ -139,10 +152,10 @@ async function  añadirUsuario (id_usuario,nombre_usuario, apellido_usuario, cor
 async function  eliminarUsuario (idUsuario)  {
   try {
     // Llama al servicio para eliminar el usuario
-    const usuario=await services.db_eliminarUsuario(idUsuario);
+    const usuario=await services.db_eliminarUsuario( Number(idUsuario));
     console.log('usuario eliminado correctamente' );
     // Envía una respuesta de éxito
-    return usuario;
+    return true;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al eliminar usuario:', error.message);
@@ -153,29 +166,33 @@ async function  eliminarUsuario (idUsuario)  {
 // Función para actualizar un usuario
 async function actualizarUsuario(idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol) {
   try {
+     // Cifra la contraseña
+    const passwordCifrada = await cifrarContraseña(contraseña);
+
+    console.log('Contraseña cifrada:', passwordCifrada.length);
     // Llama al servicio para actualizar el usuario
-    const usuario= await services.db_actualizarUsuario(idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, contraseña, telefono, idRol);
+    const usuario= await services.db_actualizarUsuario( Number(idUsuario), nombre_usuario, apellido_usuario, correo,  passwordCifrada,tipo_documento, telefono,  Number(idRol));
     console.log('usuario actualizado correctamente' );
     // Envía una respuesta de éxito
     return usuario;
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
-    console.error('Error al actualizar usuario:', error.message);
+    console.error('Error al actualizar usuario: ', error.message);
   }
 }
 
 
-async function añadirEmpresa(idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
+async function añadirEmpresa(idUsuario, nombre, apellido, correo, password, tipo_documento, telefono, idRol, nitEmpresa, 
+  nombreEmpresa, razonSocial, cargo, rubro){
   try {
+    const passwordCifrada = await cifrarContraseña(password);
 
+    console.log('Contraseña cifrada:', passwordCifrada.length);
     //  para añadir el empresa
-    const empresa= await services.db_añadirEmpresa(idUsuario, nombre, apellido, correo,  contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+    const empresa= await services.db_añadirEmpresa(Number(idUsuario), nombre, apellido, correo,  passwordCifrada, tipo_documento, telefono, Number(idRol), nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
     console.log('Empresa añadido correctamente' );
-     // Cifra la contraseña
-    const contraseñaCifrada = await cifrarContraseña(contraseña);
-    console.log('Contraseña cifrada:', contraseñaCifrada);
 
-    return empresa;
+    return {message: 'Empresa'};
     //  respuesta de éxito
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
@@ -196,53 +213,38 @@ async function obtenerUsuario(idUsuario){
 
 async function obtenerTodosUsuarios(){
   try {
-    
-    // Consulta el servicio de los usuaios
-    let allUsers = await services.db_obtenerTodosUsuarios();
-    
-    // Verifica si se obtuvieron productos
+    // Consulta el servicio de los usuarios
+    const allUsers = await services.db_obtenerTodosUsuarios();
+
+    // Verifica si se obtuvieron usuarios
     if (!Array.isArray(allUsers)) {
       throw new Error('El servicio db_obtenerTodosUsuarios no devolvió una lista de usuarios.');
     }
-    /*
-    
-      // Simulamos la obtención de usuarios de una base de datos o de algún otro origen de datos
-      const allUsers = [
-        {
-            id_usuario: "1000",
-            nombre_usuario: "Karen",
-            apellido_usuario: "Perez",
-            correo: "karen@gmail.com",
-            tipo_documento: "DNI",
-            contraseña: "contraseña123",
-            telefono: "123456789",
-            idRol: 2
-        },
-        {
-            id_usuario: "2",
-            nombre_usuario: "Otro",
-            apellido_usuario: "Usuario",
-            correo: "otro@gmail.com",
-            tipo_documento: "Cédula",
-            contraseña: "otro",
-            telefono: "987654321",
-            idRol: 1
-        },
-        // Puedes agregar más usuarios si lo deseas
-    ];
-    const contraseñaCifrada = await cifrarContraseña('otro');
-    const contraseñaCifrada2 = await cifrarContraseña('contraseña123');
-          // Simulamos un retardo para simular una operación asíncrona
-          await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      */
 
-    return allUsers;
+    // Mapear los datos de usuario para asegurar que tengan los campos necesarios
+   // Mapear los datos de usuario para asegurar que tengan los campos necesarios
+   const usuarios = allUsers.map(usuario => ({
+    id_usuario: usuario.id_usuario || '',
+    nombre_usuario: usuario.nombre || '',
+    apellido_usuario: usuario.apellido|| '',
+    correo: usuario.correo_electronico || '',
+    tipo_documento: usuario.tipo_documento || '', // Se corrigió aquí
+    contraseña: usuario.contrasena || '', // Se corrigió aquí
+    telefono: usuario.telefono || '',
+    idRol: usuario.idRol || 0,
+    nitEmpresa: usuario.nitEmpresa || '',
+    nombreEmpresa: usuario.nombre_Empresa || '',
+    razonSocial: usuario.razon_social,
+    cargo: usuario.cargo || '',
+    rubro: usuario.rubro || ''
+  }));
+    return usuarios;
   } catch (error) {
-    // Propaga el error para que sea manejado por la función que llama a obtenerTodosLosProductos
+    // Propaga el error para que sea manejado por la función que llama a obtenerTodosUsuarios
     throw error;
   }
 }
+
 
 async function obtenerDatosUsuario(){
 // se agrega el rol al toda la informacion del usuario
@@ -284,22 +286,22 @@ async function obtenerCategoria(idCategoria) {
   }
 }
 
-async function añadirProducto(producto) {
+async function añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria) {
   try {
     // Llama al servicio para añadir el producto a la base de datos
 
-    const newProducto = await services.db_añadirProducto(producto.nombre, producto.descripcion, producto.precio, producto.estado_producto, producto.color, producto.stock, producto.descuento, producto.idProveedor, producto.idCategoria);
+    const newProducto = await services.db_añadirProducto(nombre, descripcion, Number(precio), estado_producto, color, Number(stock), Number(descuento), Number(idProveedor), Number(idCategoria));
     // Envía una respuesta con el nuevo producto
-    return newProducto;
+    return {message: '¿producto añadido?' ,newProducto };
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
-    console.error('Error al añadir producto:', error.message);
+    console.error('Error al añadir producto controlldb ', error.message);
   }
 };
 
 async function eliminarProducto(idProducto){
   try {
-    const producto=await services.db_eliminarProducto(idProducto);
+    const producto=await services.db_eliminarProducto( Number(idProducto));
     // Envía una respuesta de éxito
     consologe.log('Producto eliminado correctamente '+ producto);
     return producto;
@@ -314,7 +316,7 @@ async function descontinuarProducto(idProducto){
     // Obtiene el ID del producto y los nuevos datos del cuerpo de la solicitud
 
     const estado= "descontinuado";
-    const producto= await services.db_descontinuarProducto(idProducto, estado);
+    const producto= await services.db_descontinuarProducto( Number(idProducto),  Number(estado));
 
     consologe.log('Producto actualizado correctamente '+producto );
     return producto;
@@ -328,7 +330,7 @@ async function descontinuarProducto(idProducto){
 async function actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria){
   try {
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria);
+    const producto= await services.db_actualizarProducto(idProducto,nombre, descripcion, Number(precio), estado_producto, color, Number(stock), Number(descuento), Number(idProveedor), Number(idCategoria));
     // Envía una respuesta de éxito
 
     consologe.log( 'Producto actualizado correctamente '+producto );
@@ -342,7 +344,7 @@ async function actualizarProducto(idProducto,nombre, descripcion, precio, estado
 async function actualizarTodosProductos(productos) {
   try {
     for (const producto of productos) {
-      await services.db_actualizarProducto(producto.idProducto,producto.nombre, producto.descripcion, producto.precio, producto.estado_producto, producto.color, producto.stock, producto.descuento, producto.idProveedor, producto.idCategoria);
+      await services.db_actualizarProducto( Number(producto.idProducto),producto.nombre, producto.descripcion,  Number(producto.precio), producto.estado_producto, producto.color, Number( producto.stock),  Number(producto.descuento),  Number(producto.idProveedor), Number( producto.idCategoria));
       console.log('Producto actualizado correctamente:', producto);
     }
     // Envía una respuesta de éxito
@@ -360,10 +362,10 @@ async function actualizarTodosProductos(productos) {
 async function editarStock(id_producto, stock){
   try {
     // Llama al servicio para actualizar el producto
-    const producto= await services.db_editarStock(id_producto, stock);
+    const producto= await services.db_editarStock( Number(id_producto),  Number(stock));
     // Envía una respuesta de éxito
-    console.log('Producto actualizado correctamente '+producto );
-    return producto;
+    console.log('Producto actualizado correctamente ControllerDatabase' );
+    return {message: 'Producto actualizado'};
   } catch (error) {
     // Manejar cualquier error y enviar una respuesta de error al cliente
     console.error('Error al actualizar el producto:', error.message);
@@ -382,11 +384,6 @@ async function logInventario(){
 }
 
 
-async function logFacturas(){
-  const lista= await services.db_logFacturas();
-  return lista;
-}
-
 
 async function logUsuarios(){
   const lista= await services.db_logUsuarios();
@@ -396,8 +393,8 @@ async function logUsuarios(){
 async function añadirProductoCarrito(idUsuario,idproducto, cantidad){
 // se manda el producto  con la cantidad que se desea
   try{
-    const carrito= await services.db_añadirProductoCarrito(idUsuario,idproducto, cantidad);
-    return carrito;
+    const carrito= await services.db_añadirProductoCarrito( Number(idUsuario), Number(idproducto),  Number(cantidad));
+    return { message: 'Producto añadido al carrito correctamente'  + carrito};
   }catch (error) {
     console.error('Error al añadir producto:', error.message);
   }
@@ -406,8 +403,8 @@ async function añadirProductoCarrito(idUsuario,idproducto, cantidad){
 async function modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
 // se manda el idProducto  con la cantidad que se modifica
   try{
-    const carrito= await services.db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad);
-    return carrito;
+    const carrito= await services.db_modificarCantidadProductoCarrito( Number(idUsuario), Number(idproducto),  Number(cantidad));
+    return { message: 'Producto modificado correctamente' , carrito};
   }catch (error) {
     console.error('Error al modficar producto Carrito:', error.message);
   }
@@ -416,8 +413,8 @@ async function modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){
 async function eliminarProductoCarrito(idUsuario,idproducto){
   // se manda el idproducto a eliminar
   try{
-    const carrito= await services.db_eliminarProductoCarrito(idUsuario,idproducto);
-    return carrito;
+    const carrito= await services.db_eliminarProductoCarrito( Number(idUsuario), Number(idproducto));
+    return { message: 'Producto eliminado correctamente' };
   }catch (error) {
     console.error('Error al eliminar producto Carrito:', error.message);
   }
@@ -427,20 +424,32 @@ async function eliminarProductoCarrito(idUsuario,idproducto){
 async function obtenerCarrito(idUsuario){
   try{
     // paso 1: obtener los id de producto y la cantidad
-    const carrito= await services.db_obtenerCarrito(idUsuario);
-     //paso 2: buscar al producto por el id
+    const carrito= await services.db_obtenerCarrito( Number(idUsuario));
+    //paso 2: buscar al producto por el id
+    const productosEnCarrito = [];
 
-     //paso 3: recolectar la info del producto
-  /* 
-  const productosCompletosPromises = allProductos.map(producto =>
-      obtenerProductoDatos(producto)
-    );
-
-    // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
-    const productosCompletos = await Promise.all(productosCompletosPromises);
-  */
+      for (const item of carrito) {
+          const idProducto = item.id_producto;
+          const cantidad = item.cantidad;
+    //paso 3: recolectar la info del producto
+          // Busca el producto en la lista de productos por su ID
+          const productoEncontrado = await services.db_obtenerProductoPorId(idProducto);
+      
+          if (productoEncontrado) {
+              // Añade el producto encontrado al arreglo de productos en el carrito
+              productosEnCarrito.push({
+                  producto: productoEncontrado,
+                  cantidad: cantidad
+              });
+          } else {
+              console.error(`El producto con ID ${idProducto} no fue encontrado.`);
+          }
+      }
+      
+      console.log('Productos en el carrito:', productosEnCarrito);
+      
   //paso 4: enviar todo
-    return carrito;
+    return productosEnCarrito;
   }catch (error) {
     console.error('Error al añadir producto:', error.message);
   }
@@ -453,7 +462,7 @@ async function obtenerCarrito(idUsuario){
 
 async function obtenerHistorialDeCompra(idUsuario){
   try {
-    const historial = await services.db_obtenerHistorialDeCompra(parseInt(idUsuario));
+    const historial = await services.db_obtenerHistorialDeCompra(Number(idUsuario));
     return historial;
   } catch (error) {
     console.error("Error al obtener el historial :", error);
@@ -472,7 +481,7 @@ async function obtenerFactura(){
 
 async function guardarDireccionEnvio(nuevaDireccion){
   try{
-    services.db_guardarDireccionEnvio(nuevaDireccion.ID_Usuario,
+      services.db_guardarDireccionEnvio( Number(nuevaDireccion.ID_Usuario),
       nuevaDireccion.Calle,
       nuevaDireccion.Ciudad,
       nuevaDireccion.Codigo_Postal,
@@ -506,30 +515,35 @@ async function obtenerDireccionPorUsuario(idUsuario) {
 
 const bcrypt = require('bcrypt');
 
-// Método para cifrar la contraseña
 async function cifrarContraseña(contraseña) {
   try {
-
-      // Genera un hash de la contraseña con una sal (salt) aleatoria
-      const hash = await bcrypt.hash(contraseña, 10); // 10 es el costo del hash (el número de rondas de encriptación)
-      console.log(contraseña);
+      const hash = await bcrypt.hash(contraseña, 8); // Costo de hash: 8
+     // const hashCortado = hash.slice(0, 40); // Cortar el hash a 40 caracteres
+    
       return hash;
   } catch (error) {
       throw new Error('Error al cifrar la contraseña');
   }
 }
 
-// Método para comparar la contraseña proporcionada con la contraseña almacenada cifrada
+
+
 async function compararContraseña(contraseña, hashCifrada) {
   try {
-    const resultado = contraseña.localeCompare(hashCifrada, undefined, { sensitivity: 'accent' }) === 0;
+   
+
+    console.log('Contraseña :', contraseña);
+    console.log('Hash cifrado almacenado:', hashCifrada);
+
+    // Comparar los dos hashes resultantes
+    const resultado = await bcrypt.compare(contraseña, hashCifrada);
 
     console.log('Resultado de la comparación:', resultado);
 
-      return resultado;
-
+    return resultado;
   } catch (error) {
-      throw new Error('Error al comparar las contraseñas');
+    console.error('Error al comparar las contraseñas:', error);
+    throw new Error('Error al comparar las contraseñas');
   }
 }
 
@@ -552,7 +566,6 @@ module.exports = {
   actualizarProducto,actualizarTodosProductos,
   editarStock,
   logInventario,
-  logFacturas,
   logUsuarios,
   añadirProductoCarrito, modificarCantidadProductoCarrito,
   eliminarProductoCarrito,
