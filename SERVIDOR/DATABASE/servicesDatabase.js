@@ -320,7 +320,6 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       }
   }
 
-    
   
   async function  db_obtenerCarrito(idUsuario){
       // obtener todos los id de producto y la cantidad
