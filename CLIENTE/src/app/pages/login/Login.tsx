@@ -53,9 +53,6 @@ export const Login = () => {
     return (
         <div className="w-full h-full bg-cover bg-auth flex justify-center items-center">
             <div className="relative flex flex-col w-96 h-[500px] rounded-3xl bg-secondary-color px-10" style={{ boxShadow: "-5px 5px 2.5px gray" }}>
-                <div className="absolute left-4 top-4">
-                    <img className="w-12" src={Arrow} alt="Arrow" />
-                </div>
                 <div className="flex-1 ">
                     <img className="max-h-full" src={Logo} alt="Logo" />
                 </div>

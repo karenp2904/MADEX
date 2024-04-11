@@ -106,10 +106,8 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
                     color: producto.color,
                     stock: parseFloat(producto.stock),
                     descuento: (producto.descuento),
-                    idProveedor: producto.idProveedor,
-                    //proveedor: producto.proveedor,
-                    idCategoria: producto.idCategoria,
-                    //categoria: producto.categoria
+                    idProveedor: producto.proveedores_id_proveedores,
+                    idCategoria: producto.categoria_idcategoria,
                 };
             });
     
@@ -218,6 +216,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             console.error('Error al añadir usuario:', error);
         }
     }
+
     async function s_obtenerUsuarioId(usuarioId) {
         try {
             // Busca el usuario por su ID en la base de datos

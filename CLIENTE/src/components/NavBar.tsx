@@ -16,13 +16,13 @@ export const NavBar = () => {
                 <span>Inicio</span>
             </div>
             <div className="flex-1 flex justify-center items-center text-white">
+                <span>Categorias</span>
+            </div>
+            <div className="flex-1 flex justify-center items-center text-white">
                 <span>Productos</span>
             </div>
             <div className="flex-[2] flex justify-center items-center text-white">
                 <span>Sobre Nosotros</span>
-            </div>
-            <div className="flex-1 flex justify-center items-center text-white">
-                <span>Contacto</span>
             </div>
             <div className="flex justify-center items-center text-white">
                 <input 

@@ -133,7 +133,7 @@ function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, ro
 
 
 
-async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra,filePath) {
+async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra,filePath) {
     const pdfDoc = new PDFDocument();
     const pdfStream = fs.createWriteStream(filePath);
 
@@ -149,9 +149,9 @@ async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, lista
     const logoWidth = 150;
     const logoHeight = 150;
 
-    // Insertar el logo de la empresa en la parte izquierda
+        // Insertar el logo de la empresa en la parte izquierda
     const logoPath = './ENTIDADES/logo.png';
-    pdfDoc.image(logoPath, logoX, logoY, { width: logoWidth, height: logoHeight });
+    pdfDoc.image(logoPath, logoX +20, logoY, { width: logoWidth, height: logoHeight });
 
     // Definir la posición y tamaño del área de texto para la información
     const infoX = logoX + logoWidth + 20; // Separación entre el logo y la información
@@ -159,26 +159,30 @@ async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, lista
     const infoWidth = pdfDoc.page.width - pdfDoc.page.margins.right - infoX;
     const infoHeight = logoHeight;
 
-     // Insertar la información del cliente y la dirección en paralelo al lado derecho
-    //pdfDoc.text(infoX, infoYY);
+    // Agregar la fecha a la izquierda
+    pdfDoc.moveDown().fontSize(10);
+    pdfDoc.font('Helvetica-Bold').text('\nFecha expedición:', pdfDoc.page.margins.left, infoYY+160, { continued: true });
+    pdfDoc.font('Helvetica').text(` 11/04/2024`, { align: 'left' });
+    pdfDoc.moveDown().fontSize(12);
+
+
 
     // Agregar título
-    pdfDoc.font('Helvetica-Bold').fontSize(13).text('Factura de Venta', { align: 'right' });
+    pdfDoc.font('Helvetica-Bold').fontSize(13).text('Factura de Venta', infoX + 200, infoYY+20 , { align: 'right' });
 
     // Obtener el número de factura (aquí lo supondré como una variable)
     const numeroFactura = 'N° '+idFactura;
 
     // Definir las coordenadas y dimensiones del recuadro
-    const recuadroX = pdfDoc.x + 390;
-    const recuadroY = pdfDoc.y + 10; // Mover un poco hacia abajo desde la posición actual
+    const recuadroX = pdfDoc.x + 80;
+    const recuadroY = pdfDoc.y + 80; // Mover un poco hacia abajo desde la posición actual
     const recuadroWidth = 100;
     const recuadroHeight = 20;
-
     // Dibujar el recuadro
     pdfDoc.rect(recuadroX, recuadroY, recuadroWidth, recuadroHeight).stroke();
 
     // Agregar el número de factura dentro del recuadro
-    pdfDoc.text(`${numeroFactura}`, recuadroX + 10, recuadroY + 7);
+    pdfDoc.text(`${numeroFactura}`, recuadroX +20, recuadroY+5 );
 
     // Mover la posición actual hacia abajo
     pdfDoc.moveDown();
@@ -189,15 +193,15 @@ async function generarPDFCliente(idFactura,usuario, direccion, metodoPago, lista
     
 
     // Información del cliente
-    const clienteX = pdfDoc.page.margins.left +10;
+    const clienteX = pdfDoc.page.margins.left;
     const direccionX = pdfDoc.page.width / 2 + 20;
-    const infoY = pdfDoc.y;
+    const infoY = pdfDoc.y +40;
 
     pdfDoc.moveDown().fontSize(12);
    // pdfDoc.font('Helvetica-Bold').text('Información del Cliente\n', clienteX, infoY, { continued: true });
         /// Definir las coordenadas y dimensiones del rectángulo de fondo
     const rectX = clienteX - 5; // Ajustar según sea necesario
-    const rectY = infoY - 5; // Ajustar según sea necesario
+    const rectY = infoY -5; // Ajustar según sea necesario
     const rectWidth = pdfDoc.widthOfString('Información del Cliente') + 380; // Ancho del rectángulo basado en el texto
     const rectHeight = 20; // Altura del rectángulo
 
@@ -383,12 +387,12 @@ async function guardarPDF(pdfBytes, filePath) {
 }
 
 
-async function generarFacturaYEnviarCorreo(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra) {
+async function generarFacturaYEnviarCorreo(idFactura,dia,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra) {
     try {
         // Generar el PDF y guardarlo en el sistema de archivos
             
 
-            await generarPDFCliente(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, 'factura.pdf');
+            await generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, 'factura.pdf');
             const pdfBytes = await fs.promises.readFile('factura.pdf');
 
             //const contenidoPDF = pdfBytes.toString(); // Convierte los bytes del PDF a una cadena

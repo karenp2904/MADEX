@@ -81,7 +81,7 @@ class Inventario {
                         
                         imagenesBase64.push({
                             nombre: archivo,
-                            base64: imagenBase64
+                            imagenes: imagenBase64
                         });
         
                         if (imagenesBase64.length == 5) {
@@ -96,6 +96,34 @@ class Inventario {
         
             return imagenesBase64;
         }
+
+        async obtenerUnaImagenbase64(nombreProducto) {
+            const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
+            
+            try {
+                const archivos = fs.readdirSync(directorioImagenes);
+        
+                for (const archivo of archivos) {
+                    const nombreProductoLimpio = nombreProducto.trim();
+                    const archivoLimpio = archivo.trim();
+                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+        
+                    if (regex.test(archivoLimpio)) {
+                        const rutaImagen = path.join(directorioImagenes, archivo);
+                        const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
+                        
+                        // Devuelve la primera imagen encontrada
+                        return [imagenBase64];
+                    }
+                }
+            } catch (error) {
+                console.error('Error al leer el directorio de imágenes:', error);
+            }
+        
+            // Si no se encontró ninguna imagen, devuelve un arreglo vacío
+            return [];
+        }
+        
         
 
 

@@ -215,7 +215,7 @@ async function db_actualizarProducto(idProducto,nombre, descripcion, precio, est
 }
 
 
-async function db_eliminarProducto(idProducto){
+async function db_eliminarProducto(id_producto){
   try {
     const producto = await pool.query('CALL db_eliminarProducto($1);', [id_producto]);
     return true;
@@ -227,7 +227,7 @@ async function db_eliminarProducto(idProducto){
 }
 
 
-async function db_descontinuarProducto(idProducto,estado){
+async function db_descontinuarProducto(id_producto,estado){
   try {
     const producto = await pool.query('CALL db_descontinuarProducto($1,$2);', [id_producto], [estado]);
     return true;
@@ -306,19 +306,21 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
   }
   
 
-  async function  db_eliminarProductoCarrito(idUsuario,idProducto){
-    // se manda el idproducto a eliminar del usuario
-    try {
-      const newProducto = await pool.query('CALL db_eliminarProductoCarrito($1,$2);', 
-      [idUsuario, idProducto]);
 
-      return true;
-  
-    } catch (error) {
-      console.error("Error al eliminar el producto del carrito de compras");
-      throw new Error("Error al eliminar el producto en del carrito de compras");
-    }
-    }
+  async function  db_eliminarProductoCarrito(idUsuario,idProducto){//TODO
+      // se manda el idproducto a eliminar del usuario
+      try {
+        const newProducto = await pool.query('CALL db_eliminarProductoCarrito($1,$2);', 
+        [idUsuario, idProducto]);
+        return true;
+    
+      } catch (error) {
+        console.error("Error al eliminar el producto del carrito de compras");
+        throw new Error("Error al eliminar el producto en del carrito de compras service"+ error.message);
+      }
+  }
+
+
     
   
   async function  db_obtenerCarrito(idUsuario){
@@ -369,6 +371,9 @@ async function db_obtenerFactura(idFactura){
     throw new Error("Error al añadir la factura"+ error.message);
   }
 }
+
+
+
 
 async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
   try {
