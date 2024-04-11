@@ -89,7 +89,6 @@ class CarritoDeCompras {
     
         // Convertir el total a miles o millones
         const totalConvertido = totalDescuento * factor;
-    
         // Formatear el total con separadores de miles y comas como separadores decimales
         const totalFormateado = totalConvertido.toLocaleString('es-CO', {
             minimumFractionDigits: 2,
@@ -157,6 +156,7 @@ class CarritoDeCompras {
     }
 
 
+
     // Calcula el total de la compra incluyendo descuentos
     async calcularTotal() {
         let total = 0
@@ -170,38 +170,37 @@ class CarritoDeCompras {
         return parseFloat(total);
     }
 
-    // Calcula el total de la compra incluyendo descuentos y el IVA
+
+
+        
     async calcularTotalCompra() {
-        // Calcula el total con descuento
-        const compra = parseFloat(await this.calcularTotalProductos());
-        const descuento = parseFloat(await this.calcularTotalDescuento());
-        const iva = parseFloat(await this.calcularIVA(19));
-    
-        // Verifica si los valores son números válidos
-        if (isNaN(compra) || isNaN(descuento) || isNaN(iva)) {
-            throw new Error('Uno o más valores de compra, descuento o IVA no son válidos.');
-        }
-    
-        // Calcula el total de la compra sumando compra, descuento e iva
-        const total = (compra - descuento) + iva;
-    
-        // Muestra los valores calculados en la consola para depuración (opcional)
-        console.log("Compra:", compra.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-        console.log("Descuento:", descuento.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-        console.log("IVA:", iva.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-        console.log("Total antes de formatear:", total);
-    
-        // Formatea el total con separadores de miles y comas como separadores decimales
+        const subtotal = await this.calcularTotalNum(); // asume que este método devuelve un número formateado como cadena
+        // Calcula el total de los descuentos
+        const descuento = await this.calcularDescuentoNum(); // asume que este método devuelve un número formateado como cadena
+        // Calcula el IVA
+        const iva = await this.calcularIvaNumero(19); // asume que este método devuelve un número formateado como cadena
+
+
+        // Calcula el total a pagar de acuerdo con la fórmula
+        const total = subtotal - descuento + iva;
+
+        // Muestra los valores calculados en la consola para depuración
+        console.log("Subtotal:", subtotal);
+        console.log("Descuento:", descuento);
+        console.log("IVA:", iva);
+        console.log("Total a pagar:", total);
+
         const totalFormateado = total.toLocaleString('es-CO', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
         });
-    
-        // Devuelve el total formateado
+
+        // Devuelve el total a pagar como número de punto flotante
         return totalFormateado;
     }
-        
-        
+
+
+    
 
     formatearAMillonesCOP(valor) {
         // Divide el valor por 1,000,000 para obtener la cantidad en millones
@@ -216,7 +215,38 @@ class CarritoDeCompras {
         
         return valorFormateado;
     }
-   
+
+    async calcularIvaNumero(porcentajeIVA){
+        const totalConDescuento = await this.calcularTotal();
+
+        // Verifica que totalConDescuento y porcentajeIVA sean números válidos
+        const totalConDescuentoNumber = parseFloat(totalConDescuento);
+        const porcentajeIVANumber = parseFloat(porcentajeIVA);
+
+        const iva = totalConDescuentoNumber * (porcentajeIVANumber / 100);
+        return iva;
+    }
+
+    async calcularDescuentoNum(){
+        let totalDescuento = 0;
+        for (const producto of this.productos) {
+            const descuentoProducto = (producto.producto.precio * producto.producto.descuento / 100) * producto.cantidad;
+            totalDescuento += descuentoProducto;
+        }
+        return totalDescuento;
+
+    }
+
+    async calcularTotalNum(){
+        let totalProductos = 0;
+        for (const producto of this.productos) {
+            console.log(producto.producto.precio, producto.cantidad);
+            totalProductos += parseFloat(producto.producto.precio) * producto.cantidad;
+        }
+        console.log("Total productos en pesos: " + totalProductos);
+        return totalProductos;
+    }
+
     vaciarCarrito() {
         this.productos = [];
     }
