@@ -202,7 +202,7 @@ async function db_actualizarProducto(idProducto,nombre, descripcion, precio, est
 }
 
 
-async function db_eliminarProducto(idProducto){
+async function db_eliminarProducto(id_producto){
   try {
     const producto = await pool.query('CALL db_eliminarProducto($1);', [id_producto]);
 
@@ -213,7 +213,7 @@ async function db_eliminarProducto(idProducto){
 }
 
 
-async function db_descontinuarProducto(idProducto,estado){
+async function db_descontinuarProducto(id_producto,estado){
   try {
     const producto = await pool.query('CALL db_descontinuarProducto($1,$2);', [id_producto], [estado]);
 
