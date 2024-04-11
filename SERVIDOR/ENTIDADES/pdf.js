@@ -264,15 +264,20 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
         if (item && item.cantidad && Array.isArray(item.producto)) {
             return item.producto.map(producto => {
                 // Calcula el total del producto
-                const totalProducto = Number(item.cantidad) * Number(producto.precio);
-    
+                //const totalProducto = Number(item.cantidad) * Number(producto.precio);
+                // Calcula el total del producto en miles de pesos (COP)
+                const totalProducto = (Number(item.cantidad) * Number(producto.precio)) * 1000;
+
+                // totalProductoFormatted ahora es una cadena de texto que representa el total en miles de pesos (COP)
+
                 // Retorna un array con los valores separados en columnas
                 return [
                     producto.id_producto.toString(),
                     producto.nombre.toString(),
                     item.cantidad.toString(),
-                    producto.precio.toString(),
-                    totalProducto.toFixed(2).toString(), // Calcula y muestra el total formateado
+                    `$${producto.precio.toString()}`,
+                    `$${totalProducto.toString()}`,
+                    //.toString(), // Calcula y muestra el total formateado
                 ];
             });
         } else {

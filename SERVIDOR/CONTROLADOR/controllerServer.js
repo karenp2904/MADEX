@@ -275,7 +275,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
         try {
 
             const facturas = await controllerDB.obtenerHistorialDeCompra(id_usuario);
-        
+            
             // Devuelve el array de objetos "producto"
             console.log('en controllerServer');
             console.log("HistorialCompra" + facturas);

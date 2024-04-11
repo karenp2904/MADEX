@@ -734,13 +734,15 @@ app.get('/factura/obtener', async (req, res) => {
 app.get('/factura/generar', async (req, res) => {
     try {
 
+        const {idFactura} = req.body;
+
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
-        const idFactura = '000111';
+        const factura = await controladorServer.s_obtenerFactura(idFactura)
         const fecha = new Date();
         const dia = fecha.getTime();
-        
-        const usuario = await controladorServer.s_obtenerUsuarioId('1233');
-        const direccionGuardada = await controladorServer.obtenerDireccion('1233');
+        console.log("idUser "+factura[0].id_usuario);
+        const usuario = await controladorServer.s_obtenerUsuarioId(factura[0].id_usuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(factura[0].id_usuario);
         console.log(direccionGuardada);
 
         const direccion = direccionGuardada[0];
@@ -750,7 +752,7 @@ app.get('/factura/generar', async (req, res) => {
         console.log(idDireccion);
 
         //PARA LOS ID_PRODUCTO DE ARRAY
-        const productos = await controladorServer.obtenerCarritoCompras('1233');
+        const productos = await controladorServer.obtenerCarritoCompras(factura[0].id_usuario);
 
         const contenidoCarrito = new carritoDeCompra();
 
