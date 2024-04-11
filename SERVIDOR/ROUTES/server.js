@@ -666,6 +666,8 @@ app.get('/factura/generar', async (req, res) => {
 
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
         const idFactura = '000111';
+        const fecha = new Date();
+        const dia = fecha.getTime();
         const usuario = new Usuario(1097490756, "Karen", "Pérez", "kp3707194@gmail.com", "CC", "contraseña123", "123456789", 2);
         const metodoPago = "Tarjeta de crédito";
         const direccion = new Direccion(1, 1097490756, 'calle', 'ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
@@ -756,7 +758,7 @@ app.get('/factura/generar', async (req, res) => {
 
         
 
-        const pdfBytes = await pdf(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra);
+        const pdfBytes = await pdf(idFactura,dia,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
         res.send(pdfBytes);
