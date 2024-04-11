@@ -621,7 +621,11 @@ app.get('/resumenCompra', async (req, res) => {
         // Obtener el ID del usuario de la solicitud
         const { idUsuario} = req.body;
 
-        const direccionGuardada = await controladorServer.obtenerDireccion(idUsuario);
+        const dir = await controladorServer.obtenerDireccion(idUsuario);
+
+        console.log(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion);
+
+        let direccionGuardada= new Direccion(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion );
         
         const costoEnvio= direccionGuardada.calcularCostoEnvio();
         const fecha= direccionGuardada.calcularFechaEstimadaEntrega();
@@ -639,12 +643,12 @@ app.get('/resumenCompra', async (req, res) => {
                 });
             }
         });
-        const subtotal= contenidoCarrito.calcularTotal();
+        const subtotal= await contenidoCarrito.calcularTotalCompra();
 
         const total= costoEnvio+subtotal;
 
 
-        res.json({carrito: contenidoCarrito,direccion: direccionGuardada,
+        res.json({carrito: contenidoCarrito,direccion: dir,
             subTotal:subtotal,costoEnvio:costoEnvio, fecha:fecha, total:total});
 
     } catch (error) {

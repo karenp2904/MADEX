@@ -83,20 +83,49 @@ class CarritoDeCompras {
             const descuentoProducto = (producto.producto.precio * producto.producto.descuento / 100) * producto.cantidad;
             totalDescuento += descuentoProducto;
         }
-        console.log("totalDescuento "+totalDescuento);
-        return parseFloat(totalDescuento);
+        
+        const factor = 1_000; // Para miles
+        // const factor = 1_000_000; // Para millones
+    
+        // Convertir el total a miles o millones
+        const totalConvertido = totalDescuento * factor;
+    
+        // Formatear el total con separadores de miles y comas como separadores decimales
+        const totalFormateado = totalConvertido.toLocaleString('es-CO', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        console.log("totalDescuento "+totalFormateado);
+        return totalFormateado;
     }
 
     // Calcula el total de todos los productos en la compra (sin descuentos)
     async calcularTotalProductos() {
         let totalProductos = 0;
         for (const producto of this.productos) {
-            console.log(producto.producto.precio , producto.cantidad);
+            console.log(producto.producto.precio, producto.cantidad);
             totalProductos += parseFloat(producto.producto.precio) * producto.cantidad;
         }
-        console.log("totalProductos "+totalProductos);
-        return totalProductos;
+        console.log("Total productos en pesos: " + totalProductos);
+    
+        // Elegir entre miles o millones
+        const factor = 1_000; // Para miles
+        // const factor = 1_000_000; // Para millones
+    
+        // Convertir el total a miles o millones
+        const totalConvertido = totalProductos * factor;
+    
+        // Formatear el total con separadores de miles y comas como separadores decimales
+        const totalFormateado = totalConvertido.toLocaleString('es-CO', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    
+        console.log("Total productos formateado: " + totalFormateado);
+        return totalFormateado;
     }
+    
 
         // Calcula el IVA total de la compra 
     async calcularIVA(porcentajeIVA) {
@@ -110,7 +139,21 @@ class CarritoDeCompras {
         console.log(porcentajeIVANumber, totalConDescuentoNumber);
         const iva = totalConDescuentoNumber * (porcentajeIVANumber / 100);
         console.log("iva: " + iva);
-        return iva;
+
+        const factor = 1_000; // Para miles
+        // const factor = 1_000_000; // Para millones
+    
+        // Convertir el total a miles o millones
+        const totalConvertido = iva * factor;
+    
+        // Formatear el total con separadores de miles y comas como separadores decimales
+        const totalFormateado = totalConvertido.toLocaleString('es-CO', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        console.log("totalIva "+totalFormateado);
+        return totalFormateado;
     }
 
 
@@ -127,30 +170,53 @@ class CarritoDeCompras {
         return parseFloat(total);
     }
 
-        // Calcula el total de la compra incluyendo descuentos y el IVA
+    // Calcula el total de la compra incluyendo descuentos y el IVA
     async calcularTotalCompra() {
         // Calcula el total con descuento
-        const compra =  await this.calcularTotalProductos();
-        
-        // Calcula el total de la compra sumando el total con descuento y el IVA
-        const descuento = await this.calcularTotalDescuento();
-
-        const iva= await this.calcularIVA(19);
+        const compra = parseFloat(await this.calcularTotalProductos());
+        const descuento = parseFloat(await this.calcularTotalDescuento());
+        const iva = parseFloat(await this.calcularIVA(19));
     
-
-        // Devuelve el total de la compra como número
-        return parseFloat(compra - descuento + iva);
+        // Verifica si los valores son números válidos
+        if (isNaN(compra) || isNaN(descuento) || isNaN(iva)) {
+            throw new Error('Uno o más valores de compra, descuento o IVA no son válidos.');
+        }
+    
+        // Calcula el total de la compra sumando compra, descuento e iva
+        const total = (compra - descuento) + iva;
+    
+        // Muestra los valores calculados en la consola para depuración (opcional)
+        console.log("Compra:", compra.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        console.log("Descuento:", descuento.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        console.log("IVA:", iva.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        console.log("Total antes de formatear:", total);
+    
+        // Formatea el total con separadores de miles y comas como separadores decimales
+        const totalFormateado = total.toLocaleString('es-CO', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    
+        // Devuelve el total formateado
+        return totalFormateado;
     }
+        
+        
 
-    // Formatear el total de la compra a pesos colombianos (COP)
-    async formatearAPesosColombianos(valor) {
-    return valor.toLocaleString('es-CO', {
-        style: 'currency',
-        currency: 'COP',
-        minimumFractionDigits: 0,  
-    });
-}
-
+    formatearAMillonesCOP(valor) {
+        // Divide el valor por 1,000,000 para obtener la cantidad en millones
+        const valorEnMillones = valor / 1000000;
+        
+        // Formatea el valor en millones con puntos como separadores de miles y comas como separadores decimales
+        // Usamos el formato regional de Colombia ('es-CO') para pesos colombianos
+        const valorFormateado = valorEnMillones.toLocaleString('es-CO', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        
+        return valorFormateado;
+    }
+   
     vaciarCarrito() {
         this.productos = [];
     }

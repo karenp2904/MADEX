@@ -318,7 +318,7 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
 
     // Calcular las posiciones x para cada columna
     const xPositions = [];
-    let currentX = pdfDoc.page.margins.left;
+    let currentX = pdfDoc.page.margins.left-10;
     for (let i = 0; i < numColumns; i++) {
         xPositions.push(currentX);
         currentX += columnWidths[i];
@@ -359,10 +359,10 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
 
     // Escribir totales dentro del recuadro
     pdfDoc.font('Helvetica-Bold').fontSize(10).fillColor('#000');
-    pdfDoc.text(`Subtotal: $${subtotal.toFixed(2)}`, boxX + 10, boxY + 10);
+    pdfDoc.text(`Subtotal: $${subtotal.toFixed(3)}`, boxX + 10, boxY + 10);
     pdfDoc.text(`Descuento: $${descuento.toFixed(2)}`, boxX + 10, boxY + 30);
-    pdfDoc.text(`IVA: $${iva.toFixed(2)}`, boxX + 10, boxY + 50);
-    pdfDoc.text(`Total a Pagar: $${totalCompra.toFixed(2)}`, boxX + 10, boxY + 70);
+    pdfDoc.text(`IVA: $${iva.toFixed(3)}`, boxX + 10, boxY + 50);
+    pdfDoc.text(`Total a Pagar: $${totalCompra.toFixed(3)}`, boxX + 10, boxY + 70);
 
 
     // Definir posición de la información de la empresa
@@ -379,7 +379,6 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
    // pdfDoc.moveDown().fontSize(8);
    // pdfDoc.font('Helvetica-Bold').text('Teléfono de la Empresa:', empresaX, pdfDoc.y, { continued: true });
     pdfDoc.font('Helvetica').text(` TEL: 3105962547 \n`,empresaX, pdfDoc.y, { align: 'left' });
-   
     pdfDoc.end();
 
     
