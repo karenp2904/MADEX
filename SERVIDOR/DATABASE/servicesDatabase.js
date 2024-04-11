@@ -205,7 +205,7 @@ async function db_actualizarProducto(idProducto,nombre, descripcion, precio, est
                                       stock, descuento, idProveedor, idCategoria) {
     try {
         const producto = await pool.query('CALL db_actualizarProducto($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)', 
-                                         [idProducto,nombre, descripcion, precio, estado_producto, color,
+                                          [idProducto,nombre, descripcion, precio, estado_producto, color,
                                           stock, descuento, idProveedor, idCategoria]);
         return true;
     } catch (error) {
@@ -320,8 +320,6 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       }
   }
 
-
-    
   
   async function  db_obtenerCarrito(idUsuario){
       // obtener todos los id de producto y la cantidad
@@ -335,8 +333,9 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       }
   }
 
-async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ 
+async function db_obtenerHistorialDeCompra(id_usuario){ 
   try {
+    console.log(id_usuario);
     const historial = await pool.query('SELECT * FROM db_obtenerHistorialDeCompra($1)', [id_usuario]); 
     return historial.rows;
 
@@ -352,12 +351,14 @@ async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){
 async function db_añadirFactura(valor_total, idMetodoDePago, 
                                 idDireccion, idUsuario, idProducto){
   try {
-    const factura = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', [valor_total], [idMetodoDePago],
-                                    [idDireccion], [idUsuario], [idProducto]); 
-    return true;
-  } catch (error) {
-    console.error("Error al añadir la factura", error);
-    throw new Error("Error al añadir la factura"+ error.message);
+    const result = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', 
+    [valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto]);
+
+    return result;
+    
+  } catch (error) { 
+    console.error("Error al añadir la factura service ", error);
+    throw new Error("Error al añadir la factura service "+ error.message);
   }
 }
 
@@ -367,26 +368,24 @@ async function db_obtenerFactura(idFactura){
     return factura.rows;
 
   } catch (error) {
-    console.error("Error al añadir la factura", error);
-    throw new Error("Error al añadir la factura"+ error.message);
+    console.error("Error al obtener la factura", error);
+    throw new Error("Error al obtener la factura"+ error.message);
   }
 }
 
 
-
-
-async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
+async function db_guardarDireccionEnvio(ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion) {
   try {
-    const direccion = await pool.query('CALL db_guardarDireccionEnvio($1,$2,$3,$4,$5,$6,$7);', [ID_Usuario],
-    [Calle], [Ciudad], [Codigo_Postal], [departamento], [barrio], [descripcion]); 
+    const direccion = await pool.query('CALL db_guardarDireccionEnvio($1, $2, $3, $4, $5, $6, $7);', 
+      [ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion]); 
 
     return true;
-
   } catch (error) {
     console.error("Error al guardar la dirección de envio", error);
-    throw new Error("Error al guardar la dirección de envio"+ error.message);
+    throw new Error("Error al guardar la dirección de envio: " + error.message);
   }
 }
+
 
 
 async function db_obtenerDireccionPorUsuario(idUsuario) {

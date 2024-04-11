@@ -458,6 +458,9 @@ async function obtenerCarrito(idUsuario){
 async function obtenerHistorialDeCompra(idUsuario){
   try {
     const historial = await services.db_obtenerHistorialDeCompra(Number(idUsuario));
+    
+    
+    
     return historial;
   } catch (error) {
     console.error("Error al obtener el historial :", error);
@@ -465,27 +468,35 @@ async function obtenerHistorialDeCompra(idUsuario){
   }
 }
 
-async function añadirFactura(){
+async function añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto){
+  try {
+    const factura = await services.db_añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
+    return factura;
+  } catch (error) {
+    console.error("Error al añadir la factura", error);
+    throw new Error("Error al añadir la factura"+ error.message);
+  }
 
 }
 
 
-async function obtenerFactura(){
-
+async function obtenerFactura(idFactura){
+  try {
+    const factura = await services.db_obtenerFactura(Number(idFactura));
+    return factura;
+  } catch (error) {
+    console.error("Error al obtener la factura", error);
+    throw new Error("Error al obtener la factura"+ error.message);
+  }
 }
 
-async function guardarDireccionEnvio(nuevaDireccion){
+
+async function guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
   try{
-      services.db_guardarDireccionEnvio( Number(nuevaDireccion.ID_Usuario),
-      nuevaDireccion.Calle,
-      nuevaDireccion.Ciudad,
-      nuevaDireccion.Codigo_Postal,
-      nuevaDireccion.departamento,
-      nuevaDireccion.barrio,
-      nuevaDireccion.descripcion)
+      const direccion= await services.db_guardarDireccionEnvio(Number(ID_Usuario),Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion)
 
       // Devuelve una respuesta indicando que la dirección se ha guardado correctamente
-      return { message: 'Dirección guardada correctamente' };
+      return { message: 'Dirección guardada correctamente ' + direccion };
   }catch (error) {
     console.error('Error al obtener al guardar direccion:', error.message);
   }

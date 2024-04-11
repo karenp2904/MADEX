@@ -578,7 +578,7 @@ app.delete('/carrito/eliminar', async (req, res) => {
 app.post('/direccion/agregar', async (req, res) => {
     try {
         
-        const { ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion } = req.body;
+        const { ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion } = req.body;
 
         // Crear una instancia de la dirección utilizando los datos recibidos
         const nuevaDireccion = new Direccion ({
@@ -591,7 +591,21 @@ app.post('/direccion/agregar', async (req, res) => {
             descripcion
         });
 
-        const direccionGuardada = await controladorServer.guardarDireccion(nuevaDireccion);
+        const direccionGuardada = await controladorServer.guardarDireccion(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion);
+
+        res.status(201).json(direccionGuardada);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al añadir la dirección:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.get('/direccion/obtener', async (req, res) => {
+    try {
+        const { ID_Usuario } = req.body;
+
+        const direccionGuardada = await controladorServer.obtenerDireccion(ID_Usuario);
 
         res.status(201).json(direccionGuardada);
     } catch (error) {
@@ -602,18 +616,29 @@ app.post('/direccion/agregar', async (req, res) => {
 });
 
 // Ruta para obtener el resumen de la compra
-app.get('/resumenCompra/idUsuario', async (req, res) => {
+app.get('/resumenCompra', async (req, res) => {
     try {
         // Obtener el ID del usuario de la solicitud
-        const idUsuario = req.params.idUsuario;
+        const { idUsuario} = req.body;
 
-        let direccionGuardada = new Direccion();
-        direccionGuardada=await controladorServer.obtenerDireccion(idUsuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(idUsuario);
+        
         const costoEnvio= direccionGuardada.calcularCostoEnvio();
         const fecha= direccionGuardada.calcularFechaEstimadaEntrega();
 
-        let contenidoCarrito = new carritoDeCompra();
-        contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+        const productos = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const contenidoCarrito = new carritoDeCompra();
+
+
+        productos.forEach(item => {
+            console.log("Item del carrito:", item);
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
+            }
+        });
         const subtotal= contenidoCarrito.calcularTotal();
 
         const total= costoEnvio+subtotal;
@@ -633,26 +658,53 @@ app.get('/resumenCompra/idUsuario', async (req, res) => {
 // Ruta para agregar una factura
 app.post('/factura/agregar', async (req, res) => {
     try {
-       // const { idUsuario, productos, total } = req.body;
+        const { idUsuario, idMetodoDePago} = req.body;
 
-       // let contenidoCarrito = new carritoDeCompra();
-       // contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(idUsuario);
+        console.log(direccionGuardada);
 
-        const usuario = new Usuario(1097490756, "Karen", "Pérez", "karen@example.com", "CC", "contraseña123", "123456789", 2);
-        const metodoPago = "Tarjeta de crédito";
-        const direccion = new Direccion(1, 1097490756, 'Calle', 'Ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
-        const listaProductos = ["Producto 1", "Producto 2", "Producto 3"];
-        const totalCompra = 500; 
+        const direccion = direccionGuardada[0];
+    
+        // Accede a la propiedad `id_direccion`
+        const idDireccion = direccion.id_direccion;
+        console.log(idDireccion);
 
-        const factura = new Factura(usuario, metodoPago, direccion, listaProductos, totalCompra);
+        //PARA LOS ID_PRODUCTO DE ARRAY
+        const productos = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const contenidoCarrito = new carritoDeCompra();
+
+    
+        let idProductos = [];
+
+        productos.forEach(item => {
+            console.log("Item del carrito:", item);
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    if (producto && producto.id_producto) {
+                        let integerInput = parseInt(producto.id_producto, 10);
+                        if (Number.isInteger(integerInput)) {
+                            idProductos.push(integerInput);
+                        } else {
+                            console.log("El valor ingresado no es un número entero");
+                        }
+                    }
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
+            }
+        });
+
+        console.log("IDs de productos en el carrito:", idProductos);
+
+        console.log(contenidoCarrito);
+        
+        const valor_total= await contenidoCarrito.calcularTotalCompra(1.9);
+        console.log("TOTAL: "+ valor_total);
+
+        const factura= await controladorServer.s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProductos);
         
 
-        const resumenFactura = factura.obtenerResumen();
-        console.log(resumenFactura);
-
-        //const subtotal= contenidoCarrito.calcularTotal();
-
-        res.status(201).json(facturaCreada);
+        res.status(201).json('facturaCreada ' + factura);
     } catch (error) {
         // envía una respuesta de error al cliente
         console.error('Error al crear la factura:', error);
@@ -661,104 +713,85 @@ app.post('/factura/agregar', async (req, res) => {
 });
 
 
+
+// Ruta para agregar una factura
+app.get('/factura/obtener', async (req, res) => {
+    try {
+        const { idFactura} = req.body;
+
+        const factura = await controladorServer.s_obtenerFactura(idFactura);
+        
+        res.status(201).json(factura);
+    } catch (error) {
+        // envía una respuesta de error al cliente
+        console.error('Error al crear la factura:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+
 app.get('/factura/generar', async (req, res) => {
     try {
 
+        const {idFactura} = req.body;
+
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
-        const idFactura = '000111';
+        const factura = await controladorServer.s_obtenerFactura(idFactura)
         const fecha = new Date();
         const dia = fecha.getTime();
-        const usuario = new Usuario(1097490756, "Karen", "Pérez", "kp3707194@gmail.com", "CC", "contraseña123", "123456789", 2);
-        const metodoPago = "Tarjeta de crédito";
-        const direccion = new Direccion(1, 1097490756, 'calle', 'ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
-        const listaProductos = [
-            {
-                producto: new producto({
-                    id_producto: 1,
-                    nombre: 'cama',
-                    descripcion: 'cama de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 2,
-                    nombre: 'puerta',
-                    descripcion: 'puerta de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 2 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 3,
-                    nombre: 'techo',
-                    descripcion: 'techo de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 3,
-                    nombre: 'techo',
-                    descripcion: 'techo de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 3,
-                    nombre: 'techo',
-                    descripcion: 'techo de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
+        console.log("idUser "+factura[0].id_usuario);
+        const usuario = await controladorServer.s_obtenerUsuarioId(factura[0].id_usuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(factura[0].id_usuario);
+        console.log(direccionGuardada);
+
+        const direccion = direccionGuardada[0];
+    
+        // Accede a la propiedad `id_direccion`
+        const idDireccion = direccion.id_direccion;
+        console.log(idDireccion);
+
+        //PARA LOS ID_PRODUCTO DE ARRAY
+        const productos = await controladorServer.obtenerCarritoCompras(factura[0].id_usuario);
+
+        const contenidoCarrito = new carritoDeCompra();
+
+    
+        let idProductos = [];
+
+        productos.forEach(item => {
+            console.log("Item del carrito:", item);
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    if (producto && producto.id_producto) {
+                        let integerInput = parseInt(producto.id_producto, 10);
+                        if (Number.isInteger(integerInput)) {
+                            idProductos.push(integerInput);
+                        } else {
+                            console.log("El valor ingresado no es un número entero");
+                        }
+                    }
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
             }
-        ];
+        });
+
+        console.log("IDs de productos en el carrito:", idProductos);
+
+        console.log(contenidoCarrito);
+
         
         
         // Definir contenido de los totales
-        const subtotal = 200.00; // Ejemplo de subtotal
-        const descuento = 100; // Ejemplo de descuento
-        const iva = 20; // Ejemplo de IVA
-        const totalCompra = subtotal - descuento + iva;
+        const subtotal =  await contenidoCarrito.calcularTotalProductos(); // Ejemplo de subtotal
+        const descuento =  await contenidoCarrito.calcularTotalDescuento(); // Ejemplo de descuento
+        const iva =  await contenidoCarrito.calcularIVA(19); // Ejemplo de IVA
+        const totalCompra =  await contenidoCarrito.calcularTotalCompra();
+
+        console.log(subtotal,descuento,iva,totalCompra);
 
         
-
-        const pdfBytes = await pdf(idFactura,dia,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra);
+        const pdfBytes = await pdf(idFactura,dia,usuario[0], direccion, 'Tarjeta crédito', productos,subtotal,descuento,iva, totalCompra);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
         res.send(pdfBytes);

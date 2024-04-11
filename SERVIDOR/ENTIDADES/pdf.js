@@ -168,14 +168,14 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
 
 
     // Agregar título
-    pdfDoc.font('Helvetica-Bold').fontSize(13).text('Factura de Venta', infoX + 200, infoYY+20 , { align: 'right' });
+    pdfDoc.font('Helvetica-Bold').fontSize(13).text('Factura de Venta', infoX + 200, infoYY+100 , { align: 'right' });
 
     // Obtener el número de factura (aquí lo supondré como una variable)
     const numeroFactura = 'N° '+idFactura;
 
     // Definir las coordenadas y dimensiones del recuadro
-    const recuadroX = pdfDoc.x + 80;
-    const recuadroY = pdfDoc.y + 80; // Mover un poco hacia abajo desde la posición actual
+    const recuadroX = pdfDoc.x + 90;
+    const recuadroY = pdfDoc.y + 20; // Mover un poco hacia abajo desde la posición actual
     const recuadroWidth = 100;
     const recuadroHeight = 20;
     // Dibujar el recuadro
@@ -216,7 +216,7 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
 
     pdfDoc.moveDown().fontSize(12);
     pdfDoc.font('Helvetica-Bold').text('\nNombre:', clienteX, infoY+20, { continued: true });
-    pdfDoc.font('Helvetica').text(` ${usuario.nombre_usuario}`, { align: 'left' });
+    pdfDoc.font('Helvetica').text(` ${usuario.nombre}`, { align: 'left' });
 
     pdfDoc.moveDown().fontSize(12);
     pdfDoc.font('Helvetica-Bold').text('Tipo de Documento:', clienteX, pdfDoc.y-10, { continued: true });
@@ -228,7 +228,7 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
     pdfDoc.font('Helvetica-Bold').text('Teléfono:', clienteX, pdfDoc.y-10, { continued: true });
     pdfDoc.font('Helvetica').text(` ${usuario.telefono}`, { align: 'left' });
     pdfDoc.font('Helvetica-Bold').text('\nCorreo:', clienteX, pdfDoc.y-10, { continued: true });
-    pdfDoc.font('Helvetica').text(` ${usuario.correo}`, { align: 'left' });
+    pdfDoc.font('Helvetica').text(` ${usuario.correo_electronico}`, { align: 'left' });
 
     // Dirección
     pdfDoc.moveDown().fontSize(12);
@@ -259,20 +259,54 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
     
     pdfDoc.moveDown().fontSize(10);
     const tableHeaders = ['ID Producto', 'Nombre', 'Cantidad', 'Precio Unitario', 'Total'];
-    const tableRows = listaProductos.map(producto => {
-        if (producto && producto.producto) {
-            const totalProducto = producto.cantidad * producto.producto.precio;
+    const tableRows = listaProductos.flatMap(item => {
+        // Verifica que item.cantidad y item.producto estén definidos
+        if (item && item.cantidad && Array.isArray(item.producto)) {
+            return item.producto.map(producto => {
+                // Calcula el total del producto
+                //const totalProducto = Number(item.cantidad) * Number(producto.precio);
+                // Calcula el total del producto en miles de pesos (COP)
+                const totalProducto = (Number(item.cantidad) * Number(producto.precio)) * 1000;
+
+                // totalProductoFormatted ahora es una cadena de texto que representa el total en miles de pesos (COP)
+
+                // Retorna un array con los valores separados en columnas
+                return [
+                    producto.id_producto.toString(),
+                    producto.nombre.toString(),
+                    item.cantidad.toString(),
+                    `$${producto.precio.toString()}`,
+                    `$${totalProducto.toString()}`,
+                    //.toString(), // Calcula y muestra el total formateado
+                ];
+            });
+        } else {
+            // Si item.producto no es un array, retorna una fila de valores vacíos o maneja el caso como desees
+            return [['Producto no definido', '', '', '', '']];
+        }
+    });
+    
+
+        console.log(tableRows);
+/*
+    const tableRows = listaProductos.map(item => {
+        
+        if (item && item.producto) {
+            const totalProducto = item.cantidad * item.producto.precio;
             return [
-                producto.producto.id_producto.toString(),
-                producto.producto.nombre.toString(),
-                producto.cantidad.toString(),
-                `$${producto.producto.precio.toFixed(2)}`,
+                `$${item.producto.id_producto.toFixed(2)}`
+                `$${item.producto.nombre.toFixed(2)}`
+                `$${item.cantidad.toFixed(2)}`
+                `$${item.producto.precio.toFixed(2)}`,
                 `$${totalProducto.toFixed(2)}`, // Calcular y mostrar el total del producto
             ];
         } else {
             return ['Producto no definido', '', '', ''];
         }
     });
+    */
+
+    
     
 
     // Calcular el ancho total de la tabla

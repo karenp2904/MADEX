@@ -32,7 +32,7 @@ export const Login = () => {
                 console.log('Respuesta del servidor:', data);
                 if (data.success) {
                     // Si el inicio de sesión fue exitoso, redirige a la página de categorías
-                    Router.categorias;
+                    Router.verificar;
                 } else {
                     // Si hubo un error en el inicio de sesión, muestra el mensaje de error
                     console.error('Error en el inicio de sesión:', data.message);
