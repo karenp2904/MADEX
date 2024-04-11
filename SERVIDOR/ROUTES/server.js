@@ -578,7 +578,7 @@ app.delete('/carrito/eliminar', async (req, res) => {
 app.post('/direccion/agregar', async (req, res) => {
     try {
         
-        const { ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion } = req.body;
+        const { ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion } = req.body;
 
         // Crear una instancia de la dirección utilizando los datos recibidos
         const nuevaDireccion = new Direccion ({
@@ -591,7 +591,21 @@ app.post('/direccion/agregar', async (req, res) => {
             descripcion
         });
 
-        const direccionGuardada = await controladorServer.guardarDireccion(nuevaDireccion);
+        const direccionGuardada = await controladorServer.guardarDireccion(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion);
+
+        res.status(201).json(direccionGuardada);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al añadir la dirección:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.get('/direccion/obtener', async (req, res) => {
+    try {
+        const { ID_Usuario } = req.body;
+
+        const direccionGuardada = await controladorServer.obtenerDireccion(ID_Usuario);
 
         res.status(201).json(direccionGuardada);
     } catch (error) {
@@ -602,13 +616,13 @@ app.post('/direccion/agregar', async (req, res) => {
 });
 
 // Ruta para obtener el resumen de la compra
-app.get('/resumenCompra/idUsuario', async (req, res) => {
+app.get('/resumenCompra', async (req, res) => {
     try {
         // Obtener el ID del usuario de la solicitud
-        const idUsuario = req.params.idUsuario;
+        const { idUsuario} = req.body;
 
-        let direccionGuardada = new Direccion();
-        direccionGuardada=await controladorServer.obtenerDireccion(idUsuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(idUsuario);
+        
         const costoEnvio= direccionGuardada.calcularCostoEnvio();
         const fecha= direccionGuardada.calcularFechaEstimadaEntrega();
 
@@ -633,32 +647,76 @@ app.get('/resumenCompra/idUsuario', async (req, res) => {
 // Ruta para agregar una factura
 app.post('/factura/agregar', async (req, res) => {
     try {
-       // const { idUsuario, productos, total } = req.body;
+        const { idUsuario, idMetodoDePago} = req.body;
 
-       // let contenidoCarrito = new carritoDeCompra();
-       // contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(idUsuario);
+        console.log(direccionGuardada);
 
-        const usuario = new Usuario(1097490756, "Karen", "Pérez", "karen@example.com", "CC", "contraseña123", "123456789", 2);
-        const metodoPago = "Tarjeta de crédito";
-        const direccion = new Direccion(1, 1097490756, 'Calle', 'Ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
-        const listaProductos = ["Producto 1", "Producto 2", "Producto 3"];
-        const totalCompra = 500; 
+        const direccion = direccionGuardada[0];
+    
+        // Accede a la propiedad `id_direccion`
+        const idDireccion = direccion.id_direccion;
+        console.log(idDireccion);
 
-        const factura = new Factura(usuario, metodoPago, direccion, listaProductos, totalCompra);
+        //PARA LOS ID_PRODUCTO DE ARRAY
+        const productos = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const contenidoCarrito = new carritoDeCompra();
+
+    
+        let idProductos = [];
+
+        productos.forEach(item => {
+            console.log("Item del carrito:", item);
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    if (producto && producto.id_producto) {
+                        // Agrega el ID del producto al arreglo
+                        idProductos.push(producto.id_producto);
+                    }
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
+            }
+        });
+
+        console.log("IDs de productos en el carrito:", idProductos);
+
+        console.log(contenidoCarrito);
+        
+        const valor_total= await contenidoCarrito.calcularTotalCompra(1.9);
+        console.log("TOTAL: "+contenidoCarrito.formatearAPesosColombianos(valor_total));
+
+        const factura= await controladorServer.s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProductos)
         
 
-        const resumenFactura = factura.obtenerResumen();
-        console.log(resumenFactura);
-
-        //const subtotal= contenidoCarrito.calcularTotal();
-
-        res.status(201).json(facturaCreada);
+        res.status(201).json('facturaCreada ' + factura);
     } catch (error) {
         // envía una respuesta de error al cliente
         console.error('Error al crear la factura:', error);
         res.status(500).send('Error en el servidor');
     }
 });
+
+
+
+// Ruta para agregar una factura
+app.post('/factura/obtener', async (req, res) => {
+    try {
+        const { idFactura} = req.body;
+
+        const factura = await controladorServer.s_obtenerFactura(idFactura);
+        
+        res.status(201).json('facturaCreada' + factura);
+    } catch (error) {
+        // envía una respuesta de error al cliente
+        console.error('Error al crear la factura:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+
+
 
 
 app.get('/factura/generar', async (req, res) => {

@@ -350,9 +350,11 @@ async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){
 async function db_añadirFactura(valor_total, idMetodoDePago, 
                                 idDireccion, idUsuario, idProducto){
   try {
-    const factura = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', [valor_total], [idMetodoDePago],
-                                    [idDireccion], [idUsuario], [idProducto]); 
+    const result = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', 
+    [valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto]);
+
     return true;
+    
   } catch (error) {
     console.error("Error al añadir la factura", error);
     throw new Error("Error al añadir la factura"+ error.message);
@@ -365,24 +367,24 @@ async function db_obtenerFactura(idFactura){
     return factura.rows;
 
   } catch (error) {
-    console.error("Error al añadir la factura", error);
-    throw new Error("Error al añadir la factura"+ error.message);
+    console.error("Error al obtener la factura", error);
+    throw new Error("Error al obtener la factura"+ error.message);
   }
 }
 
 
-async function db_guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion){
+async function db_guardarDireccionEnvio(ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion) {
   try {
-    const direccion = await pool.query('CALL db_guardarDireccionEnvio($1,$2,$3,$4,$5,$6,$7);', [ID_Usuario],
-    [Calle], [Ciudad], [Codigo_Postal], [departamento], [barrio], [descripcion]); 
+    const direccion = await pool.query('CALL db_guardarDireccionEnvio($1, $2, $3, $4, $5, $6, $7);', 
+      [ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion]); 
 
     return true;
-
   } catch (error) {
     console.error("Error al guardar la dirección de envio", error);
-    throw new Error("Error al guardar la dirección de envio"+ error.message);
+    throw new Error("Error al guardar la dirección de envio: " + error.message);
   }
 }
+
 
 
 async function db_obtenerDireccionPorUsuario(idUsuario) {
