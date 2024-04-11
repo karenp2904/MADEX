@@ -333,8 +333,9 @@ async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
       }
   }
 
-async function db_obtenerHistorialDeCompra(id_usuario /*requiere un entero*/){ 
+async function db_obtenerHistorialDeCompra(id_usuario){ 
   try {
+    console.log(id_usuario);
     const historial = await pool.query('SELECT * FROM db_obtenerHistorialDeCompra($1)', [id_usuario]); 
     return historial.rows;
 
@@ -353,11 +354,11 @@ async function db_añadirFactura(valor_total, idMetodoDePago,
     const result = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', 
     [valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto]);
 
-    return true;
+    return result;
     
-  } catch (error) {
-    console.error("Error al añadir la factura", error);
-    throw new Error("Error al añadir la factura"+ error.message);
+  } catch (error) { 
+    console.error("Error al añadir la factura service ", error);
+    throw new Error("Error al añadir la factura service "+ error.message);
   }
 }
 

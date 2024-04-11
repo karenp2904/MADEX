@@ -458,6 +458,9 @@ async function obtenerCarrito(idUsuario){
 async function obtenerHistorialDeCompra(idUsuario){
   try {
     const historial = await services.db_obtenerHistorialDeCompra(Number(idUsuario));
+    
+    
+    
     return historial;
   } catch (error) {
     console.error("Error al obtener el historial :", error);
@@ -467,7 +470,7 @@ async function obtenerHistorialDeCompra(idUsuario){
 
 async function añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto){
   try {
-    const factura = await services.db_añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), Number(idProducto));
+    const factura = await services.db_añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
     return factura;
   } catch (error) {
     console.error("Error al añadir la factura", error);

@@ -77,77 +77,69 @@ class CarritoDeCompras {
     }
 
     // Calcula el total del descuento en la compra
-    calcularTotalDescuento() {
+    async calcularTotalDescuento() {
         let totalDescuento = 0;
         for (const producto of this.productos) {
-            const descuentoProducto = (producto.precio * producto.descuento / 100) * producto.cantidad;
+            const descuentoProducto = (producto.producto.precio * producto.producto.descuento / 100) * producto.cantidad;
             totalDescuento += descuentoProducto;
         }
         console.log("totalDescuento "+totalDescuento);
-        return totalDescuento;
+        return parseFloat(totalDescuento);
     }
 
     // Calcula el total de todos los productos en la compra (sin descuentos)
-    calcularTotalProductos() {
+    async calcularTotalProductos() {
         let totalProductos = 0;
         for (const producto of this.productos) {
-            totalProductos += producto.precio * producto.cantidad;
+            console.log(producto.producto.precio , producto.cantidad);
+            totalProductos += parseFloat(producto.producto.precio) * producto.cantidad;
         }
         console.log("totalProductos "+totalProductos);
         return totalProductos;
     }
 
-    // Calcula el IVA total de la compra (puedes ajustar el porcentaje de IVA)
-    calcularIVA(porcentajeIVA) {
-        const totalConDescuento = this.calcularTotal();
-        const iva = totalConDescuento * (porcentajeIVA / 100);
-        console.log("iva "+iva);
-        return Number(iva);
+        // Calcula el IVA total de la compra 
+    async calcularIVA(porcentajeIVA) {
+        const totalConDescuento = await this.calcularTotal();
+
+        // Verifica que totalConDescuento y porcentajeIVA sean números válidos
+        const totalConDescuentoNumber = parseFloat(totalConDescuento);
+        const porcentajeIVANumber = parseFloat(porcentajeIVA);
+
+        // Calcula el IVA
+        console.log(porcentajeIVANumber, totalConDescuentoNumber);
+        const iva = totalConDescuentoNumber * (porcentajeIVANumber / 100);
+        console.log("iva: " + iva);
+        return iva;
     }
 
+
     // Calcula el total de la compra incluyendo descuentos
-    calcularTotal() {
-        let total = 0;
+    async calcularTotal() {
+        let total = 0
         for (const producto of this.productos) {
             // Calcula el precio con descuento aplicado
             const precioConDescuento = Number(producto.producto.precio) - (Number(producto.producto.precio)* Number(producto.producto.descuento) / 100);
             // Añade el precio con descuento multiplicado por la cantidad al total
             total += precioConDescuento * Number(producto.cantidad);
         }
-        return Number(total);
+        console.log(parseFloat(total));
+        return parseFloat(total);
     }
 
         // Calcula el total de la compra incluyendo descuentos y el IVA
-    async calcularTotalCompra(porcentajeIVA) {
+    async calcularTotalCompra() {
         // Calcula el total con descuento
-        const totalConDescuento = this.calcularTotal();
-        
-        // Verifica que totalConDescuento sea un número válido
-        if (isNaN(totalConDescuento)) {
-            console.error("Error: totalConDescuento no es un número válido.");
-            return NaN;
-        }
-        
-        // Calcula el IVA
-        const iva = this.calcularIVA(Number(porcentajeIVA));
-        
-        // Verifica que iva sea un número válido
-        if (isNaN(iva)) {
-            console.error("Error: iva no es un número válido.");
-            return NaN;
-        }
+        const compra =  await this.calcularTotalProductos();
         
         // Calcula el total de la compra sumando el total con descuento y el IVA
-        const totalCompra = totalConDescuento + iva;
-        
-        // Verifica que totalCompra sea un número válido
-        if (isNaN(totalCompra)) {
-            console.error("Error: totalCompra no es un número válido.");
-            return NaN;
-        }
+        const descuento = await this.calcularTotalDescuento();
+
+        const iva= await this.calcularIVA(19);
+    
 
         // Devuelve el total de la compra como número
-        return totalCompra;
+        return parseFloat(compra - descuento + iva);
     }
 
     // Formatear el total de la compra a pesos colombianos (COP)
@@ -155,7 +147,7 @@ class CarritoDeCompras {
     return valor.toLocaleString('es-CO', {
         style: 'currency',
         currency: 'COP',
-        minimumFractionDigits: 0,  // Si deseas mostrar cero decimales
+        minimumFractionDigits: 0,  
     });
 }
 
