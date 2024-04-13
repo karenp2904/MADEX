@@ -267,7 +267,10 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
                 //const totalProducto = Number(item.cantidad) * Number(producto.precio);
                 // Calcula el total del producto en miles de pesos (COP)
                 const totalProducto = (Number(item.cantidad) * Number(producto.precio)) * 1000;
-
+                const totalFormateado = totalProducto.toLocaleString('es-CO', {
+                    minimumFractionDigits: 3,
+                    maximumFractionDigits: 3
+                });
                 // totalProductoFormatted ahora es una cadena de texto que representa el total en miles de pesos (COP)
 
                 // Retorna un array con los valores separados en columnas
@@ -276,7 +279,7 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
                     producto.nombre.toString(),
                     item.cantidad.toString(),
                     `$${producto.precio.toString()}`,
-                    `$${totalProducto.toString()}`,
+                    `$${totalFormateado.toString()}`,
                     //.toString(), // Calcula y muestra el total formateado
                 ];
             });
@@ -359,10 +362,10 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
 
     // Escribir totales dentro del recuadro
     pdfDoc.font('Helvetica-Bold').fontSize(10).fillColor('#000');
-    pdfDoc.text(`Subtotal: $${subtotal.toFixed(3)}`, boxX + 10, boxY + 10);
-    pdfDoc.text(`Descuento: $${descuento.toFixed(2)}`, boxX + 10, boxY + 30);
-    pdfDoc.text(`IVA: $${iva.toFixed(3)}`, boxX + 10, boxY + 50);
-    pdfDoc.text(`Total a Pagar: $${totalCompra.toFixed(3)}`, boxX + 10, boxY + 70);
+    pdfDoc.text(`Subtotal: $${subtotal}`, boxX + 10, boxY + 10);
+    pdfDoc.text(`Descuento: $${descuento}`, boxX + 10, boxY + 30);
+    pdfDoc.text(`IVA: $${iva}`, boxX + 10, boxY + 50);
+    pdfDoc.text(`Total a Pagar: $${totalCompra}`, boxX + 10, boxY + 70);
 
 
     // Definir posición de la información de la empresa

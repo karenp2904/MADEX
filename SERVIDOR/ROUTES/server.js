@@ -702,7 +702,7 @@ app.post('/factura/agregar', async (req, res) => {
 
         console.log(contenidoCarrito);
         
-        const valor_total= await contenidoCarrito.calcularTotalCompra(1.9);
+        const valor_total= await contenidoCarrito.calcularTotalCompra();
         console.log("TOTAL: "+ valor_total);
 
         const factura= await controladorServer.s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProductos);
