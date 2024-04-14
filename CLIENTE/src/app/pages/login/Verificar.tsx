@@ -6,7 +6,7 @@ import Arrow from "/arrow/arrow-left-primary.svg";
 export const Verificar = () => {
     const [formData, setFormData] = useState({
         correo: '',
-        codigo: '' // Agregamos un campo para el código de autenticación
+        codigo: '' 
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,12 +31,12 @@ export const Verificar = () => {
                 const data = await response.json();
                 console.log('Respuesta del servidor:', data);
                 if (data.success) {
-                    // Si la autenticación fue exitosa, redirige a la página de categorías
+                    
                     Router.categorias;
                 } else {
-                    // Si hubo un error en la autenticación, muestra el mensaje de error
+                    
                     console.error('Error en la autenticación:', data.message);
-                    // Aquí puedes mostrar el mensaje de error al usuario si lo deseas
+                    
                 }
             } else {
                 console.error('Error en la solicitud de autenticación:', response.statusText);
@@ -58,14 +58,23 @@ export const Verificar = () => {
                 <div className="flex justify-center items-center flex-1">
                     <img className="max-h-full" src={Logo} alt="Logo" />
                 </div>
-                <div className="w-full flex flex-col justify-center items-center mt-8"> {/* Añadido mt-8 para mover el formulario hacia arriba */}
-                    <div className="w-full h-24">
+                <div className="w-full flex flex-col justify-center items-center mt-12"> {/* Añadido mt-8 para mover el formulario hacia arriba */}
+                <div className="w-full h-20">
                         <div className="w-full flex flex-col">
-                            <label htmlFor="code" className="text-primary-color"><strong>Código de autenticación</strong></label>
-                            <input name="codigo" className="indent-10 bg-[length:1.5rem] bg-[10px] bg-lock bg-no-repeat h-12 rounded-xl placeholder:text-primary-color" placeholder="Código de autenticación" style={{ boxShadow: "-2px 2px 2px gray" }} type="text" onChange={handleInputChange} />
+                            <label htmlFor="code" className="text-primary-color">
+                                <strong className="mb-2">Código de autenticación</strong>
+                            </label>
+                            <input
+                                name="codigo"
+                                className="indent-12 bg-[length:1.5rem] bg-[10px] bg-lock bg-no-repeat h-12 rounded-xl placeholder:text-primary-color"
+                                placeholder="Código de autenticación"
+                                style={{ boxShadow: "-2px 2px 2px gray" }}
+                                type="text"
+                                onChange={handleInputChange}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className="w-full h-28 mt-4"> {/* Añadido mt-4 para ajustar el espacio entre el formulario y los enlaces */}
+                    <div className="w-full h-28 mt-10"> 
                         <strong>
                         <div className="flex justify-center items-center">
                             <a className="underline text-[12px] text-primary-color" href="">

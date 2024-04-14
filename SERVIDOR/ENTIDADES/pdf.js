@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+
 const QRCode = require('qrcode');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
@@ -58,41 +58,6 @@ async function generarQRyPDFRandom() {
     }
 }
 
-
-
-// Configuración del transporte para enviar correos
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'madex1500@gmail.com',
-        pass: 'uesh rxak ifgu qcgz' // Reemplaza con tu contraseña de aplicación específica
-    }
-});
-
-// Función para enviar el correo electrónico con el PDF adjunto
-async function enviarCorreo(usuario, filePath) {
-    try {
-        // Adjunta el PDF al correo electrónico
-        const mailOptions = {
-            from: 'madex1500@gmail.com',
-            to: usuario.correo,
-            subject: 'Factura de compra',
-            text: 'Adjuntamos la factura de tu compra.',
-            attachments: [{
-                filename: 'factura.pdf',
-                path: filePath
-            }]
-        };
-
-        // Envía el correo electrónico
-        await transporter.sendMail(mailOptions);
-
-        console.log('Correo enviado con la factura adjunta.');
-    } catch (error) {
-        console.error('Error al enviar el correo electrónico:', error);
-        throw error;
-    }
-}
 
 
 // Función para dibujar la tabla
@@ -427,9 +392,9 @@ async function generarFacturaYEnviarCorreo(idFactura,dia,usuario, direccion, met
     try {
         // Generar el PDF y guardarlo en el sistema de archivos
             
-
-            await generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, 'factura.pdf');
-            const pdfBytes = await fs.promises.readFile('factura.pdf');
+            const nombreArchivoPDF = `./FACTURAS/factura_${idFactura}.pdf`;
+            await generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra, nombreArchivoPDF);
+            const pdfBytes = await fs.promises.readFile(nombreArchivoPDF);
 
             //const contenidoPDF = pdfBytes.toString(); // Convierte los bytes del PDF a una cadena
 

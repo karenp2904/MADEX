@@ -4,6 +4,8 @@ const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
 const app = express();
+const session = require('express-session');
+const crypto = require('crypto');
 const PORT = 3000;
 
 const controladorServer = require('../CONTROLADOR/controllerServer');
@@ -19,7 +21,13 @@ const producto = require('../ENTIDADES/producto');
 const pdf = require('../ENTIDADES/pdf'); 
  //  instancia de la clase Inventario
 
-
+// Configura el middleware de sesiones
+app.use(session({
+    secret: 'd9f8e4b3c6e2a4b1f9d3a2b4e5f6c1d8e7b2a4c8e5f7a6d4', // Reemplaza con tu secreto
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Establece a true si tengo  HTTPS
+}));
 
 // Middleware para parsear el cuerpo de las solicitudes
 app.use(express.json());
@@ -42,7 +50,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Cambia a la URL de tu aplicación Reac
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
-  });
+});
 
 
 // Iniciar el servidor
@@ -73,24 +81,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Error en el servidor');
 });
 
-
-// Rutas para usuarios
-
-
-/*
-// Rutas para autenticación y autorización
-app.post('/usuario/verificar-credencial', controladorServer.verificarCredencialUsuario);
-app.get('/usuario/:id', controladorServer.obtenerUsuario);
-app.get('/usuarios', controladorServer.obtenerTodosUsuarios);
-
-
-
-
-// Rutas para facturas
-app.post('/facturas/log', controladorServer.logFacturas);
-
-
-*/
 
 
 // Llamar al método recibirProductos para almacenar los productos
@@ -153,13 +143,46 @@ app.post('/usuario/login', async function(req, res) {
         
         const usuario= await controladorServer.manejarInicioSesion(correo,contraseña);        // Enviar respuesta al cliente
         console.log(usuario);
-        res.status(200).json(usuario);
+        
+        if(usuario!=null || usuario!=undefined){
+            console.log(usuario.usuario.correo + " - " );
+            const codigoEnviado = await controladorServer.enviarCodigoPorCorreo(usuario.usuario.correo);
+            console.log(codigoEnviado);
+
+           // Verifica que req.session está disponible antes de guardar el código
+            if (req.session) {
+            console.log('Sesión antes de asignar el código:', req.session);
+            req.session.codigoAutenticacion = codigoEnviado;
+            console.log('Sesión después de asignar el código:', req.session);
+            }
+            res.status(200).json(usuario);
+        } else {
+            res.status(401).json({ mensaje: 'Credenciales inválidas.' });
+        }
     } catch (error) {
         // Manejo de errores
         console.error('Error al iniciar sesion usuario:', error);
         res.status(500).send('Error en el servidor');
     }
 });
+
+
+app.post('/usuario/verificar-codigo', (req, res) => {
+    const { codigoUsuario } = req.body;
+
+    // Recupera el código de la sesión del usuario
+    const codigoGuardado = req.session.codigoAutenticacion;
+    console.log(codigoGuardado + ' ' + codigoUsuario);
+    
+    // Compara el código proporcionado por el usuario con el código almacenado
+    if (codigoUsuario === codigoGuardado) {
+        res.status(200).json({ mensaje: 'Código verificado correctamente.' });
+    } else {
+        res.status(401).json({ mensaje: 'Código incorrecto.' });
+    }
+});
+
+
 
  // Obtener los datos del cuerpo de la solicitud
 app.delete('/usuario/eliminar', async function(req, res) {
@@ -327,7 +350,7 @@ app.get('/usuario/historialCompra', async function(req, res) {
     try {
         const { id_usuario} = req.body; 
         const lista = await controladorServer.s_obtenerHistorialCompra(id_usuario);
-        res.json(lista);
+        res.status(200).json(lista);
     } catch (error) {
         console.error('Error al buscar Usuario por ID:', error);
         res.status(500).send('Error en el servidor');
@@ -796,6 +819,8 @@ app.get('/factura/generar', async (req, res) => {
 
         
         const pdfBytes = await pdf(idFactura,dia,usuario[0], direccion, 'Tarjeta crédito', productos,subtotal,descuento,iva, totalCompra);
+        console.log(usuario[0].correo_electronico+ " correo");
+        const correo= await controladorServer.enviarCorreoFactura(idFactura,usuario[0].correo_electronico,`./FACTURAS/factura_${idFactura}.pdf`);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
         res.send(pdfBytes);
