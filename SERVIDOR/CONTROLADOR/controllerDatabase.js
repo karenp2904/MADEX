@@ -159,7 +159,6 @@ async function  eliminarUsuario (idUsuario)  {
   } catch (error) {
     // Maneja cualquier error y envía una respuesta de error al cliente
     console.error('Error al eliminar usuario:', error.message);
-    res.status(500).json({ error: 'Error al eliminar usuario' });
   }
 }
 
