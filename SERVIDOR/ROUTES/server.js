@@ -167,7 +167,7 @@ app.post('/usuario/login', async function(req, res) {
 });
 
 
-app.post('/usuario/verificar-codigo', (req, res) => {
+app.post('/usuario/verificar-codigo', async function (req, res){
     const { codigoUsuario } = req.body;
 
     // Recupera el código de la sesión del usuario
@@ -179,6 +179,20 @@ app.post('/usuario/verificar-codigo', (req, res) => {
         res.status(200).json({ mensaje: 'Código verificado correctamente.' });
     } else {
         res.status(401).json({ mensaje: 'Código incorrecto.' });
+    }
+});
+
+app.post('/usuario/cambiarPassword', async function(req, res){
+    try {
+        const { contraseña } = req.body;
+
+        const pass= await controladorServer.s_reestablecerContraseña(contraseña);
+    
+        res.status(200).json({ success: true, message: 'Contraseñaa', pass });
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al reestablecer contraseña:', error);
+        res.status(500).send('Error en el servidor');
     }
 });
 
@@ -345,7 +359,6 @@ app.post('/producto/actualizar', async function(req, res) {
 });
 
 
-
 app.get('/usuario/historialCompra', async function(req, res) {
     try {
         const { id_usuario} = req.body; 
@@ -372,6 +385,33 @@ app.get('/producto/inventario', async function(req, res) {
         res.status(500).send('Error en el servidor');
     }
 });
+
+// Ruta para generar el inventario
+app.get('/producto/agregarDestacados', async function(req, res) {
+    try {
+        const { idProducto, idUsuario } = req.body; // Obtén el ID del usuario del cuerpo de la solicitud
+        const productos = await controladorServer.s_agregarProductoDestacado(idProducto,idUsuario);
+        res.send(productos);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al  agregar destacados:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+// Ruta para generar el inventario
+app.get('/producto/obtenerDestacados', async function(req, res) {
+    try {
+        const { idUsuario } = req.body; // Obtén el ID del usuario del cuerpo de la solicitud
+        const productos = await controladorServer.s_obtenerDestacados(idUsuario);
+        res.send(productos);
+    } catch (error) {
+        // Manejo de errores
+        console.error('Error al  obtenerDestacados:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
 
 // Ruta para generar el catálogo
 app.get('/producto/catalogo', async function(req, res) {
@@ -505,8 +545,6 @@ app.get('/producto/CatalogoImagenes', async (req, res) => {
         res.status(500).send('Error en la búsqueda de la ruta');
     }
 });
-
-
 
 
 app.get('/producto/rutas/:nombre', async (req, res) => {

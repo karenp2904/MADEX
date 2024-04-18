@@ -401,6 +401,46 @@ async function db_obtenerDireccionPorUsuario(idUsuario) {
 }
 
 
+async function db_reestablecerContraseña(password) {
+  try {
+    
+
+    return true;
+
+  } catch (error) {
+    console.error("Error al reestablecer contraseña", error);
+    throw new Error("Error al reestablecer contraseña"+ error.message);
+  }
+}
+
+
+async function db_agregarProductoDestacado(idProducto,idUsuario) {
+  try {
+    
+
+    return true;
+
+  } catch (error) {
+    console.error("Error al añadir destacado", error);
+    throw new Error("Error al añadir destacado"+ error.message);
+  }
+}
+
+
+async function db_obtenerProductosDestacados(idUsuario) {
+  try {
+    
+
+    return true;
+
+  } catch (error) {
+    console.error("Error al obtener destacados", error);
+    throw new Error("Error al obtener destacados"+ error.message);
+  }
+}
+
+
+
 module.exports = { db_añadirUsuario,
   db_obtenerTodosLosProductos, db_obtenerCategoriaPorId,
   db_obtenerProductoPorId, db_obtenerNombreProveedorPorId,
@@ -425,6 +465,6 @@ module.exports = { db_añadirUsuario,
   db_obtenerCarrito,
   db_obtenerHistorialDeCompra,
   db_añadirFactura,
-  db_obtenerFactura,
+  db_obtenerFactura,db_agregarProductoDestacado,db_obtenerProductosDestacados,
   db_guardarDireccionEnvio,db_obtenerDireccionPorUsuario
 };

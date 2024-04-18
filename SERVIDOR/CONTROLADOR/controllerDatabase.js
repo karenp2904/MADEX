@@ -516,6 +516,57 @@ async function obtenerDireccionPorUsuario(idUsuario) {
   }
 }
 
+
+async function reestablecerContraseña(contrasena) {
+  try {
+      const passwordCifrada = await cifrarContraseña(contrasena);
+
+      const password = await services.db_reestablecerContraseña(passwordCifrada);
+
+      return password;
+  } catch (error) {
+      console.error('Error al retornar direccion:', error);
+  }
+}
+
+async function agregarProductoDestacado(idProducto,idUsuario) {
+  try {
+
+      const productos = await services.db_agregarProductoDestacado(idProducto,idUsuario);
+
+      return productos;
+  } catch (error) {
+      console.error('Error al obtener destacados:', error);
+  }
+}
+
+async function obtenerDestacados(idUsuario) {
+  try {
+
+      const productos = await services.db_obtenerProductosDestacados(idUsuario);
+
+      const destacados = [];
+
+      for (const item of productos) {
+          const idProducto = item.id_producto;
+          const productoEncontrado = await services.db_obtenerProductoPorId(idProducto);
+          if (productoEncontrado) {
+              // Añade el producto encontrado al arreglo de productos en el carrito
+              destacados.push({
+                  producto: productoEncontrado,
+              });
+          } else {
+              console.error(`El producto con ID ${idProducto} no fue encontrado.`);
+          }
+      }
+      return destacados;
+  } catch (error) {
+      console.error('Error al obtener destacados:', error);
+  }
+}
+
+
+
 //------- PROCESO DE CIFRADO ----------
 
 const bcrypt = require('bcrypt');
@@ -577,7 +628,7 @@ module.exports = {
   obtenerCarrito,
   obtenerHistorialDeCompra,
   añadirFactura,
-  obtenerFactura,
+  obtenerFactura,reestablecerContraseña,obtenerDestacados,agregarProductoDestacado,
   guardarDireccionEnvio,obtenerDireccionPorUsuario
 };
 
