@@ -4,6 +4,8 @@ const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
 const app = express();
+const session = require('express-session');
+const crypto = require('crypto');
 const PORT = 3000;
 
 const controladorServer = require('../CONTROLADOR/controllerServer');
@@ -19,7 +21,13 @@ const producto = require('../ENTIDADES/producto');
 const pdf = require('../ENTIDADES/pdf'); 
  //  instancia de la clase Inventario
 
-
+// Configura el middleware de sesiones
+app.use(session({
+    secret: 'd9f8e4b3c6e2a4b1f9d3a2b4e5f6c1d8e7b2a4c8e5f7a6d4', // Reemplaza con tu secreto
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Establece a true si tengo  HTTPS
+}));
 
 // Middleware para parsear el cuerpo de las solicitudes
 app.use(express.json());
@@ -42,7 +50,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Cambia a la URL de tu aplicación Reac
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
-  });
+});
 
 
 // Iniciar el servidor
@@ -73,24 +81,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Error en el servidor');
 });
 
-
-// Rutas para usuarios
-
-
-/*
-// Rutas para autenticación y autorización
-app.post('/usuario/verificar-credencial', controladorServer.verificarCredencialUsuario);
-app.get('/usuario/:id', controladorServer.obtenerUsuario);
-app.get('/usuarios', controladorServer.obtenerTodosUsuarios);
-
-
-
-
-// Rutas para facturas
-app.post('/facturas/log', controladorServer.logFacturas);
-
-
-*/
 
 
 // Llamar al método recibirProductos para almacenar los productos
@@ -153,13 +143,46 @@ app.post('/usuario/login', async function(req, res) {
         
         const usuario= await controladorServer.manejarInicioSesion(correo,contraseña);        // Enviar respuesta al cliente
         console.log(usuario);
-        res.status(200).json(usuario);
+        
+        if(usuario!=null || usuario!=undefined){
+            console.log(usuario.usuario.correo + " - " );
+            const codigoEnviado = await controladorServer.enviarCodigoPorCorreo(usuario.usuario.correo);
+            console.log(codigoEnviado);
+
+           // Verifica que req.session está disponible antes de guardar el código
+            if (req.session) {
+            console.log('Sesión antes de asignar el código:', req.session);
+            req.session.codigoAutenticacion = codigoEnviado;
+            console.log('Sesión después de asignar el código:', req.session);
+            }
+            res.status(200).json(usuario);
+        } else {
+            res.status(401).json({ mensaje: 'Credenciales inválidas.' });
+        }
     } catch (error) {
         // Manejo de errores
         console.error('Error al iniciar sesion usuario:', error);
         res.status(500).send('Error en el servidor');
     }
 });
+
+
+app.post('/usuario/verificar-codigo', (req, res) => {
+    const { codigoUsuario } = req.body;
+
+    // Recupera el código de la sesión del usuario
+    const codigoGuardado = req.session.codigoAutenticacion;
+    console.log(codigoGuardado + ' ' + codigoUsuario);
+    
+    // Compara el código proporcionado por el usuario con el código almacenado
+    if (codigoUsuario === codigoGuardado) {
+        res.status(200).json({ mensaje: 'Código verificado correctamente.' });
+    } else {
+        res.status(401).json({ mensaje: 'Código incorrecto.' });
+    }
+});
+
+
 
  // Obtener los datos del cuerpo de la solicitud
 app.delete('/usuario/eliminar', async function(req, res) {
@@ -284,9 +307,9 @@ app.post('/producto/actualizarStock', async function(req, res) {
     try {
         const { idProducto, nuevoStock} = req.body; 
         console.log(idProducto, nuevoStock);
-        const producto = await controladorServer.s_actualizarStockProducto(idProducto, nuevoStock);
+        const respuesta = await controladorServer.s_actualizarStockProducto(idProducto, nuevoStock);
         // Devuelve el usuario encontrado en formato JSON
-        res.status(201).json({producto });
+        res.status(201).json({respuesta });
     } catch (error) {
         console.error('Error al buscar Usuario por ID:', error);
         res.status(500).send('Error en el servidor');
@@ -327,7 +350,7 @@ app.get('/usuario/historialCompra', async function(req, res) {
     try {
         const { id_usuario} = req.body; 
         const lista = await controladorServer.s_obtenerHistorialCompra(id_usuario);
-        res.json(lista);
+        res.status(200).json(lista);
     } catch (error) {
         console.error('Error al buscar Usuario por ID:', error);
         res.status(500).send('Error en el servidor');
@@ -451,18 +474,31 @@ app.get('/producto/filtrarColor/:color', async (req, res) => {
     }
 });
 
-
-app.get('/producto/Imagenes/:nombre', async (req, res) => {
-    const nombre = req.params.nombre; 
-
+app.get('/producto/CatalogoImagenes', async (req, res) => {
     try {
-        // Realizar la búsqueda del producto en el inventario
-        inventario =  await obtenerProductosConInventario(req, res);
-        console.log(nombre);
-        const lista = await inventario.obtenerRutasbase64(nombre);
+        // Realizar la búsqueda del inventario de productos
+        inventario = await obtenerProductosConInventario(req, res);
+        
+        // Crear un arreglo para almacenar todas las imágenes de productos
+        const listaTotal = [];
 
-        // Devolver los resultados como respuesta
-        res.json(lista);
+        // Iterar sobre cada producto en el inventario
+        for (const producto of inventario.productos) {
+            // Obtener el nombre del producto
+            const nombreProducto = producto.nombre;
+
+            // Obtener la lista de imágenes base64 para el producto actual
+            const listaImagenes = await inventario.obtenerUnaImagenbase64(nombreProducto);
+
+            // Agregar la lista de imágenes al arreglo total
+            listaTotal.push({
+                producto: nombreProducto,
+                imagenes: listaImagenes
+            });
+        }
+
+        // Devolver el arreglo total de imágenes para todos los productos en el inventario
+        res.json(listaTotal);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error en la búsqueda de la ruta:', error);
@@ -471,14 +507,17 @@ app.get('/producto/Imagenes/:nombre', async (req, res) => {
 });
 
 
+
+
 app.get('/producto/rutas/:nombre', async (req, res) => {
-    const nombre = req.params.nombre; 
+   
 
     try {
+        const nombre = req.params.nombre; 
         // Realizar la búsqueda del producto en el inventario
         inventario =  await obtenerProductosConInventario(req, res);
         console.log(nombre);
-        const lista = await inventario.obtenerRutasImagenesPorNombreProducto(nombre);
+        const lista = await inventario.obtenerRutasbase64(nombre);
 
         // Devolver los resultados como respuesta
         res.json(lista);
@@ -562,7 +601,7 @@ app.delete('/carrito/eliminar', async (req, res) => {
 app.post('/direccion/agregar', async (req, res) => {
     try {
         
-        const { ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion } = req.body;
+        const { ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion } = req.body;
 
         // Crear una instancia de la dirección utilizando los datos recibidos
         const nuevaDireccion = new Direccion ({
@@ -575,7 +614,21 @@ app.post('/direccion/agregar', async (req, res) => {
             descripcion
         });
 
-        const direccionGuardada = await controladorServer.guardarDireccion(nuevaDireccion);
+        const direccionGuardada = await controladorServer.guardarDireccion(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion);
+
+        res.status(201).json(direccionGuardada);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante el proceso
+        console.error('Error al añadir la dirección:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+app.get('/direccion/obtener', async (req, res) => {
+    try {
+        const { ID_Usuario } = req.body;
+
+        const direccionGuardada = await controladorServer.obtenerDireccion(ID_Usuario);
 
         res.status(201).json(direccionGuardada);
     } catch (error) {
@@ -586,24 +639,39 @@ app.post('/direccion/agregar', async (req, res) => {
 });
 
 // Ruta para obtener el resumen de la compra
-app.get('/resumenCompra/idUsuario', async (req, res) => {
+app.get('/resumenCompra', async (req, res) => {
     try {
         // Obtener el ID del usuario de la solicitud
-        const idUsuario = req.params.idUsuario;
+        const { idUsuario} = req.body;
 
-        let direccionGuardada = new Direccion();
-        direccionGuardada=await controladorServer.obtenerDireccion(idUsuario);
+        const dir = await controladorServer.obtenerDireccion(idUsuario);
+
+        console.log(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion);
+
+        let direccionGuardada= new Direccion(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion );
+        
         const costoEnvio= direccionGuardada.calcularCostoEnvio();
         const fecha= direccionGuardada.calcularFechaEstimadaEntrega();
 
-        let contenidoCarrito = new carritoDeCompra();
-        contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
-        const subtotal= contenidoCarrito.calcularTotal();
+        const productos = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const contenidoCarrito = new carritoDeCompra();
+
+
+        productos.forEach(item => {
+            console.log("Item del carrito:", item);
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
+            }
+        });
+        const subtotal= await contenidoCarrito.calcularTotalCompra();
 
         const total= costoEnvio+subtotal;
 
 
-        res.json({carrito: contenidoCarrito,direccion: direccionGuardada,
+        res.json({carrito: contenidoCarrito,direccion: dir,
             subTotal:subtotal,costoEnvio:costoEnvio, fecha:fecha, total:total});
 
     } catch (error) {
@@ -617,26 +685,53 @@ app.get('/resumenCompra/idUsuario', async (req, res) => {
 // Ruta para agregar una factura
 app.post('/factura/agregar', async (req, res) => {
     try {
-       // const { idUsuario, productos, total } = req.body;
+        const { idUsuario, idMetodoDePago} = req.body;
 
-       // let contenidoCarrito = new carritoDeCompra();
-       // contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(idUsuario);
+        console.log(direccionGuardada);
 
-        const usuario = new Usuario(1097490756, "Karen", "Pérez", "karen@example.com", "CC", "contraseña123", "123456789", 2);
-        const metodoPago = "Tarjeta de crédito";
-        const direccion = new Direccion(1, 1097490756, 'Calle', 'Ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
-        const listaProductos = ["Producto 1", "Producto 2", "Producto 3"];
-        const totalCompra = 500; 
+        const direccion = direccionGuardada[0];
+    
+        // Accede a la propiedad `id_direccion`
+        const idDireccion = direccion.id_direccion;
+        console.log(idDireccion);
 
-        const factura = new Factura(usuario, metodoPago, direccion, listaProductos, totalCompra);
+        //PARA LOS ID_PRODUCTO DE ARRAY
+        const productos = await controladorServer.obtenerCarritoCompras(idUsuario);
+
+        const contenidoCarrito = new carritoDeCompra();
+
+    
+        let idProductos = [];
+
+        productos.forEach(item => {
+            console.log("Item del carrito:", item);
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    if (producto && producto.id_producto) {
+                        let integerInput = parseInt(producto.id_producto, 10);
+                        if (Number.isInteger(integerInput)) {
+                            idProductos.push(integerInput);
+                        } else {
+                            console.log("El valor ingresado no es un número entero");
+                        }
+                    }
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
+            }
+        });
+
+        console.log("IDs de productos en el carrito:", idProductos);
+
+        console.log(contenidoCarrito);
+        
+        const valor_total= await contenidoCarrito.calcularTotalCompra();
+        console.log("TOTAL: "+ valor_total);
+
+        const factura= await controladorServer.s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProductos);
         
 
-        const resumenFactura = factura.obtenerResumen();
-        console.log(resumenFactura);
-
-        //const subtotal= contenidoCarrito.calcularTotal();
-
-        res.status(201).json(facturaCreada);
+        res.status(201).json('facturaCreada ' + factura);
     } catch (error) {
         // envía una respuesta de error al cliente
         console.error('Error al crear la factura:', error);
@@ -645,102 +740,87 @@ app.post('/factura/agregar', async (req, res) => {
 });
 
 
+
+// Ruta para agregar una factura
+app.get('/factura/obtener', async (req, res) => {
+    try {
+        const { idFactura} = req.body;
+
+        const factura = await controladorServer.s_obtenerFactura(idFactura);
+        
+        res.status(201).json(factura);
+    } catch (error) {
+        // envía una respuesta de error al cliente
+        console.error('Error al crear la factura:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+
+
+
 app.get('/factura/generar', async (req, res) => {
     try {
 
+        const {idFactura} = req.body;
+
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
-        const idFactura = '000111';
-        const usuario = new Usuario(1097490756, "Karen", "Pérez", "kp3707194@gmail.com", "CC", "contraseña123", "123456789", 2);
-        const metodoPago = "Tarjeta de crédito";
-        const direccion = new Direccion(1, 1097490756, 'calle', 'ciudad', 'Codigo_Postal', 'departamento', 'barrio', 'descripcion' )
-        const listaProductos = [
-            {
-                producto: new producto({
-                    id_producto: 1,
-                    nombre: 'cama',
-                    descripcion: 'cama de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 2,
-                    nombre: 'puerta',
-                    descripcion: 'puerta de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 2 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 3,
-                    nombre: 'techo',
-                    descripcion: 'techo de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 3,
-                    nombre: 'techo',
-                    descripcion: 'techo de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
-            },
-            {
-                producto: new producto({
-                    id_producto: 3,
-                    nombre: 'techo',
-                    descripcion: 'techo de madera',
-                    precio: 2000,
-                    estado_producto: 'nuevo',
-                    color: 'marron',
-                    stock: 90,
-                    descuento: 15,
-                    proveedor: 'proveedor',
-                    categoria: 'muebles'
-                }),
-                cantidad: 1 // Cantidad del producto en el carrito
+        const factura = await controladorServer.s_obtenerFactura(idFactura)
+        const fecha = new Date();
+        const dia = fecha.getTime();
+        console.log("idUser "+factura[0].id_usuario);
+        const usuario = await controladorServer.s_obtenerUsuarioId(factura[0].id_usuario);
+        const direccionGuardada = await controladorServer.obtenerDireccion(factura[0].id_usuario);
+        console.log(direccionGuardada);
+
+        const direccion = direccionGuardada[0];
+    
+        // Accede a la propiedad `id_direccion`
+        const idDireccion = direccion.id_direccion;
+        console.log(idDireccion);
+
+        //PARA LOS ID_PRODUCTO DE ARRAY
+        const productos = await controladorServer.obtenerCarritoCompras(factura[0].id_usuario);
+
+        const contenidoCarrito = new carritoDeCompra();
+
+    
+        let idProductos = [];
+
+        productos.forEach(item => {
+            console.log("Item del carrito:", item);
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    if (producto && producto.id_producto) {
+                        let integerInput = parseInt(producto.id_producto, 10);
+                        if (Number.isInteger(integerInput)) {
+                            idProductos.push(integerInput);
+                        } else {
+                            console.log("El valor ingresado no es un número entero");
+                        }
+                    }
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
             }
-        ];
+        });
+
+        console.log("IDs de productos en el carrito:", idProductos);
+
+        console.log(contenidoCarrito);
+
         
         
         // Definir contenido de los totales
-        const subtotal = 200.00; // Ejemplo de subtotal
-        const descuento = 100; // Ejemplo de descuento
-        const iva = 20; // Ejemplo de IVA
-        const totalCompra = subtotal - descuento + iva;
+        const subtotal =  await contenidoCarrito.calcularTotalProductos(); // Ejemplo de subtotal
+        const descuento =  await contenidoCarrito.calcularTotalDescuento(); // Ejemplo de descuento
+        const iva =  await contenidoCarrito.calcularIVA(19); // Ejemplo de IVA
+        const totalCompra =  await contenidoCarrito.calcularTotalCompra();
+
+        console.log(subtotal,descuento,iva,totalCompra);
 
         
-
-        const pdfBytes = await pdf(idFactura,usuario, direccion, metodoPago, listaProductos,subtotal,descuento,iva, totalCompra);
+        const pdfBytes = await pdf(idFactura,dia,usuario[0], direccion, 'Tarjeta crédito', productos,subtotal,descuento,iva, totalCompra);
+        console.log(usuario[0].correo_electronico+ " correo");
+        const correo= await controladorServer.enviarCorreoFactura(idFactura,usuario[0].correo_electronico,`./FACTURAS/factura_${idFactura}.pdf`);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
         res.send(pdfBytes);

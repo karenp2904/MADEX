@@ -24,7 +24,6 @@ async function manejarInicioSesion(correo, contraseña) {
 
 
 
-
 async function s_verificarCredencialUsuario(correo, contraseña) {
     try {
         const usuarios = await s_obtenerTodosUsuarios();
@@ -106,10 +105,8 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
                     color: producto.color,
                     stock: parseFloat(producto.stock),
                     descuento: (producto.descuento),
-                    idProveedor: producto.idProveedor,
-                    //proveedor: producto.proveedor,
-                    idCategoria: producto.idCategoria,
-                    //categoria: producto.categoria
+                    idProveedor: producto.proveedores_id_proveedores,
+                    idCategoria: producto.categoria_idcategoria,
                 };
             });
     
@@ -218,6 +215,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             console.error('Error al añadir usuario:', error);
         }
     }
+
     async function s_obtenerUsuarioId(usuarioId) {
         try {
             // Busca el usuario por su ID en la base de datos
@@ -276,7 +274,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
         try {
 
             const facturas = await controllerDB.obtenerHistorialDeCompra(id_usuario);
-        
+            
             // Devuelve el array de objetos "producto"
             console.log('en controllerServer');
             console.log("HistorialCompra" + facturas);
@@ -439,10 +437,33 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
         }
     }
 
-
-    async function guardarDireccion(nuevaDireccion) {
+    
+    async function s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto){
         try {
-            const direccion = await controllerDB.guardarDireccionEnvio(nuevaDireccion);
+        const factura = await controllerDB.añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
+        return factura;
+        } catch (error) {
+        console.error("Error al añadir la factura", error);
+        throw new Error("Error al añadir la factura"+ error.message);
+        }
+    
+    }
+    
+    
+    async function s_obtenerFactura(idFactura){
+        try {
+        const factura = await controllerDB.obtenerFactura(Number(idFactura));
+        return factura;
+        } catch (error) {
+        console.error("Error al obtener la factura", error);
+        throw new Error("Error al obtener la factura"+ error.message);
+        }
+    }
+
+
+    async function guardarDireccion(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion) {
+        try {
+            const direccion = await controllerDB.guardarDireccionEnvio(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion);
 
             return direccion;
         } catch (error) {
@@ -463,6 +484,81 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     }
     
 
+//---------- correo ---------
+    const nodemailer = require('nodemailer');
+        
+    // Configuración del transporte para enviar correos
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'madex1500@gmail.com',
+            pass: 'uesh rxak ifgu qcgz' // Reemplaza con tu contraseña de aplicación específica
+        }
+    });
+
+    // Función para enviar el correo electrónico con el PDF adjunto
+async function enviarCorreoFactura(idFactura, correo, filePath) {
+    try {
+        // Adjunta el PDF al correo electrónico
+        const mailOptions = {
+            from: 'madex1500@gmail.com',
+            to: correo,
+            subject: 'Factura de compra',
+            text: 'Adjuntamos la factura de tu compra.',
+            attachments: [
+                {
+                    filename: `factura_${idFactura}.pdf`,
+                    path: filePath // Aquí es donde se debe especificar la ruta del archivo PDF
+                }
+            ]
+        };
+
+        // Envía el correo electrónico
+        await transporter.sendMail(mailOptions);
+
+        console.log('Correo enviado con la factura adjunta.');
+    } catch (error) {
+        console.error('Error al enviar el correo electrónico:', error);
+        throw error;
+    }
+}
+
+// Función para generar un código aleatorio
+function generarCodigoAleatorio(longitud = 6) {
+    const caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let codigo = '';
+    for (let i = 0; i < longitud; i++) {
+        const indice = Math.floor(Math.random() * caracteres.length);
+        codigo += caracteres[indice];
+    }
+    return codigo;
+}
+
+// Función para enviar un código aleatorio por correo electrónico
+async function enviarCodigoPorCorreo(destinatario) {
+    const codigo = generarCodigoAleatorio(); // Genera un código aleatorio
+    const asunto = 'Código de autenticación';
+    const mensaje = `Tu código de autenticación es: ${codigo}`;
+
+    // Configura las opciones de correo electrónico
+    const mailOptions = {
+        from: 'madex1500@gmail.com', 
+        to: destinatario,
+        subject: asunto,
+        text: mensaje
+    };
+
+    try {
+        // Envía el correo electrónico con el código
+        await transporter.sendMail(mailOptions);
+        console.log('Correo enviado con el código de autenticación.');
+        return codigo; // Devuelve el código para almacenarlo y usarlo más tarde
+    } catch (error) {
+        console.error('Error al enviar el correo electrónico:', error);
+        throw error;
+    }
+}
+
 
 
 module.exports = {
@@ -470,7 +566,8 @@ module.exports = {
     listaDeProductos,manejarInicioSesion,s_actualizarProducto,s_actualizarStockProducto,
     definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
-    actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra
+    actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra,s_añadirFactura, s_obtenerFactura,
+    enviarCorreoFactura,enviarCodigoPorCorreo
 };
 
 
