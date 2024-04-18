@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { Login, Register } from '../pages';
+import { Login, Verificar, Register } from '../pages';
 import { Router } from './Router';
 import { RegisterEmpresa } from '../pages/register-empresa/RegisterEmpresa';
 import { Catalogo } from '../pages/catalogo/Catalogo';
@@ -18,6 +18,7 @@ const AppRoutes: FC = () => {
       <Routes>
         <Route element={<Layout1 />}>
           <Route path={Router.login} element={<Login />} />
+          <Route path={Router.verificar} element={<Verificar />} />
           <Route path={Router.register} element={<Register/>} />
           <Route path={Router.registeEmpresa} element={<RegisterEmpresa />} />
 
