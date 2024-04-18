@@ -482,6 +482,38 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             console.error('Error al retornar direccion:', error);
         }
     }
+
+    async function s_reestablecerContraseña(contrasena) {
+        try {
+            const password = await controllerDB.reestablecerContraseña(contrasena);
+
+            return password;
+        } catch (error) {
+            console.error('Error al reestablecer contraseña:', error);
+        }
+    }
+
+    async function s_agregarProductoDestacado(idProducto,idUsuario) {
+        try {
+
+            const productos = await controllerDB.agregarProductoDestacado(idProducto,idUsuario);
+    
+            return productos;
+        } catch (error) {
+            console.error('Error al añadir destacados:', error);
+        }
+    }
+
+    async function s_obtenerDestacados(idUsuario) {
+        try {
+            const productos = await controllerDB.obtenerDestacados(idUsuario);
+    
+            return productos;
+        } catch (error) {
+            console.error('Error al obtener destacados:', error);
+        }
+    }
+    
     
 
 //---------- correo ---------
@@ -492,7 +524,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
         service: 'gmail',
         auth: {
             user: 'madex1500@gmail.com',
-            pass: 'uesh rxak ifgu qcgz' // Reemplaza con tu contraseña de aplicación específica
+            pass: 'uesh rxak ifgu qcgz' //contraseña de aplicación específica
         }
     });
 
@@ -567,7 +599,7 @@ module.exports = {
     definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra,s_añadirFactura, s_obtenerFactura,
-    enviarCorreoFactura,enviarCodigoPorCorreo
+    enviarCorreoFactura,enviarCodigoPorCorreo,s_reestablecerContraseña,s_agregarProductoDestacado,s_obtenerDestacados
 };
 
 
