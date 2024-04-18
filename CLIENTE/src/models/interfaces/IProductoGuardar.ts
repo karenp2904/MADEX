@@ -1,5 +1,4 @@
-export interface IProduct {
-    id_producto: string;
+export interface IProductoGuardar {
     nombre: string;
     descripcion: string;
     precio: number;

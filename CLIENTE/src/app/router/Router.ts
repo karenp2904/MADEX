@@ -7,5 +7,15 @@ export const Router = {
     "dashboard": "/dashboard",
     "catalogo": "/catalogo",
     "adminInventario": "/admin-inventario",
-    "categorias": "/categorias"
+    "adminUsuarios": "/admin-usuarios",
+    "adminFacturas": "/admin-facturas",
+    "adminLog": "/admin-log",
+    "categorias": "/categorias",
+    "detalle": "/detalle",
+    "principal": "/principal",
+    "carrito": "/carrito",
+    "procesoCompraConfirmar": "/proceso-compra-confirmar",
+    "procesoCompraDatos": "/proceso-compra-datos",
+    "procesoCompraPago": "/proceso-compra-pago",
+
 }

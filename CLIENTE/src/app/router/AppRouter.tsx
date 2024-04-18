@@ -9,6 +9,16 @@ import { Layout2 } from '../layout/Layout2';
 
 import { AdminInventario } from '../pages/admin-inventario/AdminInventario';
 import { Categorias } from '../pages/categorias/Categorias';
+import { AdminUsuarios } from '../pages/admin-usuarios/AdminUsuarios';
+import { Detalle } from '../pages/detalle/Detalle';
+import { AdminFacturas } from '../pages/admin-facturas/AdminFacturas';
+import { AdminLog } from '../pages/admin-log/AdminLog';
+import { Principal } from '../pages/principal/Principal';
+import { Carrito } from '../pages/carrito/Carrito';
+import { ProcesoCompraConfirmar } from '../pages/proceso-compra-confirmar/ProcesoCompraConfirmar';
+import { ProcesoCompraDatos } from '../pages/proceso-compra-datos/ProcesoCompraDatos';
+import { ProcesoCompraPago } from '../pages/proceso-compra-pago/ProcesoCompraPago';
+
 
 const baseurl = import.meta.env.BASE_URL;
 
@@ -26,7 +36,18 @@ const AppRoutes: FC = () => {
         <Route element={<Layout2 />}>
           <Route path={Router.catalogo} element={<Catalogo />} />
           <Route path={Router.adminInventario} element={<AdminInventario />} />
+          <Route path={Router.adminUsuarios} element={<AdminUsuarios />} />
+          <Route path={Router.adminFacturas} element={<AdminFacturas />} />
+          <Route path={Router.adminLog} element={<AdminLog />} />
           <Route path={Router.categorias} element={<Categorias />} />
+          <Route path={Router.detalle} element={<Detalle />} />
+          <Route path={Router.carrito} element={<Carrito />} />
+          <Route path={Router.principal} element={<Principal />} />
+          <Route path={Router.procesoCompraConfirmar} element={<ProcesoCompraConfirmar />} />
+          <Route path={Router.procesoCompraDatos} element={<ProcesoCompraDatos />} />
+          <Route path={Router.procesoCompraPago} element={<ProcesoCompraPago />} />
+          
+
 
           <Route path="*" element={<Navigate to={Router.login} />} />
         </Route>
