@@ -932,17 +932,23 @@ app.get('/Alianza/obtenerCatalogo', async function (req, res) {
 app.post('/Alianza/solicitarCotizacion', async (req, res) => {
     try {
         // Recibir la información del cuerpo de la solicitud POST
-        const productos = req.body;
+        const body = req.body;
+        
+        // Verificar que 'body.productos' existe y es un array
+        if (!body || !Array.isArray(body.productos)) {
+            return res.status(400).json({ error: 'Formato de datos incorrecto' });
+        }
 
         // Crear un objeto con el formato requerido
         const cotizacion = {
-            productos: productos.map(producto => ({
+            productos: body.productos.map(producto => ({
                 id_producto: producto.id_producto,
                 cantidad: producto.cantidad
             }))
         };
 
-        await archivos.solicitudAlianza(cotizacion);
+        const hola= await archivos.solicitudAlianza(cotizacion);
+        console.log(hola);
 
         const respuesta = await archivos.guardarRespuesta();
 
