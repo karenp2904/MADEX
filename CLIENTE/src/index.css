@@ -1,9 +1,10 @@
-/* index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-    --primary-color: #A67C5D;
+    --primary-color: #A67C5D !important;
     --secondary-color: #F6F3EC;
+    --color-gris: #f5f5f5;
+    --color-ardilla: #866349;
 }

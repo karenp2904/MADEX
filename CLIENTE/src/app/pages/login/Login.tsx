@@ -28,12 +28,12 @@ export const Login = () => {
                         ><strong>Usuario</strong></label>
                         <input
                             name="email"
-                            className="indent-10 bg-[length:1.5rem] bg-[10px] bg-user bg-no-repeat h-12 rounded-xl placeholder:text-primary-color"
+                            className=" outline-none  indent-10 bg-[length:1.5rem] bg-[10px] bg-user bg-no-repeat h-12 rounded-xl placeholder:text-primary-color"
                             placeholder="Correo electrónico"
                             style={{
                                 boxShadow: "-2px 2px 2px gray"
                             }}
-                            type=""
+                            type="email"
                         />
                     </div>
                 </div>
@@ -45,12 +45,12 @@ export const Login = () => {
                         ><strong>Contraseña</strong></label>
                         <input
                             name="password"
-                            className="indent-10 bg-[length:1.5rem] bg-[10px] bg-lock bg-no-repeat h-12 rounded-xl placeholder:text-primary-color"
+                            className="outline-none indent-10 bg-[length:1.5rem] bg-[10px] bg-lock bg-no-repeat h-12 rounded-xl placeholder:text-primary-color"
                             placeholder="Contraseña"
                             style={{
                                 boxShadow: "-2px 2px 2px gray"
                             }}
-                            type=""
+                            type="password"
                         />
                     </div>
                 </div>
