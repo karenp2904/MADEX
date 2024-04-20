@@ -539,6 +539,25 @@ app.get('/producto/CatalogoImagenes', async (req, res) => {
     }
 });
 
+app.get('/producto/CatalogoImagenes/:nombre', async (req, res) => {
+    try {
+        const nombre = req.params.nombre; 
+        const listaImagenes = await inventario.obtenerUnaImagenbase64(nombre);
+        
+        res.write(JSON.stringify({
+            producto: nombre,
+            imagenes: Array.isArray(listaImagenes) 
+                        ? listaImagenes[0] 
+                            ? listaImagenes[0] 
+                            : listaImagenes
+                        : listaImagenes
+        }));
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error al obtener el catálogo de imágenes de productos:', error);
+        res.status(500).send('Error al obtener el catálogo de imágenes de productos');
+    }
+});
 
 
 
