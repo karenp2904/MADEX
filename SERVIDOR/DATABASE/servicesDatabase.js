@@ -1,33 +1,32 @@
 const pool = require('./databaseConexion');
 
 
-
-
-async function db_obtenerTodosLosProductos () {
+async function db_obtenerTodosLosProductos () { 
   try {
-    const allProductos  = await pool.query('SELECT * FROM productos');
-   // console.log("productos en db" +allProductos); //  ver los resultados antes de devolverlos
-   console.log(allProductos.rows);
+    const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
+    console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
+
     return allProductos.rows;
   } catch (error) {
-    console.error("Error al obtener los productos:", error);
-    throw new Error("Error al obtener los productos");
+    console.error("Error al ejecutar la consulta:", error);
+    throw new Error("Error al ejecutar la consulta");
   }
 }
 
 async function db_obtenerListaProveedores(){
   try {
-    let proveedor = await pool.query('SELECT * FROM proveedor');
+    let proveedor = await pool.query('SELECT * FROM db_obtenerListaProveedores()');
     return proveedor.rows;
+
   } catch (error) {
     console.error("Error al obtener proveedor :", error);
     throw new Error("Error al obtener proveedor");
   }
 }
-/*
+
 async function db_obtenerNombreProveedorPorId(idProveedor) {
   try {
-      const query = 'SELECT nombreempresa FROM proveedor WHERE id_proveedor = $1';
+      const query = ('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [idProveedor]);
       const values = [idProveedor];
       const result = await pool.query(query, values);
 
@@ -41,18 +40,14 @@ async function db_obtenerNombreProveedorPorId(idProveedor) {
       throw new Error("Error al obtener nombre del proveedor por ID");
   }
 }
-*/
 
-async function db_obtenerNombreProveedorPorId(id) {
+
+
+async function db_obtenerNombreProveedorPorId (id) { //Retorna texto
   try {
-    // Ejecutar la consulta SQL para obtener el nombre del proveedor por su ID
-    let prov = await pool.query('SELECT nombreempresa FROM proveedor WHERE id_proveedores = $1', [id]);
-    
-    // Imprimir el resultado en la consola (opcional)
-    console.log(prov.rows[0]);
-    
-    // Devolver el resultado (nombre del proveedor)
-    return prov.rows[0];
+    let prov = await pool.query('SELECT * FROM db_obtenerNombreProveedorPorId($1)', [id]);
+    return prov.rows;
+
   } catch (error) {
     // Capturar y lanzar cualquier error que ocurra durante la consulta
     throw error;
@@ -63,16 +58,17 @@ async function db_obtenerNombreProveedorPorId(id) {
 
 async function db_obtenerCategoriaPorId (id) {
   try {
-    let cat = await pool.query('SELECT nombre FROM categoria WHERE idcategoria = $1', [id]);
-    return cat.rows[0];
+    let cat = await pool.query('SELECT * FROM db_obtenerCategoriaPorId($1)', [id]);
+    return cat.rows;
   } catch (error) {
-    throw error;
+    console.error("Error al obtener la categoria:", error);
+    throw new Error("Error al obtener la categoria");
   }
 };
 
 async function db_obtenerListaCategorias(){
   try {
-    const categoria = await pool.query('SELECT * FROM categoria');
+    const categoria = await pool.query('db_obtenerListaCategorias');
     return categoria.rows;
   } catch (error) {
     console.error("Error al obtener categorias :", error);
@@ -83,79 +79,181 @@ async function db_obtenerListaCategorias(){
 
 async function db_obtenerProductoPorId (id) {
   try {
-    const producto = await pool.query('SELECT * FROM productos WHERE id_producto = $1', [id]);
+    const producto = await pool.query('SELECT * FROM db_obtenerProductoPorId($1);', [id]); 
     return producto.rows;
+
   } catch (error) {
     throw error;
   }
 };
 
 
-async function db_añadirUsuario(){
+async function db_añadirUsuario(id_usuario, nombre_usuario, apellido_usuario, correo, 
+  password, tipo_documento, telefono, idRol){
+    try {
+    const newusuario = await pool.query(
+    'CALL db_añadirUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
+                              correo, password, tipo_documento, telefono, idRol]);
+      return true;
 
+    } catch (error) {
+    console.error("Error al añadir usuario");
+    throw new Error("Error al añadir usuario service"+ error.message);
 }
-
-async function db_verificarCredencialUsuario(){
-
-}
-
-async function db_eliminarUsuario(){
-
-}
-
-async function db_actualizarUsuario(){
-
-}
-
-async function db_añadirEmpresa(){
-
 }
 
 
-async function db_obtenerUsuario(){
 
+async function db_eliminarUsuario(idUsuario){
+  try{
+    const usuario = await pool.query('CALL db_eliminarUsuario($1);', [idUsuario]);
+
+    return true;
+
+  }catch(error){
+    console.error("No se pudo eliminar el usuario");
+    throw new Error("Error al añadir  usuario Service" + error.message);
+  }
+}
+
+//El id de usuario es una llave promaria, no se puede editar!!!
+async function db_actualizarUsuario(id_usuario, nombre_usuario, apellido_usuario, correo,contraseña, tipo_documento, telefono, idRol){
+  try {
+    const usuario = await pool.query(
+      'CALL db_actualizarUsuario($1,$2,$3,$4,$5,$6,$7,$8);',[id_usuario, nombre_usuario, apellido_usuario,
+                                                            correo, contraseña, tipo_documento, telefono, idRol]);
+    return true;
+
+  } catch (error) {
+    console.error("Error al actualizar usuario");
+    throw new Error("Error al actualizar usuario");
+  }
+}
+
+
+async function db_actualizarUsuarioEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo,contraseña, tipo_documento, telefono, idRol, 
+                                      nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro){
+  try {
+    const usuarioEmpresa = await pool.query(
+      'CALL db_actualizarUsuarioEmpresa($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);',[id_usuario, nombre_usuario, apellido_usuario,
+      correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro]);
+
+    return true;
+    
+  } catch (error) {
+    console.error("Error al actualizar usuario");
+    throw new Error("Error al actualizar usuario");
+  }
+}
+
+async function db_añadirEmpresa(id_usuario, nombre_usuario, apellido_usuario, correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, 
+                                nombreEmpresa, razonSocial, cargo, rubro){
+  try {
+      const empresa = await pool.query(
+        'CALL db_añadirEmpresa($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13);',[id_usuario, nombre_usuario, apellido_usuario,
+        correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro]);
+
+      return true;
+
+    } catch (error) {
+      console.error("Error al actualizar usuario");
+      throw new Error("Error al actualizar usuario "+ error.message);
+    }
+  }
+
+
+async function db_obtenerUsuario(idUsuario){
+  try {
+    let usuario = await pool.query('SELECT * FROM db_obtenerUsuario($1)', [idUsuario]);
+    return usuario.rows;
+
+  } catch (error) {
+    console.error("Error al obtener usuario", error);
+    throw new Error("Error al obtener usuario"+ error.message);
+  }
 }
 
 async function db_obtenerTodosUsuarios(){
+  try {
+    let usuarios = await pool.query('SELECT * FROM db_obtenerTodosUsuarios();');
+    console.log("usuarios en db", usuarios.rowCount); // Ver los resultados antes de devolverlos
+    return usuarios.rows;
 
+  } catch (error) {
+    console.error("Error al obtener usuarios :", error);
+    throw new Error("Error al obtener usuarios"+ error.message);
+  }
 }
 
 
-async function db_añadirProducto(nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria){
+async function db_añadirProducto(nombre, descripcion, precio, estado_producto, color, 
+                                stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria){
   try {
     const newProducto = await pool.query(
-      'INSERT INTO Productos (nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      'CALL db_añadirProducto($1,$2,$3,$4,$5,$6,$7,$8,$9);',
       [nombre, descripcion, precio, estado_producto, color, stock, descuento, Proveedores_id_Proveedores, Categoria_idCategoria]
     );
-  
-    return newProducto.rows[0];
+    return true;
+
   } catch (error) {
-    throw error;
+    console.error("Error al insertar el producto");
+    throw new Error("Error al insertar el producto "+ error.message);
   }
 };
 
-async function db_eliminarProducto(){
-    
-}
-async function db_descontinuarProducto(){
-    
-}
-
-async function db_actualizarProducto(){
-    
-}
-
-async function db_editarStock(){
-
+async function db_actualizarProducto(idProducto,nombre, descripcion, precio, estado_producto, color, 
+                                      stock, descuento, idProveedor, idCategoria) {
+    try {
+        const producto = await pool.query('CALL db_actualizarProducto($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)', 
+                                          [idProducto,nombre, descripcion, precio, estado_producto, color,
+                                          stock, descuento, idProveedor, idCategoria]);
+        return true;
+    } catch (error) {
+        console.error('Error al actualizar el producto:', error);
+        throw error.message;
+    }
 }
 
+
+async function db_eliminarProducto(id_producto){
+  try {
+    const producto = await pool.query('CALL db_eliminarProducto($1);', [id_producto]);
+    return true;
+
+  } catch (error) {
+    console.error("Error al eliminar el producto", error);
+    throw new Error("Error service");
+  }
+}
+
+
+async function db_descontinuarProducto(id_producto,estado){
+  try {
+    const producto = await pool.query('CALL db_descontinuarProducto($1,$2);', [id_producto], [estado]);
+    return true;
+
+  } catch (error) {
+    console.error("Error al descontinuar el producto", error);
+    throw new Error("Error service");
+  }
+}
+
+
+/*metodo para modificar el stock. Se recomienda obtener el stock actual del producto*/
+
+async function db_editarStock(id_producto, stock) {
+  try {
+      const historial = await pool.query('CALL db_editarStock($1, $2);', [id_producto, stock]);
+
+      return true;
+  } catch (error) {
+      console.error("Error al editar el stock:", error.message); 
+      throw new Error("Error service" + error.message);
+  }
+
+}
 
 async function db_logInventario(){
-
-}
-
-
-async function db_logFacturas(){
 
 }
 
@@ -164,37 +262,183 @@ async function db_logUsuarios(){
 
 }
 
-async function db_añadirProductosCarrito(){
+//Retorna un booleano
+async function db_verificarClienteActivo(idUsuario){
+  try {
+    const existe = await pool.query('CALL db_verificarClienteActivo($1);', [idUsuario]);
+    return existe;
 
-}
+    return true;
 
-async function db_editarCarrito(){
-
-}
-
-async function db_verificarClienteActivo(){
+  } catch (error) {
+    console.error("Error al verificar cliente activo");
+    throw new Error("Error al verificar cliente activo");
+  }
 } 
 
-async function  db_obtenerCarrito(){
 
+async function  db_añadirProductoCarrito(idUsuario,idproducto, cantidad){
+    // se manda el producto  con la cantidad que se desea
+    try {
+      const newProducto = await pool.query('CALL db_añadirProductosCarrito($1,$2,$3);', 
+      [idUsuario, idproducto, cantidad]);
+
+      return true;
+
+    } catch (error) {
+      console.error("Error al insertar el producto en el carrito de compras");
+      throw new Error("Error service "+ error.message);
+    }
+  }
+  
+  async function  db_modificarCantidadProductoCarrito(idUsuario,idproducto, cantidad){ 
+    // Busca según el idProducto del usuario y modifica la cantidad
+    try {
+      const resetProducto = await pool.query('CALL db_modificarCantidadProductoCarrito($1,$2,$3);', 
+      [idUsuario, idproducto, cantidad]);
+
+      return true;
+
+    } catch (error) {
+      console.error("Error al actualizar la cantidad del producto en el carrito de compras");
+      throw new Error("Error al actualizar service "+ error.message); 
+    }
+  }
+  
+
+
+  async function  db_eliminarProductoCarrito(idUsuario,idProducto){//TODO
+      // se manda el idproducto a eliminar del usuario
+      try {
+        const newProducto = await pool.query('CALL db_eliminarProductoCarrito($1,$2);', 
+        [idUsuario, idProducto]);
+        return true;
+    
+      } catch (error) {
+        console.error("Error al eliminar el producto del carrito de compras");
+        throw new Error("Error al eliminar el producto en del carrito de compras service"+ error.message);
+      }
+  }
+
+  
+  async function  db_obtenerCarrito(idUsuario){
+      // obtener todos los id de producto y la cantidad
+      // luego db_obtenerProductoPorId 
+      try {
+        const carrito = await pool.query('SELECT * FROM db_obtenerCarrito($1);',[idUsuario]);
+        return carrito.rows;
+      } catch (error) {
+        console.error("Error al obtener el carrito");
+        throw new Error("Error al obtener el carrito service"+ error.message);
+      }
+  }
+
+async function db_obtenerHistorialDeCompra(id_usuario){ 
+  try {
+    console.log(id_usuario);
+    const historial = await pool.query('SELECT * FROM db_obtenerHistorialDeCompra($1)', [id_usuario]); 
+    return historial.rows;
+
+  } catch (error) {
+    console.error("Error al obtener el historial :", error);
+    throw new Error("Error al obtener el historial"+ error.message);
+  }
 }
 
-async function db_obtenerHistorialDeCompra(){
 
+//El id de la factura y la fecha se generan automáticamente
+//el idProducto es una lista
+async function db_añadirFactura(valor_total, idMetodoDePago, 
+                                idDireccion, idUsuario, idProducto){
+  try {
+    const result = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', 
+    [valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto]);
+
+    return result;
+    
+  } catch (error) { 
+    console.error("Error al añadir la factura service ", error);
+    throw new Error("Error al añadir la factura service "+ error.message);
+  }
 }
 
-async function db_añadirFactura(){
+async function db_obtenerFactura(idFactura){
+  try {
+    const factura = await pool.query('SELECT * FROM db_obtenerFactura($1);', [idFactura]); 
+    return factura.rows;
 
+  } catch (error) {
+    console.error("Error al obtener la factura", error);
+    throw new Error("Error al obtener la factura"+ error.message);
+  }
 }
 
 
-async function db_obtenerFactura(){
+async function db_guardarDireccionEnvio(ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion) {
+  try {
+    const direccion = await pool.query('CALL db_guardarDireccionEnvio($1, $2, $3, $4, $5, $6, $7);', 
+      [ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion]); 
 
+    return true;
+  } catch (error) {
+    console.error("Error al guardar la dirección de envio", error);
+    throw new Error("Error al guardar la dirección de envio: " + error.message);
+  }
 }
 
-async function db_guardarDireccionEnvio(){
 
+
+async function db_obtenerDireccionPorUsuario(idUsuario) {
+  try {
+    const direccion = await pool.query('SELECT * FROM db_obtenerDireccionPorUsuario($1);', [idUsuario]); 
+
+    return direccion.rows;
+
+  } catch (error) {
+    console.error("Error al obtener la dirección de envio", error);
+    throw new Error("Error al obtener la dirección de envio"+ error.message);
+  }
 }
+
+
+async function db_reestablecerContraseña(password) {
+  try {
+    
+
+    return true;
+
+  } catch (error) {
+    console.error("Error al reestablecer contraseña", error);
+    throw new Error("Error al reestablecer contraseña"+ error.message);
+  }
+}
+
+
+async function db_agregarProductoDestacado(idProducto,idUsuario) {
+  try {
+    
+
+    return true;
+
+  } catch (error) {
+    console.error("Error al añadir destacado", error);
+    throw new Error("Error al añadir destacado"+ error.message);
+  }
+}
+
+
+async function db_obtenerProductosDestacados(idUsuario) {
+  try {
+    
+
+    return true;
+
+  } catch (error) {
+    console.error("Error al obtener destacados", error);
+    throw new Error("Error al obtener destacados"+ error.message);
+  }
+}
+
 
 
 module.exports = { db_añadirUsuario,
@@ -206,7 +450,6 @@ module.exports = { db_añadirUsuario,
   db_eliminarUsuario,
   db_actualizarUsuario,
   db_añadirEmpresa,
-  db_verificarCredencialUsuario,
   db_obtenerUsuario,
   db_obtenerTodosUsuarios,
   db_añadirProducto,
@@ -215,14 +458,13 @@ module.exports = { db_añadirUsuario,
   db_actualizarProducto,
   db_editarStock,
   db_logInventario,
-  db_logFacturas,
   db_logUsuarios,
-  db_añadirProductosCarrito,
-  db_editarCarrito,
+  db_añadirProductoCarrito,db_modificarCantidadProductoCarrito,
+  db_eliminarProductoCarrito,
   db_verificarClienteActivo,
   db_obtenerCarrito,
   db_obtenerHistorialDeCompra,
   db_añadirFactura,
-  db_obtenerFactura,
-  db_guardarDireccionEnvio
+  db_obtenerFactura,db_agregarProductoDestacado,db_obtenerProductosDestacados,
+  db_guardarDireccionEnvio,db_obtenerDireccionPorUsuario
 };

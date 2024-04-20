@@ -1,6 +1,6 @@
 import Logo from "/icon/icon-primary.svg";
 import Arrow from "/arrow/arrow-left-primary.svg";
-
+import { Router } from "../../router/Router";
 export const RegisterEmpresa = () => {
 
     const Input = ({
@@ -38,6 +38,7 @@ export const RegisterEmpresa = () => {
             >
                 <div className="absolute left-4 top-4">
                     <img className="w-12" src={Arrow} />
+                    href={Router.register}
                 </div>
                 <div className="h-48 flex justify-center items-center">
                     <img className="max-h-full" src={Logo} />

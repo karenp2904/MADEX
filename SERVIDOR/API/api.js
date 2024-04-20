@@ -22,6 +22,7 @@ async function obtenerInventario() {
 
     // Guardar productos en un archivo JSON
     function guardarProductos(productos) {
+        const fs = require('fs');
         try {
             const productosJSON = JSON.stringify(productos, null, 2);
             // Verificar si el archivo existe antes de intentar escribir en él
@@ -60,12 +61,13 @@ async function obtenerInventario() {
                 console.log('Color:', producto.color);
                 console.log('Stock:', producto.stock);
                 console.log('Descuento:', producto.descuento);
-                console.log('Proveedor:', producto.proveedor);
-                console.log('Categoría:', producto.categoria);
+                console.log('Proveedor:', producto.idProveedor);
+                console.log('Categoría:', producto.idCategoria);
                 console.log('------------------------');
             });
     
             // Agregar los productos al inventario y actualizar la caché
+            inventario = new Inventario();
             productos.forEach(producto => inventario.agregarProducto(producto));
             productosCache = productos;
     
@@ -82,6 +84,34 @@ async function obtenerInventario() {
 
 
 //--------------------------------------------------------------------------------------
+//metodos para la escritura de la solicitud de la alianza
+
+async function solicitudAlianza(cotizacion) {
+    
+    try{
+        console.log('en archivo cotizacion' + cotizacion);
+        const fs = require('fs');
+        // Convertir el objeto a JSON
+        const cotizacionJSON = JSON.stringify(cotizacion, null, 2);
+
+        // Escribir el JSON en un archivo de manera asíncrona
+        fs.writeFile('./SERVIDOR/API/cotizacion.json', cotizacionJSON, (err) => {
+            if (err) {
+                console.error('Error al escribir el archivo:', err);
+                // Puedes manejar el error de acuerdo a tus necesidades, por ejemplo, lanzando una excepción
+                throw err;
+            }
+            console.log('Archivo cotizacion.json creado correctamente.');
+        });
+    } catch (error) {
+        console.error('Error al leer la cotización:', error);
+        res.status(500).send('Error al leer la cotización');
+    }
+}
+
+
+
+//----------------------------------------------------------------------------------------
 
 // metodos para definit la rutina de lectura de la transaccion Alianza
 
@@ -129,9 +159,17 @@ async function calcularCotizacion(){
 
 async function calcularCostoPresupuesto(archivoCotizacion) {
     try {
+        // Leer el archivo de productos de manera asíncrona
         const data = await fs.readFile(archivoCotizacion, 'utf8');
-        // Parsear el contenido del archivo a un objeto JSON
-        const cotizacion = JSON.parse(data);
+        const jsonData = JSON.parse(data);
+
+        // Verifica si hay productos en el archivo JSON
+        if (!jsonData || !jsonData || !Array.isArray(jsonData)) {
+            throw new Error('El archivo JSON no contiene una lista de productos válida.');
+        }
+
+        const cotizacion = jsonData;
+
         // Verificar si cotizacion es un array antes de usar forEach
         if (Array.isArray(cotizacion)) {
             let costoTotal = 0;
@@ -152,7 +190,7 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
                     console.log(costoTotal);
                 }
                 // Descuenta el stock del producto
-                inventario.descontarStock(idProducto, cantidad);
+                inventario.descontarStockAdmin(true,idProducto, cantidad);
                 
             }
 
@@ -173,6 +211,7 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
 
 
 
+
 async function obtenerPrecioProducto(idProducto) {
     try {
         //await leerProductos();
@@ -181,12 +220,12 @@ async function obtenerPrecioProducto(idProducto) {
         console.log("productos" +inventario.productos) ;
         const productos = inventario.productos
         // Encuentra el producto con el ID especificado
-        const producto = productos.find(producto => producto.id_producto === idProducto);
+        const producto = await productos.find(producto => producto.id_producto === idProducto);
         console.log(producto + "producto que se busca");
         if (producto) {
-           // let precioFinal=producto.precio-(producto.precio*0.15);
+            let precioConDescuento = producto.precio * (1 - producto.descuento / 100);
             console.error(producto.precio);
-            return producto.precio;
+            return precioConDescuento;
         } else {
             // Si no se encuentra el producto, lanza un error
             throw new Error('El producto con el ID especificado no existe');
@@ -264,7 +303,7 @@ async function obtenerFechaEstimadaEntrega() {
 
 
 
-module.exports = {leerProductos,guardarProductos,obtenerInventario,recibirProductos,calcularCotizacion, guardarRespuesta,leerCotizacion, actualizarInventario};
+module.exports = {leerProductos,guardarProductos,obtenerInventario,recibirProductos,solicitudAlianza,calcularCotizacion, guardarRespuesta,leerCotizacion, actualizarInventario};
 
 
 /*

@@ -26,41 +26,39 @@ class Inventario {
             console.log(rutaImagen);
             return rutaImagen;
         }
-*/
-        async obtenerRutasImagenesPorNombreProducto(nombreProducto) {
+    */
+        async obtenerRutaImagenPorNombreProducto(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
-            const rutasImagenes = [];
             console.log(directorioImagenes);
-
-            // Leer el contenido del directorio de imágenes
+        
             try {
-                const archivos = fs.readdirSync(directorioImagenes);
+                // Leer el contenido del directorio de imágenes de forma asíncrona
+                const archivos = await fs.promises.readdir(directorioImagenes);
                 console.log(archivos);
                 
                 // Filtrar los archivos para obtener solo las imágenes que contienen el nombre del producto
-                archivos.forEach(archivo => {
+                const nombreProductoLimpio = nombreProducto.trim(); // Eliminar espacios en blanco al principio y al final del nombre del producto
+                const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+        
+                for (const archivo of archivos) {
                     console.log(archivo + ' imagenENServidor');
-                    const nombreProductoLimpio = nombreProducto.trim(); // Eliminar espacios en blanco al principio y al final del nombre del producto
                     const archivoLimpio = archivo.trim(); // Eliminar espacios en blanco al principio y al final del nombre del archivo
-                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
                     console.log(regex + ' lectura');
                     if (regex.test(archivoLimpio)) {
                         console.log(nombreProductoLimpio + " prueba ruta");
                         const rutaImagen = path.join(__dirname, '../IMAGENES', archivo); // Ruta relativa de la imagen
-                        rutasImagenes.push(rutaImagen);
-                        
-                        // Salir del bucle si se han encontrado 5 imágenes
-                        if (rutasImagenes.length == 5) {
-                            return;
-                        }
+                        return rutaImagen; // Retorna la primera imagen encontrada y termina la función
                     }
-                });
+                }
                 
             } catch (error) {
                 console.error('Error al leer el directorio de imágenes:', error);
+                return null; // Retorna null en caso de error
             }
-            return rutasImagenes;
+            return null; // Retorna null si no se encontró ninguna imagen
         }
+        
+
 
         async  obtenerRutasbase64(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
@@ -81,7 +79,7 @@ class Inventario {
                         
                         imagenesBase64.push({
                             nombre: archivo,
-                            base64: imagenBase64
+                            imagenes: imagenBase64
                         });
         
                         if (imagenesBase64.length == 5) {
@@ -96,6 +94,34 @@ class Inventario {
         
             return imagenesBase64;
         }
+
+        async obtenerUnaImagenbase64(nombreProducto) {
+            const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
+            
+            try {
+                const archivos = fs.readdirSync(directorioImagenes);
+        
+                for (const archivo of archivos) {
+                    const nombreProductoLimpio = nombreProducto.trim();
+                    const archivoLimpio = archivo.trim();
+                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+        
+                    if (regex.test(archivoLimpio)) {
+                        const rutaImagen = path.join(directorioImagenes, archivo);
+                        const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
+                        
+                        // Devuelve la primera imagen encontrada
+                        return [imagenBase64];
+                    }
+                }
+            } catch (error) {
+                console.error('Error al leer el directorio de imágenes:', error);
+            }
+        
+            // Si no se encontró ninguna imagen, devuelve un arreglo vacío
+            return [];
+        }
+        
         
 
 
@@ -248,6 +274,31 @@ class Inventario {
             });
         }
 
+        buscarProductosPorCategoria(categoria) {
+            // Verifica si categoria es un número válido
+            if (!isNaN(categoria)) {
+                // Filtra los productos por categoría
+                const productosEncontrados = this.productos.filter(producto => {
+                    // Convierte idCategoria a número y compara
+                    return producto.idCategoria === parseInt(categoria);
+                });
+        
+                // Verifica si se encontraron productos
+                if (productosEncontrados.length > 0) {
+                    return productosEncontrados;
+                } else {
+                    // No se encontraron productos en la categoría especificada
+                    console.log(`No se encontraron productos en la categoría ${categoria}`);
+                    return null;
+                }
+            } else {
+                // La categoría proporcionada no es un número válido
+                console.log(`La categoría ${categoria} no es un número válido`);
+                return null;
+            }
+        }
+        
+        
         productosPorColor (color){
             return new Promise((resolve, reject) => {
                 
@@ -280,12 +331,12 @@ class Inventario {
         // Método que verifica la cantidad de unidades de stock
         verificarStock(idProducto, cantidad) {
             const producto = this.productos.find(producto => producto.id_producto === idProducto);
-            
             if (!producto) {
                 throw new Error('El producto no se encuentra en el inventario.');
             }
             return producto.stock >= cantidad; //rertorna true si es mayor y false si es menor
         }
+
 
         // Método que descuenta el stock de cada producto
         descontarStock(idProducto, cantidad) {
@@ -301,28 +352,57 @@ class Inventario {
             return true;
         }
 
-
-        aplicarDescuento(idRol, idProducto) {
-            let descuento = 0;
+        descontarStockAdmin(permiso, idProducto, cantidad) {
             const producto = this.productos.find(producto => producto.id_producto === idProducto);
-            
-            // Verificar el rol del usuario y aplicar el descuento correspondiente
-            switch (idRol) {
-                case '2': //cliente
-                    descuento = 10; // Descuento del 10% para clientes
-                    break;
-                case '3': //empresa
-                    descuento = 15; // Descuento del 15% para empresas
-                    break;
-                default:
-                    descuento = 0; // Sin descuento para otros roles
+            if (!producto) {
+                throw new Error('El producto no se encuentra en el inventario.');
             }
-    
-            // Calcular el precio con el descuento aplicado
-            const precioConDescuento = producto.precio * (1 - descuento / 100);
-    
-            return precioConDescuento;
+            if (producto.stock < cantidad) {
+                if (permiso) {
+                    this.actualizarStockAdmin(idProducto, cantidad + 200);
+                } else {
+                    throw new Error('No hay suficiente stock disponible para realizar la operación.');
+                }
+            }
+        
+            // Actualizar el stock
+            producto.stock -= cantidad;
+        
+            // Verificar si el stock es negativo
+            if (producto.stock < 0) {
+                // Actualizar el stock agregando la cantidad necesaria para que sea no negativo
+                const cantidadAjuste = Math.abs(producto.stock);
+                this.actualizarStockAdmin(idProducto, cantidadAjuste+100);
+                console.log(`Stock ajustado para el producto con ID ${idProducto}. Nuevo stock: ${producto.stock}`);
+            } else {
+                console.log(`Stock descontado correctamente para el producto con ID ${idProducto}. Nuevo stock: ${producto.stock}`);
+            }
+        
+            return true;
         }
+        
+
+        
+        eliminarProducto(idProducto) {
+            this.productos = this.productos.filter(producto => producto.id_producto !== idProducto);
+        }
+
+        actualizarStockAdmin(idProducto, nuevaCantidad) {
+            const producto = this.productos.find(p => p.id_producto === idProducto);
+            if (producto) {
+                    producto.stock = nuevaCantidad;
+                    console.log('SE HA RESTAURADO EL STOCK' + producto);
+            }
+        }
+
+            
+        // Método para actualizar el descuento de todos los productos
+        async actualizarDescuentoTodosProductos(nuevoDescuento) {
+            this.productos.forEach(producto => {
+                producto.descuento = nuevoDescuento;
+            });
+        }
+
 
 
         // Ejecutar la búsqueda de productos por categoría

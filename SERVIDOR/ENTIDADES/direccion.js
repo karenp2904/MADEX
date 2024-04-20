@@ -1,32 +1,32 @@
 class Direccion {
-    constructor({ ID_Direccion, ID_Usuario, Calle, Ciudad, Codigo_Postal, departamento, barrio, descripcion }) {
-        this.ID_Direccion = ID_Direccion;
-        this.ID_Usuario = ID_Usuario;
-        this.Calle = Calle;
-        this.Ciudad = Ciudad;
-        this.Codigo_Postal = Codigo_Postal;
+    constructor({ id_direccion, id_usuario, calle, ciudad, codigoPostal, departamento, barrio, descripcion }) {
+        this.id_direccion = id_direccion;
+        this.id_usuario = id_usuario;
+        this.calle = calle;
+        this.ciudad = ciudad;
+        this.codigoPostal = codigoPostal;
         this.departamento = departamento;
         this.barrio = barrio;
         this.descripcion = descripcion;
     }
 
     // Métodos para actualizar 
-    actualizarCalle(Calle) {
-        if (Calle) this.Calle = Calle;
+    actualizarCalle(calle) {
+        if (calle) this.calle = calle;
     }
 
     actualizarCiudad(Ciudad) {
         if (Ciudad) this.Ciudad = Ciudad;
     }
 
-    actualizarCodigoPostal(Codigo_Postal) {
-        if (Codigo_Postal) this.Codigo_Postal = Codigo_Postal;
+    actualizarCodigoPostal(codigoPostal) {
+        if (codigoPostal) this.codigoPostal = codigoPostal;
     }
 
 
     calcularCostoEnvio() {
-        const departamentoDestino = this.departamento.toLowerCase();
-        const ciudadDestino = this.Ciudad.toLowerCase();
+        const departamentoDestino = this.departamento;
+        const ciudadDestino = this.ciudad;
     
         
         let tarifaEnvio;
@@ -48,8 +48,16 @@ class Direccion {
             // Si es otro departamento
             tarifaEnvio = 30000; 
         }
+
+        const totalFormateado = tarifaEnvio.toLocaleString('es-CO', {
+            style: 'decimal',
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        });
+        
+        // Devuelve el total formateado
     
-        return tarifaEnvio;
+        return this.formatearCostoEnvio(totalFormateado);
     }
 
     calcularFechaEstimadaEntrega() {
@@ -68,6 +76,27 @@ class Direccion {
         }
         return fechaActual;
     } 
+
+    formatearCostoEnvio(costoEnvio) {
+        // Primero, eliminamos los puntos (.) como separadores de miles
+        let costoLimpio = costoEnvio.replace(/\./g, '');
+    
+        // Luego, reemplazamos la coma (,) por un punto (.) para manejarlo como número
+        costoLimpio = costoLimpio.replace(',', '.');
+    
+        // Convertimos la cadena limpia a un número de punto flotante
+        const costoNumerico = parseFloat(costoLimpio);
+    
+        // Ahora formateamos el número de acuerdo con la convención que quieres
+        // Usamos toLocaleString con 'es-CO' para usar puntos como separadores de miles
+        const costoFormateado = costoNumerico.toLocaleString('es-CO', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    
+        return costoFormateado;
+    }
+    
 }
 
 module.exports = Direccion;

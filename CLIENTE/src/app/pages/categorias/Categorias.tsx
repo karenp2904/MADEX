@@ -22,7 +22,9 @@ export const Categorias = () => {
     const IrAProductos = (categoria: string) => {
         setParams({ ...params, categoria });
         navigate(Router.catalogo + `?categoria=${categoria}`);
+        
     }
+
 
     return (
         <div className="flex flex-col overflow-hidden">
