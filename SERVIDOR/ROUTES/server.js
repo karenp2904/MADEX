@@ -513,38 +513,33 @@ app.get('/producto/filtrarColor/:color', async (req, res) => {
         res.status(500).send('Error en la búsqueda del producto');
     }
 });
-
 app.get('/producto/CatalogoImagenes', async (req, res) => {
     try {
-        // Realizar la búsqueda del inventario de productos
-        inventario = await obtenerProductosConInventario(req, res);
+        // Obtener el inventario de productos
+        const inventario = await obtenerProductosConInventario(req, res);
         
-        // Crear un arreglo para almacenar todas las imágenes de productos
-        const listaTotal = [];
-
-        // Iterar sobre cada producto en el inventario
+        // Recorrer el inventario y enviar las imágenes al cliente a medida que se obtienen
         for (const producto of inventario.productos) {
-            // Obtener el nombre del producto
             const nombreProducto = producto.nombre;
-
-            // Obtener la lista de imágenes base64 para el producto actual
             const listaImagenes = await inventario.obtenerUnaImagenbase64(nombreProducto);
 
-            // Agregar la lista de imágenes al arreglo total
-            listaTotal.push({
+            // Enviar las imágenes al cliente
+            res.write(JSON.stringify({
                 producto: nombreProducto,
                 imagenes: listaImagenes
-            });
+            }));
         }
 
-        // Devolver el arreglo total de imágenes para todos los productos en el inventario
-        res.json(listaTotal);
+        // Finalizar la respuesta
+        res.end();
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
-        console.error('Error en la búsqueda de la ruta:', error);
-        res.status(500).send('Error en la búsqueda de la ruta');
+        console.error('Error al obtener el catálogo de imágenes de productos:', error);
+        res.status(500).send('Error al obtener el catálogo de imágenes de productos');
     }
 });
+
+
 
 
 app.get('/producto/rutas/:nombre', async (req, res) => {
@@ -605,12 +600,20 @@ app.get('/carrito/contenido', async (req, res) => {
         // Obtener el ID del usuario de la solicitud
         const { idUsuario } = req.body;
         let contenidoCarrito = new carritoDeCompra();
-        contenidoCarrito=await controladorServer.obtenerCarritoCompras(idUsuario);
+        let productos=await controladorServer.obtenerCarritoCompras(idUsuario);
 
-       // const subtotal= contenidoCarrito.calcularTotal();
+        productos.forEach(item => {
+            if (Array.isArray(item.producto)) {
+                item.producto.forEach(producto => {
+                    contenidoCarrito.agregarProducto(producto,item.cantidad);
+                });
+            }
+        });
+        
+        const subtotal= await contenidoCarrito.calcularTotalCompra();
 
         // Enviar el contenido del carrito como respuesta
-        res.json({carritoCompras:contenidoCarrito , subtotal:100});
+        res.json({carritoCompras:contenidoCarrito , subtotal: subtotal});
     } catch (error) {
         console.error('Error al obtener el contenido del carrito de compras:', error);
         res.status(500).send('Error en el servidor');
@@ -803,8 +806,7 @@ app.get('/factura/generar', async (req, res) => {
 
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
         const factura = await controladorServer.s_obtenerFactura(idFactura)
-        const fecha = new Date();
-        const dia = fecha.getTime();
+        const fecha = factura[0].fecha;
         console.log("idUser "+factura[0].id_usuario);
         const usuario = await controladorServer.s_obtenerUsuarioId(factura[0].id_usuario);
         const direccionGuardada = await controladorServer.obtenerDireccion(factura[0].id_usuario);
@@ -856,7 +858,7 @@ app.get('/factura/generar', async (req, res) => {
         console.log(subtotal,descuento,iva,totalCompra);
 
         
-        const pdfBytes = await pdf(idFactura,dia,usuario[0], direccion, 'Tarjeta crédito', productos,subtotal,descuento,iva, totalCompra);
+        const pdfBytes = await pdf(idFactura,fecha,usuario[0], direccion, 'Tarjeta crédito', productos,subtotal,descuento,iva, totalCompra);
         console.log(usuario[0].correo_electronico+ " correo");
         const correo= await controladorServer.enviarCorreoFactura(idFactura,usuario[0].correo_electronico,`./FACTURAS/factura_${idFactura}.pdf`);
         // Enviar el PDF como respuesta al cliente
@@ -932,22 +934,23 @@ app.get('/Alianza/obtenerCatalogo', async function (req, res) {
 app.post('/Alianza/solicitarCotizacion', async (req, res) => {
     try {
         // Recibir la información del cuerpo de la solicitud POST
-        const body = req.body;
-        
-        // Verificar que 'body.productos' existe y es un array
-        if (!body || !Array.isArray(body.productos)) {
+        const productos = req.body; // Cambiado de body.productos a body
+
+        // Verificar que 'productos' es un array
+        if (!Array.isArray(productos)) {
             return res.status(400).json({ error: 'Formato de datos incorrecto' });
         }
 
         // Crear un objeto con el formato requerido
         const cotizacion = {
-            productos: body.productos.map(producto => ({
+            productos: productos.map(producto => ({
                 id_producto: producto.id_producto,
                 cantidad: producto.cantidad
             }))
         };
+        console.log(cotizacion.productos);
 
-        const hola= await archivos.solicitudAlianza(cotizacion);
+        const hola= await archivos.solicitudAlianza(cotizacion.productos);
         console.log(hola);
 
         const respuesta = await archivos.guardarRespuesta();
@@ -958,14 +961,12 @@ app.post('/Alianza/solicitarCotizacion', async (req, res) => {
 
         const inventarioArray = Array.from(inventario.productos);
 
-
-       // controladorServer.actualizarInventario(inventario);
-       //const inventarioArray = Object.values(inventario);
-        // Iterar sobre el inventario para actualizar solo el stock de cada producto
-        for (const producto of inventarioArray) {
+        // Iterar sobre el inventario para actualizar el stock de cada producto
+        for (const producto of inventario.productos) {
             await controladorServer.s_actualizarStockProducto(producto.id_producto, producto.stock);
-            console.log(producto.id_producto +' ->' +producto.stock);
+            console.log(producto.id_producto + ' -> ' + producto.stock);
         }
+
 
         // Devolver los resultados como respuesta
         res.json(respuesta);
