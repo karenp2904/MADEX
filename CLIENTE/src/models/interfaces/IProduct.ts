@@ -1,11 +1,12 @@
 export interface IProduct {
-    id: string;
-    name: string;
-    price: number;
+    id_producto: string;
+    nombre: string;
+    descripcion: string;
+    precio: number;
+    estado_producto: string;
+    color: string;
     stock: number;
-    status: string;
-    category?: number;
-    //quantity: number;
-    discount?: number;
-    isFavorite?: boolean;
+    descuento: number;
+    idProveedor: number;
+    idCategoria: number;
 }

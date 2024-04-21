@@ -26,41 +26,39 @@ class Inventario {
             console.log(rutaImagen);
             return rutaImagen;
         }
-*/
-        async obtenerRutasImagenesPorNombreProducto(nombreProducto) {
+    */
+        async obtenerRutaImagenPorNombreProducto(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
-            const rutasImagenes = [];
             console.log(directorioImagenes);
-
-            // Leer el contenido del directorio de imágenes
+        
             try {
-                const archivos = fs.readdirSync(directorioImagenes);
+                // Leer el contenido del directorio de imágenes de forma asíncrona
+                const archivos = await fs.promises.readdir(directorioImagenes);
                 console.log(archivos);
                 
                 // Filtrar los archivos para obtener solo las imágenes que contienen el nombre del producto
-                archivos.forEach(archivo => {
+                const nombreProductoLimpio = nombreProducto.trim(); // Eliminar espacios en blanco al principio y al final del nombre del producto
+                const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+        
+                for (const archivo of archivos) {
                     console.log(archivo + ' imagenENServidor');
-                    const nombreProductoLimpio = nombreProducto.trim(); // Eliminar espacios en blanco al principio y al final del nombre del producto
                     const archivoLimpio = archivo.trim(); // Eliminar espacios en blanco al principio y al final del nombre del archivo
-                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
                     console.log(regex + ' lectura');
                     if (regex.test(archivoLimpio)) {
                         console.log(nombreProductoLimpio + " prueba ruta");
                         const rutaImagen = path.join(__dirname, '../IMAGENES', archivo); // Ruta relativa de la imagen
-                        rutasImagenes.push(rutaImagen);
-                        
-                        // Salir del bucle si se han encontrado 5 imágenes
-                        if (rutasImagenes.length == 5) {
-                            return;
-                        }
+                        return rutaImagen; // Retorna la primera imagen encontrada y termina la función
                     }
-                });
+                }
                 
             } catch (error) {
                 console.error('Error al leer el directorio de imágenes:', error);
+                return null; // Retorna null en caso de error
             }
-            return rutasImagenes;
+            return null; // Retorna null si no se encontró ninguna imagen
         }
+        
+
 
         async  obtenerRutasbase64(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');

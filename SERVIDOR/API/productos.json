@@ -6,8 +6,10 @@
       "descripcion": "Con su organización inteligente y su aspecto elegante, el centro de entretenimiento para TV \"Cler\" es la elección perfecta para aquellos que buscan mejorar su experiencia de entretenimiento en casa. Haz de tus noches de cine en casa una experiencia inolvidable con este impresionante mueble.",
       "precio": "490.000",
       "color": "Marrón",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 2,
@@ -15,17 +17,21 @@
       "descripcion": "Construida con materiales de alta calidad, la repisa \"Indi\" ofrece durabilidad y resistencia, asegurando que tus objetos decorativos estén seguros y bien exhibidos. Su diseño flotante crea la ilusión de espacio y ligereza, perfecto para espacios pequeños o para dar un toque minimalista a cualquier ambiente.",
       "precio": "310.000",
       "color": "Marrón",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 3,
-      "nombre": "Mesita",
-      "descripcion": "mesa de comedor",
-      "precio": "22.000",
-      "color": "Blanco",
-      "stock": 34,
-      "descuento": 15
+      "nombre": "Repisas puente de gatos",
+      "descripcion": "La repisa \"Puente Gatos\" presenta un diseño único en forma de puente que proporciona a tus gatos un lugar emocionante para trepar y jugar. Construida con pino de alta calidad, esta repisa es resistente y duradera, asegurando la seguridad de tus mascotas mientras se divierten.",
+      "precio": "142.000",
+      "color": "Marrón",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 4,
@@ -33,17 +39,21 @@
       "descripcion": "La Casa de Madera para Gato presenta un diseño elegante y moderno, construido con madera de alta calidad para garantizar durabilidad y resistencia. Elevada sobre patas, esta casa proporciona a tu gato una sensación de seguridad y comodidad, además de protegerlo del frío y la humedad del suelo.",
       "precio": "370.000",
       "color": "Marrón",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 5,
-      "nombre": "Taburete",
-      "descripcion": "silla comedor",
-      "precio": "89.000",
-      "color": "negro",
-      "stock": 65,
-      "descuento": 15
+      "nombre": "Organizador",
+      "descripcion": "Construido con madera de nogal de alta calidad, este organizador ofrece durabilidad y resistencia para un uso diario. Sus tres cajones organizadores proporcionan amplio espacio para guardar y organizar una variedad de artículos, desde ropa hasta accesorios de oficina o elementos de decoración.",
+      "precio": "300.000",
+      "color": "Marrón",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 6,
@@ -52,7 +62,9 @@
       "precio": "450.000",
       "color": "Negro/Blanco/Beige",
       "stock": 50,
-      "descuento": 15
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 7,
@@ -60,8 +72,10 @@
       "descripcion": "La cama semi doble es la elección perfecta para maximizar el espacio en habitaciones más pequeñas o para uso individual en dormitorios, habitaciones de invitados o apartamentos. Con dimensiones ligeramente más pequeñas que una cama doble estándar, esta cama ofrece comodidad y funcionalidad sin ocupar demasiado espacio en la habitación.",
       "precio": "600.000",
       "color": "Negro",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 8,
@@ -69,17 +83,10 @@
       "descripcion": "¡Dale un toque de estilo único y funcionalidad a la habitación de tus niños con nuestro camarote flamenco de madera en color cobre! Este impresionante mueble no solo ofrece un lugar acogedor para dormir, sino que también añade un toque de elegancia y diversión al ambiente.",
       "precio": "1200.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
-    },
-    {
-      "id_producto": 9,
-      "nombre": "Cama doble",
-      "descripcion": "¡¡Experimenta la elegancia y la comodidad con nuestra cama doble de madera! Diseñada meticulosamente para brindar un equilibrio perfecto entre estilo y funcionalidad, esta cama será el punto focal de tu dormitorio. Fabricada con madera de alta calidad, esta cama ofrece una robustez excepcional y una durabilidad garantizada. Su diseño atemporal se adapta a una amplia gama de estilos de decoración, desde lo clásico hasta lo contemporáneo, agregando un toque de calidez natural a cualquier espacio.",
-      "precio": "800.000",
-      "color": "Negro/Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 11,
@@ -87,8 +94,10 @@
       "descripcion": "Facilita tus tareas de lavandería con el elegante y funcional mueble lavadero en cocoa y chocolate. Este mueble combina estilo y practicidad en un diseño moderno que transformará tu espacio de lavandería. Las dos puertas batientes ofrecen un fácil acceso al interior del mueble, donde encontrarás espacio de almacenamiento para detergentes, suavizantes, y otros productos de limpieza. Además, las patas metálicas proporcionan una base sólida y estable para el mueble, elevándolo del suelo para facilitar la limpieza debajo.",
       "precio": "390.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 12,
@@ -96,8 +105,10 @@
       "descripcion": "Construida con materiales de alta calidad, la repisa \"Frello\" ofrece durabilidad y resistencia para sostener tus objetos decorativos, libros, plantas u otros elementos con seguridad. Su diseño simple y contemporáneo presenta cuatro espacios abiertos, proporcionando amplio espacio de almacenamiento para exhibir tus artículos favoritos de manera ordenada y accesible.",
       "precio": "250.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 13,
@@ -106,7 +117,9 @@
       "precio": "370.000",
       "color": "Marron/Negro",
       "stock": 50,
-      "descuento": 15
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 14,
@@ -115,7 +128,9 @@
       "precio": "1700.000",
       "color": "Negro/Blanco",
       "stock": 50,
-      "descuento": 15
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 15,
@@ -123,8 +138,10 @@
       "descripcion": "Maximiza el espacio de almacenamiento en tu hogar con el closet \"Bariloche Bombay\". Este impresionante mueble combina funcionalidad y estilo en un diseño elegante que se adapta a cualquier decoración interior.",
       "precio": "1000.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 16,
@@ -132,8 +149,10 @@
       "descripcion": "Optimiza el espacio de almacenamiento en tu hogar con el armario \"Saga\" de 180 cm. Este armario espacioso y elegante es la solución perfecta para mantener tus prendas y accesorios organizados y fácilmente accesibles. Construido con materiales de alta calidad, el armario \"Saga\" ofrece durabilidad y resistencia para soportar el uso diario. Sus puertas correderas maximizan el espacio disponible en la habitación, ideal para habitaciones con dimensiones limitadas.",
       "precio": "900.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 17,
@@ -141,8 +160,10 @@
       "descripcion": "Construido con materiales de alta calidad, el armario \"Star\" garantiza durabilidad y resistencia a lo largo del tiempo. Sus puertas correderas permiten un fácil acceso al interior del armario sin ocupar espacio adicional en la habitación. En su interior, encontrarás compartimentos y estantes bien distribuidos que te ayudarán a organizar tus prendas y accesorios de manera eficiente. Además, su tamaño compacto lo hace ideal para habitaciones pequeñas o espacios donde se requiere maximizar el almacenamiento.",
       "precio": "300.000",
       "color": "Marron/Negro",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 18,
@@ -150,8 +171,10 @@
       "descripcion": "Construidas con materiales de alta calidad, las sillas \"Concept X4\" garantizan durabilidad y resistencia para soportar el uso diario. Su diseño clásico presenta un cómodo espaldar que brinda un apoyo ergonómico, permitiéndote disfrutar de largas horas en la mesa sin sacrificar la comodidad.",
       "precio": "600.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 19,
@@ -159,8 +182,10 @@
       "descripcion": "La mesa, con su amplia superficie en color wengué, ofrece un espacio generoso para disfrutar de tus comidas en familia o para celebrar reuniones con amigos. Su diseño moderno y minimalista se adapta fácilmente a una variedad de estilos de decoración, añadiendo un toque de elegancia a tu comedor.",
       "precio": "350.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 20,
@@ -168,8 +193,10 @@
       "descripcion": "La mesa de noche cuenta con un amplio espacio de almacenamiento en su superficie superior y en su cajón deslizable, proporcionando un lugar conveniente para guardar tus libros, dispositivos electrónicos, gafas u otros objetos personales cerca de tu cama.",
       "precio": "100.000",
       "color": "Negro",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 21,
@@ -177,8 +204,10 @@
       "descripcion": "La mesa para TV \"Túnez\" cuenta con un diseño espacioso que ofrece amplio espacio de almacenamiento para tus dispositivos electrónicos, accesorios y colecciones multimedia. Sus estantes abiertos son ideales para colocar reproductores de DVD, consolas de videojuegos o decoraciones, mientras que sus puertas correderas ocultan de forma elegante los elementos que prefieras mantener fuera de la vista.",
       "precio": "200.000",
       "color": "Negro",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 22,
@@ -186,8 +215,10 @@
       "descripcion": "Construido con materiales de alta calidad, el gabinete \"Ursa\" garantiza durabilidad y resistencia para resistir el uso diario en un entorno de cocina ocupado. Su diseño moderno presenta una combinación de colores blanco y cobre que agrega un toque de elegancia y sofisticación a tu espacio.",
       "precio": "480.000",
       "color": "Negro",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 23,
@@ -196,7 +227,9 @@
       "precio": "460.000",
       "color": "Marron",
       "stock": 50,
-      "descuento": 15
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 24,
@@ -204,8 +237,10 @@
       "descripcion": "Construido con materiales de alta calidad, el bar garantiza durabilidad y resistencia para resistir el uso diario. Su acabado en blanco nevado añade un toque de luminosidad y frescura a tu espacio, mientras que su diseño compacto maximiza el almacenamiento disponible. La puerta abatible del bar revela un amplio espacio interior para almacenar botellas de licor, copas y otros accesorios de bar. Además, los dos cajones ofrecen espacio adicional para guardar utensilios de bar y otros elementos esenciales.",
       "precio": "710.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 25,
@@ -213,8 +248,10 @@
       "descripcion": " La mesa, con su acabado en wengué, ofrece un punto focal impresionante para tus comidas familiares o reuniones con amigos. Su diseño rectangular proporciona un amplio espacio para servir y disfrutar de tus platos favoritos con comodidad. Cuatro sillas negras complementan perfectamente la mesa, ofreciendo asientos cómodos y elegantes para tus invitados. Tapizadas en un elegante tono negro, estas sillas añaden un toque de contraste al conjunto, mientras que su diseño ergonómico garantiza comodidad durante las largas horas de las comidas",
       "precio": "1550.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 26,
@@ -222,8 +259,10 @@
       "descripcion": "El tendido de tablones incluido proporciona un sólido soporte para tu colchón, asegurando una base estable y confortable para tus noches de sueño. Además, su diseño sencillo y moderno se adapta fácilmente a una variedad de estilos de decoración, desde lo contemporáneo hasta lo tradicional.",
       "precio": "700.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 27,
@@ -231,8 +270,10 @@
       "descripcion": "El asiento acolchado de la silla \"Oslo\" proporciona una experiencia de asiento cómoda y ergonómica, ideal para largas conversaciones en la mesa o para relajarse después de una larga jornada. Su tapizado en un atractivo color gris agrega un toque de sofisticación y versatilidad a cualquier espacio.",
       "precio": "200.000",
       "color": "Negro",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 28,
@@ -240,8 +281,10 @@
       "descripcion": "El mueble tocador ofrece un amplio espacio para ubicar tu colección de maquillaje, desde bases y sombras de ojos hasta brochas y lápices labiales. Sus cajones y compartimentos te permiten organizar tus productos de belleza de manera ordenada y accesible, facilitando tu rutina de maquillaje diaria.",
       "precio": "620.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 29,
@@ -249,8 +292,10 @@
       "descripcion": "Este versátil mueble combina estilo y organización en un diseño moderno que se adapta a tus necesidades diarias. Las cuatro puertas abatibles ofrecen acceso fácil a tu ropa, manteniéndola protegida del polvo y la luz. Además, los cuatro cajones multiusos proporcionan espacio adicional para guardar objetos pequeños, como accesorios, ropa interior o documentos importantes.",
       "precio": "1200.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 30,
@@ -258,8 +303,10 @@
       "descripcion": "Añade un toque de elegancia y funcionalidad a la entrada de tu hogar con la mesa auxiliar \"Aureli\" en miel y blanco. Este encantador mueble combina estilo y practicidad en un diseño moderno que será el complemento perfecto para tu recibidor.",
       "precio": "460.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
     },
     {
       "id_producto": 31,
@@ -267,8 +314,10 @@
       "descripcion": "Construido con materiales de alta calidad y diseñado pensando en la funcionalidad, el organizador bajo de baño Tallin ofrece una forma conveniente de almacenar tus productos de cuidado personal, toallas, papel higiénico y otros elementos esenciales del baño. Su diseño compacto y estilizado permite colocarlo fácilmente debajo del lavamanos o en cualquier rincón del baño, aprovechando al máximo cada centímetro de espacio disponible.",
       "precio": "150.000",
       "color": "Negro/Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
     },
     {
       "id_producto": 32,
@@ -276,8 +325,329 @@
       "descripcion": "Construidas con materiales de alta calidad, las sillas \"Concept X2\" garantizan durabilidad y resistencia para soportar el uso diario. Su cómodo espaldar proporciona un excelente soporte lumbar, permitiéndote disfrutar de largas horas en la mesa sin sacrificar la comodidad.",
       "precio": "160.000",
       "color": "Marron",
-      "stock": 50,
-      "descuento": 15
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 33,
+      "nombre": "Tocador Zaha",
+      "descripcion": "Equipado con un espejo grande y práctico, el tocador \"Zaha\" te ofrece un lugar conveniente para arreglarte y prepararte para el día. Además, su cajón organizador proporciona espacio adicional para guardar tus productos de belleza y accesorios, manteniéndolos ordenados y al alcance de la mano.",
+      "precio": "400.000",
+      "color": "Negro",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 34,
+      "nombre": "Zapatero Lida",
+      "descripcion": "Construido con materiales de alta calidad, el zapatero \"Lida\" garantiza durabilidad y resistencia para soportar el peso de tus zapatos y mantenerlos ordenados. Su acabado en nogal agrega un toque de calidez y naturalidad a tu entrada o dormitorio, mientras que su diseño compacto maximiza el espacio disponible.",
+      "precio": "240.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 35,
+      "nombre": "Mesa de centro",
+      "descripcion": "Transforma tu sala de estar en un oasis de elegancia moderna con nuestra mesa de centro con vidrio \"Hood\". Con su diseño minimalista y su superficie de vidrio que refleja la luz, esta mesa agrega un toque de luminosidad y amplitud a cualquier espacio.",
+      "precio": "250.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 36,
+      "nombre": "Panel para TV",
+      "descripcion": "El panel de TV presenta un diseño moderno y elegante que complementará cualquier estilo de decoración interior. Fabricado con materiales de alta calidad, garantiza durabilidad y resistencia para soportar tu televisor y otros dispositivos electrónicos.",
+      "precio": "550.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 37,
+      "nombre": "Barra cocina",
+      "descripcion": "Equipada con dos entrepaños, esta barra proporciona espacio adicional para almacenar utensilios de cocina, libros de recetas, condimentos u otros elementos esenciales de la cocina. Esto te permite mantener tus herramientas de cocina organizadas y al alcance de la mano mientras cocinas.",
+      "precio": "400.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 38,
+      "nombre": "Barra Cocina Victory",
+      "descripcion": "Construida con materiales de alta calidad, la barra \"Victory\" garantiza durabilidad y resistencia para resistir el uso diario en un entorno de cocina ocupado. Su acabado en wengué agrega un toque de calidez y sofisticación a tu espacio, complementando una variedad de estilos de decoración.",
+      "precio": "450.000",
+      "color": "Negro",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 39,
+      "nombre": "Mueble para lavamanos",
+      "descripcion": "Construido con materiales de alta calidad, el mueble lavamanos \"Oporto\" garantiza durabilidad y resistencia para soportar el uso diario en el baño. Su acabado en wengué agrega un toque de calidez y sofisticación, mientras que su diseño compacto maximiza el espacio disponible en tu baño.",
+      "precio": "380.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 41,
+      "nombre": "Cama infantil + organizador",
+      "descripcion": "La cama infantil \"Farid\" proporciona un lugar cómodo y seguro para que tus pequeños duerman y jueguen. Construida con materiales resistentes y seguros, esta cama está diseñada pensando en la comodidad y la seguridad de tus hijos. Su diseño encantador y su tamaño adecuado para niños pequeños la convierten en el lugar perfecto para que tus hijos se relajen y se diviertan. El organizador complementa perfectamente la cama, ofreciendo espacio de almacenamiento adicional para juguetes, libros, ropa y otros objetos personales. Con sus compartimentos y estantes, este organizador ayuda a mantener la habitación de tus hijos ordenada y libre de desorden, fomentando hábitos de organización desde una edad temprana.",
+      "precio": "1500.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 42,
+      "nombre": "Escritorio infantil",
+      "descripcion": "Construida con materiales duraderos y seguros para los niños, la mesa y las sillas ofrecen una superficie estable y resistente para actividades como dibujar, hacer manualidades o disfrutar de una merienda. El diseño en beige y blanco agrega un toque de dulzura y luminosidad a la habitación de tus hijos, creando un ambiente acogedor y estimulante. as dos sillas proporcionan asientos cómodos y seguros para tus pequeños, permitiéndoles disfrutar de horas de juego y creatividad. Su tamaño y altura son ideales para niños pequeños, lo que les permite sentarse cómodamente y moverse con facilidad alrededor de la mesa.",
+      "precio": "220.000",
+      "color": "Marron/Blanco",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 43,
+      "nombre": "Isla de trabajo",
+      "descripcion": "Nuestra isla de trabajo es la solución perfecta para optimizar el espacio en tu oficina y crear un área funcional y organizada para realizar tareas importantes. Con un diseño moderno y elegante, esta isla de trabajo ofrece un lugar central donde tus empleados pueden colaborar, trabajar en proyectos y mantenerse organizados. Fabricada con materiales de alta calidad y acabados profesionales, nuestra isla de trabajo es resistente y duradera, lo que la hace adecuada para el uso diario en entornos de oficina ocupados. Su superficie espaciosa proporciona un amplio espacio para colocar computadoras portátiles, documentos, archivos y otros elementos esenciales del trabajo.",
+      "precio": "1600.000",
+      "color": "Marron/Beige",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 44,
+      "nombre": "Butaco infantil",
+      "descripcion": "Nuestro butaco infantil de madera es el complemento perfecto para los más pequeños de la casa. Con un diseño encantador y dimensiones adaptadas a su tamaño, este butaco ofrece un asiento cómodo y seguro para que los niños se sienten y disfruten de sus actividades favoritas. Fabricado con madera de alta calidad y acabado con atención al detalle, este butaco combina durabilidad con estilo. Su construcción robusta garantiza la estabilidad mientras los niños se sientan y se divierten, mientras que su diseño ergonómico les brinda comodidad durante períodos prolongados.",
+      "precio": "160.000",
+      "color": "Beige",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 1
+    },
+    {
+      "id_producto": 45,
+      "nombre": "Casa de juegos",
+      "descripcion": "La casa infantil de la colección LETO ofrece una experiencia de juego única y sostenible para los niños. Con una pieza más grande de 2500x180x180 mm, esta casa proporciona un amplio espacio para que los niños exploren, jueguen y dejen volar su imaginación. Diseñada para integrarse armoniosamente en una variedad de entornos, desde los más rurales hasta los más urbanos, la casa infantil LETO es una adición encantadora y educativa a cualquier patio trasero, parque infantil o área de juegos. Además de fomentar la creatividad y el juego activo, también enseña a los niños sobre la importancia de la sostenibilidad y el cuidado del medio ambiente desde una edad temprana.",
+      "precio": "1200.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 46,
+      "nombre": "Parque Infantil 3 sectores",
+      "descripcion": "La utilización de madera certificada por el FSC garantiza que proviene de bosques gestionados de manera sostenible, lo que contribuye a la conservación de los recursos forestales y al bienestar de las comunidades locales. Además, el tobogán de cáscara de arroz y los paneles ECOPlay demuestran un compromiso con la innovación y la reutilización de materiales para reducir el impacto ambiental.",
+      "precio": "3000.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 47,
+      "nombre": "Circuito infantil Roy",
+      "descripcion": "Sumérgete en la naturaleza y la diversión con nuestros postes de madera Robinia y redes de cuerda armada antivandálica. Los postes, tallados en sección circular de madera de Robinia, destacan por su resistencia y durabilidad excepcionales. Gracias a su duramen, la parte más dura de los árboles, estos postes resisten las inclemencias del tiempo y el uso intensivo, con una vida útil que puede superar los 20 años. Aunque son un material vivo, pueden presentar pequeñas grietas que no comprometen su integridad estructural. Las redes de cuerda armada antivandálica, con un diámetro de 16 mm y compuestas por 6 hilos de acero trenzados recubiertos de polipropileno, ofrecen una resistencia excepcional contra el desgaste y los actos vandálicos. Los conectores de plástico de alta durabilidad aseguran una sujeción firme y segura, incluso durante el juego más enérgico.",
+      "precio": "4100.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 48,
+      "nombre": "Columpio Roybo",
+      "descripcion": "Construido con materiales duraderos y de alta calidad, el Columpio Roybo 1 plano garantiza la seguridad y la estabilidad durante el uso. Su diseño simple y funcional lo hace fácil de montar y utilizar en cualquier entorno al aire libre, ya sea en un jardín, parque o área de juegos.Ya sea que estés buscando agregar un columpio a tu jardín o actualizar un área de juegos existente, el Columpio Roybo 1 plano es una elección clásica y confiable que brinda alegría y diversión a los más pequeños.",
+      "precio": "1600.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 49,
+      "nombre": "Mesa Exterior",
+      "descripcion": "Añade encanto natural y durabilidad a tu espacio al aire libre con nuestra mesa fabricada en madera resistente a la intemperie. Esta mesa está diseñada para resistir los elementos, ofreciendo un lugar acogedor y duradero para disfrutar del aire libre. La madera utilizada en esta mesa no se degrada con el tiempo y no se astilla, lo que garantiza una superficie suave y segura para su uso. Además, su acabado antigrafiti facilita la limpieza de cualquier marca no deseada.",
+      "precio": "1300.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 2,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 50,
+      "nombre": "Banco Tor",
+      "descripcion": "Banco de madera de pino. Pies en acero galvanizado. Tornillería en acero inoxidable.Madera de pino tratada contra la carcoma, termitas e insectos. Acabado con una capa de imprimación epoxi y pintura poliéster en polvo color corten.Anclaje recomendado: Tornillos de fijación al suelo M10, según superficie. Además de su belleza estética, la madera utilizada en nuestro banco es resistente y duradera, lo que garantiza años de uso confiable. Su construcción sólida y estable proporciona un soporte seguro para usuarios de todas las edades.",
+      "precio": "890.000",
+      "color": "Marron",
+      "stock": 150,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 51,
+      "nombre": "Banco Naverre",
+      "descripcion": "Disfruta de la naturaleza y la comodidad al aire libre con nuestro banco de madera. Este banco combina el encanto rústico de la madera con la funcionalidad de un asiento resistente y duradero. Construido con madera de alta calidad y tratado para resistir los elementos, nuestro banco es perfecto para usar en el jardín, en el patio o en cualquier espacio al aire libre. Su diseño clásico se integra perfectamente en cualquier entorno, añadiendo un toque de calidez y estilo natural.",
+      "precio": "850.000",
+      "color": "Marron",
+      "stock": 150,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 52,
+      "nombre": "Papelera con 3 divisiones",
+      "descripcion": "Mantén tu entorno limpio y natural con nuestra papelera fabricada en madera de pino tratada con autoclave a vacío-presión clase 4. Este tratamiento garantiza una protección duradera contra la carcoma, termitas e insectos, asegurando la integridad de la papelera incluso en entornos exteriores. Ya sea en parques, plazas, jardines o áreas recreativas al aire libre, nuestra papelera de madera de pino tratada con autoclave ofrece una solución elegante y práctica para la gestión de residuos. Aporta funcionalidad, durabilidad y estilo natural a tu entorno mientras mantienes tu espacio limpio y ordenado.",
+      "precio": "650.000",
+      "color": "Marron",
+      "stock": 150,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 53,
+      "nombre": "Casa Pet",
+      "descripcion": "Dale a tu fiel compañero un refugio cómodo y acogedor con nuestra Casa para Perro Mediana Pet. Con dimensiones de 69x50x55cm, esta casa ofrece el espacio perfecto para que tu mascota se sienta segura y protegida en su propio espacio personal.La Casa para Perro Mediana Pet  cuenta con una entrada espaciosa y una altura adecuada para que tu perro entre y salga cómodamente. Además, su diseño robusto y estable garantiza la seguridad de tu mascota mientras descansa o se refugia de la lluvia y el viento.",
+      "precio": "150.000",
+      "color": "Marron",
+      "stock": 250,
+      "descuento": 15,
+      "idProveedor": 1,
+      "idCategoria": 2
+    },
+    {
+      "id_producto": 54,
+      "nombre": "Piso de madera",
+      "descripcion": "Dale un toque cálido y natural a tus espacios con este hermoso piso de madera maciza de roble rojo sin acabado. Con un ancho de tablón de 2.25 pulgadas y un grueso de 3/4 de pulgada, esta madera de la más alta calidad aportará belleza y durabilidad por años. Su textura distintiva y tonos rojizos añadirán carácter a cualquier habitación. Instálalo en espacios de alto tráfico sin preocupaciones gracias a su extraordinaria resistencia.",
+      "precio": "300.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 55,
+      "nombre": "Piso para exterior",
+      "descripcion": "Disfruta de tus espacios al aire libre con este práctico y versátil piso modular para exterior. Hecho de duradera madera maciza de acacia en un moderno tono natural, sus tablones de fácil instalación permiten crear superficies perfectas para terrazas y balcones. Resistente a la intemperie, de mantenimiento sencillo, este piso modular se convertirá en tu aliado para sacarle el máximo provecho a esos rincones outdoor.",
+      "precio": "200.000",
+      "color": "Marron",
+      "stock": 100,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 56,
+      "nombre": "Suelo laminado roble dorado",
+      "descripcion": "Este suelo laminado de la serie Legio con formato XXL aportará calidez y elegancia a tus espacios con su moderno diseño que imita roble en un tono dorado. Con láminas de 12mm de espesor, sistema de unión 1clic para facil instalación y alta resistencia al desgaste (AC5/33), es ideal para áreas de alto tráfico. Su bisel de 4 caras maximiza la sensación de amplitud.",
+      "precio": "160.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 57,
+      "nombre": "Suelo fresno tango",
+      "descripcion": "El suelo laminado Finfloor Fresno Tango transformará tus espacios con su diseño de vetas pronunciadas inspirado en madera de fresno tango. Con 8mm de espesor, formato de tablón ancho de 24cm y la más alta calidad (AC6), ofrece gran resistencia y durabilidad. Es fácil de instalar y requiere poco mantenimiento.",
+      "precio": "180.000",
+      "color": "Marron",
+      "stock": 500,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 58,
+      "nombre": "Perfiles de expansión",
+      "descripcion": "Este perfil de aluminio extruido con acabado es ideal para unir pisos al mismo nivel. Con cinta autoadhesiva para una instalación sencilla y rápida. Longitud de 90cm. Elige el acabado que combine mejor con tu piso.",
+      "precio": "180.000",
+      "color": "Marron",
+      "stock": 400,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 59,
+      "nombre": "Perfiles de transición",
+      "descripcion": "Perfil de aluminio con film decorativo de alta resistencia para realizar transiciones entre dos pisos de diferente altura. Ancho de 40mm, alto 12mm y largo de 2.4 metros. Acabado roble doussie que se adapta a múltiples estilos decorativos.",
+      "precio": "18.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 72,
+      "nombre": "Puerta doble",
+      "descripcion": "Lleva tu entrada al siguiente nivel con esta hermosa puerta doble de madera para exterior Aria con cristal satinado. Viene pre-ensamblada y lista para instalar. Cuenta con vidrio aislante bajo emisivo con certificación ANSI. Hecha en caoba maciza con paneles ingenierados que proveen estabilidad dimensional. Marco de puerta de 4-9/16\", completamente sellada y con bisagras de rodamientos de 4\". Doble perforación para cerradura y pestillo. Mano izquierda con apertura hacia adentro.",
+      "precio": "1000.000",
+      "color": "Marron",
+      "stock": 500,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 5
+    },
+    {
+      "id_producto": 73,
+      "nombre": "Puerta",
+      "descripcion": "Puerta de melanina sin marco con veta vertical color ceniza de la marca Galantti. Elaborada en aglomerado melamínico de 6mm con interior de panal de abeja. Ideal como puerta de baño, alcoba, clóset.",
+      "precio": "400.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 5
+    },
+    {
+      "id_producto": 74,
+      "nombre": "Puerta corrediza",
+      "descripcion": "Puerta corrediza para interior con caras en aglomerado texturizado. Marco superior de 15cm de ancho para óptima instalación. Laterales en PVC con protección UV. Manija en aluminio con pintura electrostática negra. Deslízate con estilo y comodidad.",
+      "precio": "500.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 5
     }
   ]
 }

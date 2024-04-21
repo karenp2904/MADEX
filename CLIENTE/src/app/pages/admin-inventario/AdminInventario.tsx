@@ -2,38 +2,51 @@
 //import { DataTable } from 'primereact/datatable';
 //import { Column } from 'primereact/column';
 
+import { useEffect, useState } from 'react';
 import { IProduct } from '../../../models/interfaces/IProduct';
 import { TablaAdminiventario } from './components/TablaAdminInventario';
+import { obtenerProductos } from '../../../services/productService';
 //import { ProductService } from './service/ProductService';
 
 
 export const AdminInventario = () => {
 
+    const [productos, setProductos] = useState<IProduct[]>([]);
+
+    useEffect(() => {
+        obtenerProductos()
+            .then((res) => {
+                console.log(res.productos);
+                setProductos([...res.productos]);
+            });
+    }, []);
+
+/*
     const products: IProduct[] = [
 
         {
-            "id": "WP0",
+            "id_producto": "WP0",
             "name": "Oak Plank",
             "price": 50.00,
             "stock":   100,
             "status": "INSTOCK",
         },
         {
-            "id": "WP3",
+            "id_producto": "WP3",
             "name": "Maple Wood",
             "price": 40.00,
             "stock": 0,
             "status": "LOWSTOCK"
         },
         {
-            "id": "WP3",
+            "id_producto": "WP3",
             "name": "Birch Timber",
             "price": 45.00,
             "stock": 4,
             "status": "INSTOCK"
         },
         {
-            "id": "WP4",
+            "id_producto": "WP4",
             "name": "Pine Board",
             "price": 30.00,
             "stock": 60,
@@ -41,7 +54,7 @@ export const AdminInventario = () => {
         }
 
     ];
-
+*/
     const Opcion = ({
         nombre, className
     }: {nombre: string, className?: string}) => {
@@ -61,7 +74,6 @@ export const AdminInventario = () => {
                     <Opcion nombre="Inventario" className="bg-aplicaciones" />
                     <Opcion nombre="Auditlog" className="bg-auditlog" />
                     <Opcion nombre="Usuarios" className="bg-m-users" />
-                    <Opcion nombre="Roles" className="bg-roles" />
                     <Opcion nombre="Facturas" className="bg-facturas" />
                 </div>
             </div>
@@ -69,7 +81,7 @@ export const AdminInventario = () => {
                 <div className='m-3 p-4'>
                     <div className="card p-fluid">
                         <TablaAdminiventario
-                            products={products}
+                            products={productos}
                         />
                     </div>
                 </div>

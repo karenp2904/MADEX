@@ -2,23 +2,16 @@ import Logo from "/icon/icon-primary.svg";
 import Arrow from "/arrow/arrow-left-primary.svg";
 import { Router } from "../../router/Router";
 import React, { useState, useEffect } from 'react';
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { Input } from "../../../components/form/Input";
+import { Select } from "../../../components/form/Select";
+import { useNavigate } from "react-router-dom";
+
 
 export const Register = () => {
-    interface FormData {
-        nombre_usuario: string;
-        apellido_usuario: string;
-        tipo_documento: string;
-        idUsuario: string;
-        telefono: string;
-        correo: string;
-        idRol: string;
-        contraseña: string;
-        confirmar_contraseña: string;
-        [key: string]: string; // Firma de índice para permitir cualquier cadena como índice
-    }
     
-    const [formData, setFormData] = useState<FormData>({
+    const navigate = useNavigate();
+    
+    const [formData, setFormData] = useState<{[key: string]: string}>({
         nombre_usuario: '',
         apellido_usuario: '',
         tipo_documento: '',
@@ -26,7 +19,7 @@ export const Register = () => {
         telefono: '',
         correo: '',
         idRol: '1',
-        contraseña: '',
+        password: '',
         confirmar_contraseña: ''
     });
 
@@ -35,27 +28,19 @@ export const Register = () => {
     
     useEffect(() => {
         // Verificar si las contraseñas coinciden
-        setPasswordsMatch(formData.contraseña === formData.confirmar_contraseña);
-    }, [formData.contraseña, formData.confirmar_contraseña]);
+        setPasswordsMatch(formData.password === formData.confirmar_contraseña);
+    }, [formData.password, formData.confirmar_contraseña]);
     
     // Función para manejar el cambio en la aceptación de términos
     const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTermsAccepted(e.target.checked);
     };
     
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-    
-    
-    
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
         // Validar que todos los campos obligatorios estén completos
-        if (!formData.nombre_usuario || !formData.apellido_usuario || !formData.telefono || !formData.correo || !formData.contraseña || !formData.confirmar_contraseña) {
+        if (!formData.nombre_usuario || !formData.apellido_usuario || !formData.telefono || !formData.correo || !formData.password || !formData.confirmar_contraseña) {
             alert('Por favor complete todos los campos obligatorios');
             return;
         }
@@ -78,7 +63,7 @@ export const Register = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Registro exitoso:', data.message); // Muestra el mensaje del servidor
-                Router.login; // Redirige al usuario a la página de inicio de sesión
+                navigate(Router.login); // Redirige al usuario a la página de inicio de sesión
             } else {
                 // Si la respuesta no es exitosa, muestra el mensaje de error del servidor
                 const errorMessage = await response.text();
@@ -88,50 +73,6 @@ export const Register = () => {
             console.error('Error en la solicitud de registro:', error);
         }
     };
-
-    const Input = ({ name, label, isPasswordInput = false, hasError = false }: { name?: string, label?: string, isPasswordInput?: boolean, hasError?: boolean }) => {        
-        const [inputType, setInputType] = useState(isPasswordInput ? 'password' : 'text');
-    
-        const togglePasswordVisibility = () => {
-            setInputType((prevInputType) => (prevInputType === 'password' ? 'text' : 'password'));
-        };
-    
-        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const { name, value } = e.target;
-            setFormData({
-                ...formData,
-                [name]: value
-            });
-        };
-    
-        return (
-            <div className="mb-4">
-                <label htmlFor={name} className="block text-sm font-semibold text-primary-color">
-                    {label}
-                </label>
-                <div className="relative">
-                    <input
-                        name={name}
-                        type={isPasswordInput ? inputType : 'text'}
-                        value={name && formData[name]} // Verificar si name está definido antes de acceder a formData[name]
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 mt-1 rounded-xl placeholder-text-primary-color border border-gray-300 focus:outline-none focus:ring focus:ring-blue-200"
-                    />
-
-                    {isPasswordInput && (
-                        <button
-                            type="button"
-                            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400"
-                            onClick={togglePasswordVisibility}
-                        >
-                            {inputType === 'password' ? <EyeIcon className="w-5 h-5" /> : <EyeSlashIcon className="w-5 h-5" />}
-                        </button>
-                    )}
-                </div>
-            </div>
-        );
-    };
-    
 
     return (
         <div className="w-full h-[1000px] mb-10 flex justify-center items-center">
@@ -148,14 +89,63 @@ export const Register = () => {
                 </div>
                 {/* Contenido del formulario */}
                 <form onSubmit={handleSubmit}>
-                    <Input name="nombre_usuario" label="Nombres" />
-                    <Input name="apellido_usuario" label="Apellidos" />
-                    <Input name="tipo_documento" label="Tipo de Documento" />
-                    <Input name="idUsuario" label="Número de Documento" />
-                    <Input name="telefono" label="Teléfono" />
-                    <Input name="correo" label="Correo electrónico" />
-                    <Input name="contraseña" label="Contraseña" isPasswordInput={true} hasError={!passwordsMatch}/>
-                    <Input name="confirmar_contraseña" label="Confirmar contraseña" isPasswordInput={true} hasError={!passwordsMatch}/>
+                    <Input
+                        name="nombre_usuario"
+                        label="Nombres"
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                    <Input
+                        name="apellido_usuario"
+                        label="Apellidos"
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                    <Select
+                        name="tipo_documento"
+                        label="Tipo de Documento"
+                        formData={formData}
+                        setFormData={setFormData}
+                        opciones={[
+                            {text: "Cedula", valor: "CC"},
+                            {text: "Cedula Extranjeria (CE)", valor: "CE"},
+                            {text: "Pasaporte", valor: "Pasaporte"}
+                        ]}
+                    />
+                    <Input
+                        name="idUsuario"
+                        label="Número de Documento" 
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                    <Input
+                        name="telefono"
+                        label="Teléfono"
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                    <Input
+                        name="correo"
+                        label="Correo electrónico"
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                    <Input
+                        name="password"
+                        label="Contraseña"
+                        isPasswordInput={true}
+                        hasError={!passwordsMatch}
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
+                    <Input
+                        name="confirmar_contraseña"
+                        label="Confirmar contraseña"
+                        isPasswordInput={true}
+                        hasError={!passwordsMatch}
+                        formData={formData}
+                        setFormData={setFormData}
+                    />
                     
                     {!passwordsMatch && (
                         <div className="text-red-600 text-xs mt-1 mb-4">Las contraseñas no coinciden</div>

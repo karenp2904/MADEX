@@ -1,7 +1,6 @@
 // tailwind.config.js
 import withMT from "@material-tailwind/react/utils/withMT";
-
-module.exports = withMT({
+export default withMT({
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -34,7 +33,6 @@ module.exports = withMT({
         'md': '950px',
         'lg': '1250px'
       },
-
       borderRadius:{
         'none': '0',
       'sm': '0.125rem',

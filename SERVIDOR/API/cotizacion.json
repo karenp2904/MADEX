@@ -1,20 +1,18 @@
-{
-  "productos": [
-    {
-      "id_producto": 2,
-      "cantidad": 10
-    },
-    {
-      "id_producto": 3,
-      "cantidad": 10
-    },
-    {
-      "id_producto": 1,
-      "cantidad": 30
-    },
-    {
-      "id_producto": 4,
-      "cantidad": 300
-    }
-  ]
-}
+[
+  {
+    "id_producto": 4,
+    "cantidad": 30
+  },
+  {
+    "id_producto": 3,
+    "cantidad": 10
+  },
+  {
+    "id_producto": 1,
+    "cantidad": 30
+  },
+  {
+    "id_producto": 4,
+    "cantidad": 4
+  }
+]
