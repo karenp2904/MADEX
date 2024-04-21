@@ -401,10 +401,10 @@ async function db_obtenerDireccionPorUsuario(idUsuario) {
 }
 
 
-async function db_reestablecerContraseña(password) {
+async function db_reestablecerContraseña(idUsuario, password) { 
   try {
     
-
+    const restablecer = await pool.query('CALL db_reestablecerContraseña($1, $2)', [idUsuario], [password]);
     return true;
 
   } catch (error) {
@@ -414,7 +414,7 @@ async function db_reestablecerContraseña(password) {
 }
 
 
-async function db_agregarProductoDestacado(idProducto,idUsuario) {
+async function db_agregarProductoDestacado(idProducto,idUsuario) { //TODO
   try {
     
 
@@ -427,7 +427,7 @@ async function db_agregarProductoDestacado(idProducto,idUsuario) {
 }
 
 
-async function db_obtenerProductosDestacados(idUsuario) {
+async function db_obtenerProductosDestacados(idUsuario) { //TODO
   try {
     
 
@@ -440,10 +440,11 @@ async function db_obtenerProductosDestacados(idUsuario) {
 }
 
 
-
 module.exports = { db_añadirUsuario,
-  db_obtenerTodosLosProductos, db_obtenerCategoriaPorId,
-  db_obtenerProductoPorId, db_obtenerNombreProveedorPorId,
+  db_obtenerTodosLosProductos, 
+  db_obtenerCategoriaPorId,
+  db_obtenerProductoPorId, 
+  db_obtenerNombreProveedorPorId,
   db_obtenerListaProveedores,
   db_obtenerListaCategorias,
   db_añadirUsuario,
@@ -459,12 +460,19 @@ module.exports = { db_añadirUsuario,
   db_editarStock,
   db_logInventario,
   db_logUsuarios,
-  db_añadirProductoCarrito,db_modificarCantidadProductoCarrito,
+  db_añadirProductoCarrito,
+  db_modificarCantidadProductoCarrito,
   db_eliminarProductoCarrito,
   db_verificarClienteActivo,
   db_obtenerCarrito,
   db_obtenerHistorialDeCompra,
   db_añadirFactura,
-  db_obtenerFactura,db_agregarProductoDestacado,db_obtenerProductosDestacados,
-  db_guardarDireccionEnvio,db_obtenerDireccionPorUsuario
+  db_obtenerFactura,
+  db_agregarProductoDestacado,
+  db_obtenerProductosDestacados,
+  db_guardarDireccionEnvio,
+  db_obtenerDireccionPorUsuario,
+  db_reestablecerContraseña,
+  db_añadirproductoDestacado,
+  db_obtenerproductoDestacado
 };
