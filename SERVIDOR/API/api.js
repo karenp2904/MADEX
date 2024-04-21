@@ -26,11 +26,11 @@ async function obtenerInventario() {
         try {
             const productosJSON = JSON.stringify(productos, null, 2);
             // Verificar si el archivo existe antes de intentar escribir en él
-            if (!fs.existsSync('./API/productos.json')) {
+            if (!fs.existsSync('./SERVIDOR/API/productos.json')) {
                 console.error('El archivo productos.json no existe.');
                 return;
             }
-            fs.writeFileSync('./API/productos.json', productosJSON);
+            fs.writeFileSync('./SERVIDOR/API/productos.json', productosJSON);
             console.log('Productos guardados en productos.json');
         } catch (error) {
             console.error('Error al guardar los productos:', error);
@@ -42,7 +42,7 @@ async function obtenerInventario() {
     async function leerProductos(req, res) {
         try {
             // Leer el archivo de productos de manera asíncrona
-            const data = await fs.readFile('./API/productos.json', 'utf8');
+            const data = await fs.readFile('./SERVIDOR/API/productos.json', 'utf8');
             const jsonData = JSON.parse(data);
     
             // Verifica si hay productos en el archivo JSON
@@ -87,20 +87,26 @@ async function obtenerInventario() {
 //metodos para la escritura de la solicitud de la alianza
 
 async function solicitudAlianza(cotizacion) {
-    const fs = require('fs');
+    
+    try{
+        console.log('en archivo cotizacion' + cotizacion);
+        const fs = require('fs');
+        // Convertir el objeto a JSON
+        const cotizacionJSON = JSON.stringify(cotizacion, null, 2);
 
-    // Convertir el objeto a JSON
-    const cotizacionJSON = JSON.stringify(cotizacion, null, 2);
-
-    // Escribir el JSON en un archivo de manera asíncrona
-    fs.writeFile('./API/cotizacion.json', cotizacionJSON, (err) => {
-        if (err) {
-            console.error('Error al escribir el archivo:', err);
-            // Puedes manejar el error de acuerdo a tus necesidades, por ejemplo, lanzando una excepción
-            throw err;
-        }
-        console.log('Archivo cotizacion.json creado correctamente.');
-    });
+        // Escribir el JSON en un archivo de manera asíncrona
+        fs.writeFile('./SERVIDOR/API/cotizacion.json', cotizacionJSON, (err) => {
+            if (err) {
+                console.error('Error al escribir el archivo:', err);
+                // Puedes manejar el error de acuerdo a tus necesidades, por ejemplo, lanzando una excepción
+                throw err;
+            }
+            console.log('Archivo cotizacion.json creado correctamente.');
+        });
+    } catch (error) {
+        console.error('Error al leer la cotización:', error);
+        res.status(500).send('Error al leer la cotización');
+    }
 }
 
 
@@ -110,7 +116,7 @@ async function solicitudAlianza(cotizacion) {
 // metodos para definit la rutina de lectura de la transaccion Alianza
 
 // Rutas a los archivos
-const archivoCotizacion = './API/cotizacion.json';
+const archivoCotizacion = './SERVIDOR/API/cotizacion.json';
 
 // Controlador para leer la cotización y calcular el presupuesto si hay cambios
 async function leerCotizacion(req, res) {
@@ -146,7 +152,7 @@ setInterval(() => {
 */
 
 async function calcularCotizacion(){
-    const archivoCotizacion = './API/cotizacion.json';
+    const archivoCotizacion = './SERVIDOR/API/cotizacion.json';
     const costoAlianza= await calcularCostoPresupuesto(archivoCotizacion);
     return costoAlianza;
 }
@@ -158,11 +164,11 @@ async function calcularCostoPresupuesto(archivoCotizacion) {
         const jsonData = JSON.parse(data);
 
         // Verifica si hay productos en el archivo JSON
-        if (!jsonData || !jsonData.productos || !Array.isArray(jsonData.productos)) {
+        if (!jsonData || !jsonData || !Array.isArray(jsonData)) {
             throw new Error('El archivo JSON no contiene una lista de productos válida.');
         }
 
-        const cotizacion = jsonData.productos;
+        const cotizacion = jsonData;
 
         // Verificar si cotizacion es un array antes de usar forEach
         if (Array.isArray(cotizacion)) {
@@ -214,7 +220,7 @@ async function obtenerPrecioProducto(idProducto) {
         console.log("productos" +inventario.productos) ;
         const productos = inventario.productos
         // Encuentra el producto con el ID especificado
-        const producto = productos.find(producto => producto.id_producto === idProducto);
+        const producto = await productos.find(producto => producto.id_producto === idProducto);
         console.log(producto + "producto que se busca");
         if (producto) {
             let precioConDescuento = producto.precio * (1 - producto.descuento / 100);
@@ -259,7 +265,7 @@ async function guardarRespuesta() {
 
         try {
             // Escribir la respuesta en el archivo JSON de manera síncrona
-            fs.writeFileSync('./API/respuestaCotizacion.json', respuestaJSON);
+            fs.writeFileSync('./SERVIDOR/API/respuestaCotizacion.json', respuestaJSON);
             console.log('Respuesta escrita en el archivo respuestaCotizacion.json correctamente.');
             return respuesta;
         } catch (error) {

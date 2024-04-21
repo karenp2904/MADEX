@@ -1,5 +1,4 @@
 import Logo from "/icon/icon-primary.svg";
-import Arrow from "/arrow/arrow-left-primary.svg";
 import { Router } from "../../router/Router";
 import React, { useState } from 'react';
 
