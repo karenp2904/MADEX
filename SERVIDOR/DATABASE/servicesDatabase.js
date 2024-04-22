@@ -391,7 +391,6 @@ async function db_guardarDireccionEnvio(ID_Usuario, Calle, Ciudad, Codigo_Postal
 async function db_obtenerDireccionPorUsuario(idUsuario) {
   try {
     const direccion = await pool.query('SELECT * FROM db_obtenerDireccionPorUsuario($1);', [idUsuario]); 
-
     return direccion.rows;
 
   } catch (error) {
@@ -427,11 +426,11 @@ async function db_agregarProductoDestacado(idProducto,idUsuario) {
 }
 
 
-async function db_obtenerProductosDestacados(idUsuario) { //TODO
+async function db_obtenerProductosDestacados(idUsuario) {
   try {
     
-
-    return true;
+    const favoritos = await pool.query('SELECT * FROM db_obtenerProductosDestacados($1);', [idUsuario]); 
+    return favoritos.rows;
 
   } catch (error) {
     console.error("Error al obtener destacados", error);
