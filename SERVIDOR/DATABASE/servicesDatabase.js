@@ -438,6 +438,17 @@ async function db_obtenerProductosDestacados(idUsuario) {
   }
 }
 
+async function db_eliminarProductosDestacados(idUsuario) {
+  try {
+    
+    const eliminar = await pool.query('CALL db_eliminarProductosDestacados($1)', [idUsuario]);
+    return true;
+
+  } catch (error) {
+    console.error("Error al obtener destacados", error);
+    throw new Error("Error al obtener destacados"+ error.message);
+  }
+}
 
 module.exports = { db_añadirUsuario,
   db_obtenerTodosLosProductos, 
@@ -473,5 +484,6 @@ module.exports = { db_añadirUsuario,
   db_obtenerDireccionPorUsuario,
   db_reestablecerContraseña,
   db_añadirproductoDestacado,
-  db_obtenerproductoDestacado
+  db_obtenerproductoDestacado,
+  db_eliminarProductosDestacados
 };
