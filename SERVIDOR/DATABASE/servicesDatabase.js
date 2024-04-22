@@ -438,6 +438,7 @@ async function db_obtenerProductosDestacados(idUsuario) {
   }
 }
 
+//Elimina todos los productos favoritos que estén relacionados al usuario
 async function db_eliminarProductosDestacados(idUsuario) {
   try {
     
@@ -445,8 +446,20 @@ async function db_eliminarProductosDestacados(idUsuario) {
     return true;
 
   } catch (error) {
-    console.error("Error al obtener destacados", error);
-    throw new Error("Error al obtener destacados"+ error.message);
+    console.error("Error al eliminar destacados", error);
+    throw new Error("Error al elilminar destacados"+ error.message);
+  }
+}
+
+async function db_eliminarProductoDestacado(idUsuario, idProducto) {
+  try {
+    
+    const eliminar = await pool.query('CALL db_eliminarProductoDestacado($1)', [idUsuario], [idProducto]);
+    return true;
+
+  } catch (error) {
+    console.error("Error al liminar destacados", error);
+    throw new Error("Error al eliminar destacados"+ error.message);
   }
 }
 
