@@ -414,10 +414,10 @@ async function db_reestablecerContraseña(idUsuario, password) {
 }
 
 
-async function db_agregarProductoDestacado(idProducto,idUsuario) { //TODO
+async function db_agregarProductoDestacado(idProducto,idUsuario) {
   try {
     
-
+    const restablecer = await pool.query('CALL db_agregarProductoDestacado($1, $2)', [idProducto], [idUsuario]);
     return true;
 
   } catch (error) {
