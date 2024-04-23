@@ -21,7 +21,7 @@ const UserInfoCard = () => {
 
                 <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
                     <dt className="font-medium text-gray-900">Teléfono</dt>
-                    <dd className="text-gray-700 sm:col-span-2">312267654896</dd>
+                    <dd className="text-gray-700 sm:col-span-2">3122676548</dd>
                 </div>
             </dl>
         </div>

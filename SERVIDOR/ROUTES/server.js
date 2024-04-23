@@ -509,7 +509,7 @@ app.get('/producto/filtrarColor/:color', async (req, res) => {
         const lista = await inventario.productosPorColor(color);
         //console.log('Lista de productos:', lista);
 
-        res.json(lista);
+        res.status(201).json(lista);
         
     } catch (error) {
         console.error('Error en la búsqueda del producto:', error);
@@ -575,7 +575,7 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
         const lista = await inventario.obtenerRutasbase64(nombre);
 
         // Devolver los resultados como respuesta
-        res.json(lista);
+        res.status(201).json(lista);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error en la búsqueda de la ruta:', error);
@@ -617,10 +617,12 @@ app.put('/carrito/modificarCantidad',async (req, res) => {
 
 
 // Ruta para ver el contenido del carrito y saber el subtotal
-app.get('/carrito/contenido', async (req, res) => {
+app.get('/carrito/contenido/idUsuario', async (req, res) => {
     try {
-        // Obtener el ID del usuario de la solicitud
-        const { idUsuario } = req.body;
+        
+        // Obtener el ID del usuario de los parámetros
+        const idUsuario = req.query.idUsuario;
+        console.log(idUsuario);
         let contenidoCarrito = new carritoDeCompra();
         let productos=await controladorServer.obtenerCarritoCompras(idUsuario);
 
@@ -633,9 +635,10 @@ app.get('/carrito/contenido', async (req, res) => {
         });
         
         const subtotal= await contenidoCarrito.calcularTotalCompra();
+        console.log(subtotal);
 
         // Enviar el contenido del carrito como respuesta
-        res.json({carritoCompras:contenidoCarrito , subtotal: subtotal});
+        res.status(201).json({carritoCompras:contenidoCarrito , subtotal: subtotal});
     } catch (error) {
         console.error('Error al obtener el contenido del carrito de compras:', error);
         res.status(500).send('Error en el servidor');

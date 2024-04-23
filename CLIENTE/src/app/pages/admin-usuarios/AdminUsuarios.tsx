@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const AdminUsuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -19,9 +20,13 @@ export const AdminUsuarios = () => {
         obtenerUsuarios();
     }, []); // Este efecto se ejecutará solo una vez al montar el componente
 
-    const Opcion = ({ nombre, className }: { nombre: string, className?: string }) => {
+    const Opcion = ({
+        nombre, className
+    }: {nombre: string, className?: string}) => {
         return (
-            <div className={`${className} hover:text-gray-400 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat`}>
+            <div
+                className={`${className} hover:text-gray-400 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat`}
+            >
                 <strong>{nombre}</strong>
             </div>
         )
