@@ -253,7 +253,7 @@ app.post('/empresa/registro', async function(req, res) {
 });
 
 
-app.get('/usuario/obtenerPorId', async function(req, res) {
+app.post('/usuario/obtenerPorId', async function(req, res) {
     try {
         const { id_usuario } = req.body; // Obtén el ID del usuario del cuerpo de la solicitud
         //console.log(id_usuario); //
@@ -335,13 +335,13 @@ app.post('/producto/actualizarStock', async function(req, res) {
 
 app.get('/producto/obtenerProducto', async function(req, res) {
     try {
-        const { idProducto } = req.body; // ID del producto está en el cuerpo de la solicitud
+        const idProducto = req.query.idProducto; // Obtener el ID del producto desde la consulta en la URL
         const producto = await controladorServer.s_obtenerProducto(idProducto);
-        // Verifica si se encontró el producto
+        // Verificar si se encontró el producto
         if (!producto) {
             return res.status(404).send('Producto no encontrado');
         }
-        // Devuelve el producto encontrado en formato JSON
+        // Devolver el producto encontrado en formato JSON
         res.status(200).json(producto);
     } catch (error) {
         console.error('Error al obtener el producto:', error);
@@ -516,6 +516,7 @@ app.get('/producto/filtrarColor/:color', async (req, res) => {
         res.status(500).send('Error en la búsqueda del producto');
     }
 });
+
 app.get('/producto/CatalogoImagenes', async (req, res) => {
     try {
         // Obtener el inventario de productos

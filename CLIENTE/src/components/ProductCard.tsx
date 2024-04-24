@@ -25,7 +25,7 @@ import axios from "axios";
     const [image, setImage] = useState<string|null>(null)
 
     useEffect(() => {
-      axios.get(`http://localhost:3000/producto/Imagenes/${product.nombre}`)
+      axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
         .then((res) => {
           if(res.data && res.data[0]){
             setImage(res.data[0].base64)

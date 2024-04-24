@@ -12,7 +12,7 @@ export const ProcesoCompraDatos = () => {
 
     // Estado para almacenar los datos del formulario
     const [formData, setFormData] = useState<{[key: string]: string}>({
-        ID_Usuario: "1007898403", // Aquí debes asignar el ID de usuario correcto
+        ID_Usuario: "1097490756", 
         Calle: "",
         Ciudad: "",
         Codigo_Postal: "",
@@ -141,7 +141,7 @@ export const ProcesoCompraDatos = () => {
 
                     <div className="flex-1 flex justify-evenly items-center">
                         <span onClick={() => navigate(Router.procesoCompraConfirmar)} className="hover:cursor-pointer hover:underline" >Volver al carrito</span>
-                        <Button type="submit">Continuar al Pago</Button>
+                        <Button type="submit" onClick={handleSubmit}>Continuar al Pago</Button>
                     </div>
                 </div>
 

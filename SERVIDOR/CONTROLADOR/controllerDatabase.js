@@ -86,7 +86,6 @@ async function obtenerProductoPorId(id){
     return producto;
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Error en el servidor');
   }
 };
 
@@ -97,7 +96,7 @@ async function obtenerCategoriaID(id){
     return categoria;
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Error en el servidor');
+   
   }
 };
 
@@ -107,9 +106,9 @@ async function obtenerProveedorId(id){
     return proveedor;
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Error en el servidor');
-  }
+   
 };
+}
 
 
 
