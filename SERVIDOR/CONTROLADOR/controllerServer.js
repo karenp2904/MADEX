@@ -111,7 +111,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             });
     
             // Devuelve el array de objetos "producto"
-            console.log("En server" + productos);
+           // console.log("En server" + productos);
             return productos;
         } catch (error) {
             console.error('Error al obtener los productos:', error);

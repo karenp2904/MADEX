@@ -4,7 +4,7 @@ const pool = require('./databaseConexion');
 async function db_obtenerTodosLosProductos () { 
   try {
     const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
-    console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
+   // console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
 
     return allProductos.rows;
   } catch (error) {

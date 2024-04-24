@@ -82,7 +82,7 @@ export const Register = () => {
                 }}>
                 <div className="absolute left-4 top-4">
                     <img className="w-12" src={Arrow} />
-                   
+                
                 </div>
                 <div className="h-48 flex justify-center items-center">
                     <img className="max-h-full" src={Logo} />
@@ -107,7 +107,7 @@ export const Register = () => {
                         formData={formData}
                         setFormData={setFormData}
                         opciones={[
-                            {text: "Cedula", valor: "CC"},
+                            {text: "Cedula Ciudadania", valor: "CC"},
                             {text: "Cedula Extranjeria (CE)", valor: "CE"},
                             {text: "Pasaporte", valor: "Pasaporte"}
                         ]}

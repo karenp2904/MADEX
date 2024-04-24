@@ -34,6 +34,7 @@ export const NavBar = () => {
             </div>
             <div className=" font-semibold w-auto text-sm flex justify-center items-center text-white hover:cursor-pointer hover:text-gray-300">
                 <span>Sobre Nosotros</span>
+            
             </div>
             <div className="w-42 flex justify-end items-center text-white hover:cursor-pointer hover:text-gray-300">
                 <input 
@@ -42,11 +43,11 @@ export const NavBar = () => {
                     placeholder="Buscar en el sitio"
                 />
             </div>
-            <div className="w-8 h-full aspect-square flex justify-center items-center text-white hover:cursor-pointer">
+            <div className="w-8 h-full aspect-square flex justify-center items-center text-white hover:cursor-pointer" onClick={() => navigate(Router.login)}>
                 <img className="w-3/4 aspect-square hover:scale-110" src={User} />
             </div>
-            <div className="w-8 h-full aspect-square flex justify-center items-center text-white hover:cursor-pointer">
-                <img className="w-3/4 aspect-square hover:scale-110" src={Cart} />
+            <div className="w-8 h-full aspect-square flex justify-center items-center text-white hover:cursor-pointer" onClick={() => navigate(Router.carrito)}>
+                <img className="w-3/4 aspect-square hover:scale-110" src={Cart} alt="Icono de carrito" />
             </div>
         </header>
     )

@@ -95,7 +95,7 @@ class CarritoDeCompras {
             maximumFractionDigits: 2
         });
 
-        console.log("totalDescuento "+totalFormateado);
+       // console.log("totalDescuento "+totalFormateado);
         return totalFormateado;
     }
 
@@ -106,7 +106,7 @@ class CarritoDeCompras {
             console.log(producto.producto.precio, producto.cantidad);
             totalProductos += parseFloat(producto.producto.precio) * producto.cantidad;
         }
-        console.log("Total productos en pesos: " + totalProductos);
+       // console.log("Total productos en pesos: " + totalProductos);
     
         // Elegir entre miles o millones
         const factor = 1_000; // Para miles
@@ -135,9 +135,9 @@ class CarritoDeCompras {
         const porcentajeIVANumber = parseFloat(porcentajeIVA);
 
         // Calcula el IVA
-        console.log(porcentajeIVANumber, totalConDescuentoNumber);
+       // console.log(porcentajeIVANumber, totalConDescuentoNumber);
         const iva = totalConDescuentoNumber * (porcentajeIVANumber / 100);
-        console.log("iva: " + iva);
+        //console.log("iva: " + iva);
 
         const factor = 1_000; // Para miles
         // const factor = 1_000_000; // Para millones
@@ -166,7 +166,7 @@ class CarritoDeCompras {
             // Añade el precio con descuento multiplicado por la cantidad al total
             total += precioConDescuento * Number(producto.cantidad);
         }
-        console.log(parseFloat(total));
+       // console.log(parseFloat(total));
         return parseFloat(total);
     }
 
@@ -185,10 +185,10 @@ class CarritoDeCompras {
         const total = subtotal - descuento + iva;
 
         // Muestra los valores calculados en la consola para depuración
-        console.log("Subtotal:", subtotal);
-        console.log("Descuento:", descuento);
-        console.log("IVA:", iva);
-        console.log("Total a pagar:", total);
+        //console.log("Subtotal:", subtotal);
+        //console.log("Descuento:", descuento);
+        //console.log("IVA:", iva);
+        //console.log("Total a pagar:", total);
 
         const totalFormateado = total.toLocaleString('es-CO', {
             minimumFractionDigits: 3,
@@ -243,7 +243,7 @@ class CarritoDeCompras {
             console.log(producto.producto.precio, producto.cantidad);
             totalProductos += parseFloat(producto.producto.precio) * producto.cantidad;
         }
-        console.log("Total productos en pesos: " + totalProductos);
+        //console.log("Total productos en pesos: " + totalProductos);
         return totalProductos;
     }
 

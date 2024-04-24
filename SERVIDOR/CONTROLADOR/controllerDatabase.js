@@ -22,7 +22,7 @@ async function obtenerTodosLosProductos() {
     // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
     const productosCompletos = await Promise.all(productosCompletosPromises);
 
-    console.log('Productos:', productosCompletos);
+    //console.log('Productos:', productosCompletos);
 
     return allProductos;
   } catch (error) {

@@ -119,7 +119,7 @@ app.post('/usuario/registro', async function(req, res) {
 
         const {nombre_usuario, apellido_usuario, tipo_documento,idUsuario,telefono,correo, idRol,password } = req.body;
         //console.log('EN SERVER' + nombre_usuario+ apellido_usuario+ tipo_documento+idUsuario+telefono+correo+ idRol+ password);
-        console.log('contraseña server' + password);
+        //console.log('contraseña server' + password);
         
         const usuario= await controladorServer.s_añadirUsuario( idUsuario, nombre_usuario, apellido_usuario, correo,  password, tipo_documento,telefono, idRol);
 
@@ -139,15 +139,15 @@ app.post('/usuario/login', async function(req, res) {
     try {
         const {correo,contraseña} = req.body;
     
-        console.log(correo + " - " + contraseña );
+        //console.log(correo + " - " + contraseña );
         
         const usuario= await controladorServer.manejarInicioSesion(correo,contraseña);        // Enviar respuesta al cliente
-        console.log(usuario);
-        
+        //console.log(usuario);
+        /*
         if(usuario!=null || usuario!=undefined){
-            console.log(usuario.usuario.correo + " - " );
+           // console.log(usuario.usuario.correo + " - " );
             const codigoEnviado = await controladorServer.enviarCodigoPorCorreo(usuario.usuario.correo);
-            console.log(codigoEnviado);
+            //console.log(codigoEnviado);
 
            // Verifica que req.session está disponible antes de guardar el código
             if (req.session) {
@@ -159,6 +159,9 @@ app.post('/usuario/login', async function(req, res) {
         } else {
             res.status(401).json({ mensaje: 'Credenciales inválidas.' });
         }
+        */
+
+        res.status(200).json(usuario);
     } catch (error) {
         // Manejo de errores
         console.error('Error al iniciar sesion usuario:', error);
@@ -172,7 +175,7 @@ app.post('/usuario/verificar-codigo', async function (req, res){
 
     // Recupera el código de la sesión del usuario
     const codigoGuardado = req.session.codigoAutenticacion;
-    console.log(codigoGuardado + ' ' + codigoUsuario);
+    //console.log(codigoGuardado + ' ' + codigoUsuario);
     
     // Compara el código proporcionado por el usuario con el código almacenado
     if (codigoUsuario === codigoGuardado) {
@@ -220,7 +223,7 @@ app.post('/usuario/actualizar', async function(req, res) {
     try {
         const {nombre_usuario, apellido_usuario, tipo_documento,idUsuario,telefono,correo, idRol,password } = req.body;
     
-        console.log(nombre_usuario);
+        //console.log(nombre_usuario);
 
         const usuario= await controladorServer.s_actualizarUsuario(idUsuario, nombre_usuario, apellido_usuario, correo, tipo_documento, password, telefono, idRol);
 
@@ -238,7 +241,7 @@ app.post('/empresa/registro', async function(req, res) {
     try {
         const { idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
     
-        console.log(nombre);
+        //console.log(nombre);
         const usuario = await controladorServer.s_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
         // Enviar respuesta al cliente
         res.status(200).json({ success: true, usuario });
@@ -253,7 +256,7 @@ app.post('/empresa/registro', async function(req, res) {
 app.get('/usuario/obtenerPorId', async function(req, res) {
     try {
         const { id_usuario } = req.body; // Obtén el ID del usuario del cuerpo de la solicitud
-        console.log(id_usuario); //
+        //console.log(id_usuario); //
         const usuario = await controladorServer.s_obtenerUsuarioId(id_usuario);
 
         res.json(usuario);
@@ -282,7 +285,7 @@ app.post('/producto/agregar', async function(req, res) {
         const { nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria } = req.body;
         
         const producto= await controladorServer.s_añadirProducto( nombre, descripcion, precio, estado_producto, color, stock, descuento, idProveedor, idCategoria );
-        console.log(nombre + " " + descripcion );
+        //console.log(nombre + " " + descripcion );
 
         res.status(200).json({success: true, message: 'Producto añadido correctamente', producto});
     } catch (error) {
@@ -376,7 +379,7 @@ app.get('/producto/inventario', async function(req, res) {
         // Obtener el inventario
         inventario = await obtenerProductosConInventario(req, res);
     
-        console.log("Productos en inventario:", inventario.productos);
+        //console.log("Productos en inventario:", inventario.productos);
         // Enviar respuesta al cliente
         res.send(inventario);
     } catch (error) {
@@ -422,7 +425,7 @@ app.get('/producto/catalogo', async function(req, res) {
          // llamar al que identifica el rol del usuario
 
     
-        console.log("Productos en inventario:", inventario.productos);
+        //console.log("Productos en inventario:", inventario.productos);
         // Enviar respuesta al cliente
         res.send(inventario);
     } catch (error) {
@@ -440,7 +443,7 @@ app.get('/producto/verificarStock', async function(req, res) {
         // Obtener los parámetros de la solicitud (ID del producto y cantidad)
 
 
-        console.log(idProducto + " | "+cantidad);
+       // console.log(idProducto + " | "+cantidad);
 
         inventario = await obtenerProductosConInventario(req, res);
         
@@ -463,7 +466,7 @@ app.get('/buscar-producto/:nombre', async (req, res) => {
 
     try {
         // Realizar la búsqueda del producto en el inventario
-        console.log(nombreProducto);
+        //console.log(nombreProducto);
         inventario = await obtenerProductosConInventario(req, res);
         const resultados = await inventario.buscarProducto(nombreProducto);
 
@@ -480,13 +483,13 @@ app.get('/filtrarCategoria', async (req, res) => {
     try {
         const { categoria } = req.body; // Obtener la categoría de los parámetros de consulta
 
-        console.log('Categoría a buscar:', categoria);
+       // console.log('Categoría a buscar:', categoria);
         const inventario = await obtenerProductosConInventario(req, res);
         
         // Filtrar productos por categoría
         const listaId = await inventario.buscarProductosPorCategoria(categoria);
 
-        console.log('Lista de productos:', listaId);
+        //console.log('Lista de productos:', listaId);
 
         res.json(listaId);
         
@@ -499,14 +502,14 @@ app.get('/filtrarCategoria', async (req, res) => {
 
 app.get('/producto/filtrarColor/:color', async (req, res) => {
     const color = req.params.color;
-    console.log('Color a buscar:', color);
+   // console.log('Color a buscar:', color);
 
     try {
         inventario = await obtenerProductosConInventario(req, res);
         const lista = await inventario.productosPorColor(color);
-        console.log('Lista de productos:', lista);
+        //console.log('Lista de productos:', lista);
 
-        res.json(lista);
+        res.status(201).json(lista);
         
     } catch (error) {
         console.error('Error en la búsqueda del producto:', error);
@@ -568,11 +571,11 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
         const nombre = req.params.nombre; 
         // Realizar la búsqueda del producto en el inventario
         inventario =  await obtenerProductosConInventario(req, res);
-        console.log(nombre);
+       // console.log(nombre);
         const lista = await inventario.obtenerRutasbase64(nombre);
 
         // Devolver los resultados como respuesta
-        res.json(lista);
+        res.status(201).json(lista);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error en la búsqueda de la ruta:', error);
@@ -614,10 +617,12 @@ app.put('/carrito/modificarCantidad',async (req, res) => {
 
 
 // Ruta para ver el contenido del carrito y saber el subtotal
-app.get('/carrito/contenido', async (req, res) => {
+app.get('/carrito/contenido/idUsuario', async (req, res) => {
     try {
-        // Obtener el ID del usuario de la solicitud
-        const { idUsuario } = req.body;
+        
+        // Obtener el ID del usuario de los parámetros
+        const idUsuario = req.query.idUsuario;
+        console.log(idUsuario);
         let contenidoCarrito = new carritoDeCompra();
         let productos=await controladorServer.obtenerCarritoCompras(idUsuario);
 
@@ -630,9 +635,10 @@ app.get('/carrito/contenido', async (req, res) => {
         });
         
         const subtotal= await contenidoCarrito.calcularTotalCompra();
+        console.log(subtotal);
 
         // Enviar el contenido del carrito como respuesta
-        res.json({carritoCompras:contenidoCarrito , subtotal: subtotal});
+        res.status(201).json({carritoCompras:contenidoCarrito , subtotal: subtotal});
     } catch (error) {
         console.error('Error al obtener el contenido del carrito de compras:', error);
         res.status(500).send('Error en el servidor');
@@ -673,10 +679,11 @@ app.post('/direccion/agregar', async (req, res) => {
             barrio,
             descripcion
         });
+        console.log('server' + nuevaDireccion);
 
         const direccionGuardada = await controladorServer.guardarDireccion(ID_Usuario,Calle,Ciudad,Codigo_Postal,departamento,barrio,descripcion);
 
-        res.status(201).json(direccionGuardada);
+        res.status(201).json(direccionGuardada +nuevaDireccion );
     } catch (error) {
         // Manejar cualquier error que ocurra durante el proceso
         console.error('Error al añadir la dirección:', error);
@@ -706,7 +713,7 @@ app.get('/resumenCompra', async (req, res) => {
 
         const dir = await controladorServer.obtenerDireccion(idUsuario);
 
-        console.log(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion);
+        //console.log(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion);
 
         let direccionGuardada= new Direccion(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion );
         
@@ -719,7 +726,7 @@ app.get('/resumenCompra', async (req, res) => {
 
 
         productos.forEach(item => {
-            console.log("Item del carrito:", item);
+           // console.log("Item del carrito:", item);
             if (Array.isArray(item.producto)) {
                 item.producto.forEach(producto => {
                     contenidoCarrito.agregarProducto(producto,item.cantidad);
@@ -748,13 +755,13 @@ app.post('/factura/agregar', async (req, res) => {
         const { idUsuario, idMetodoDePago} = req.body;
 
         const direccionGuardada = await controladorServer.obtenerDireccion(idUsuario);
-        console.log(direccionGuardada);
+       // console.log(direccionGuardada);
 
         const direccion = direccionGuardada[0];
     
         // Accede a la propiedad `id_direccion`
         const idDireccion = direccion.id_direccion;
-        console.log(idDireccion);
+        //console.log(idDireccion);
 
         //PARA LOS ID_PRODUCTO DE ARRAY
         const productos = await controladorServer.obtenerCarritoCompras(idUsuario);
@@ -765,7 +772,7 @@ app.post('/factura/agregar', async (req, res) => {
         let idProductos = [];
 
         productos.forEach(item => {
-            console.log("Item del carrito:", item);
+         //   console.log("Item del carrito:", item);
             if (Array.isArray(item.producto)) {
                 item.producto.forEach(producto => {
                     if (producto && producto.id_producto) {
@@ -781,12 +788,12 @@ app.post('/factura/agregar', async (req, res) => {
             }
         });
 
-        console.log("IDs de productos en el carrito:", idProductos);
+       // console.log("IDs de productos en el carrito:", idProductos);
 
-        console.log(contenidoCarrito);
+       // console.log(contenidoCarrito);
         
         const valor_total= await contenidoCarrito.calcularTotalCompra();
-        console.log("TOTAL: "+ valor_total);
+       // console.log("TOTAL: "+ valor_total);
 
         const factura= await controladorServer.s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProductos);
         
@@ -826,16 +833,16 @@ app.get('/factura/generar', async (req, res) => {
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
         const factura = await controladorServer.s_obtenerFactura(idFactura)
         const fecha = factura[0].fecha;
-        console.log("idUser "+factura[0].id_usuario);
+       // console.log("idUser "+factura[0].id_usuario);
         const usuario = await controladorServer.s_obtenerUsuarioId(factura[0].id_usuario);
         const direccionGuardada = await controladorServer.obtenerDireccion(factura[0].id_usuario);
-        console.log(direccionGuardada);
+      //  console.log(direccionGuardada);
 
         const direccion = direccionGuardada[0];
     
         // Accede a la propiedad `id_direccion`
         const idDireccion = direccion.id_direccion;
-        console.log(idDireccion);
+       // console.log(idDireccion);
 
         //PARA LOS ID_PRODUCTO DE ARRAY
         const productos = await controladorServer.obtenerCarritoCompras(factura[0].id_usuario);
@@ -846,7 +853,7 @@ app.get('/factura/generar', async (req, res) => {
         let idProductos = [];
 
         productos.forEach(item => {
-            console.log("Item del carrito:", item);
+           // console.log("Item del carrito:", item);
             if (Array.isArray(item.producto)) {
                 item.producto.forEach(producto => {
                     if (producto && producto.id_producto) {
@@ -862,7 +869,7 @@ app.get('/factura/generar', async (req, res) => {
             }
         });
 
-        console.log("IDs de productos en el carrito:", idProductos);
+       // console.log("IDs de productos en el carrito:", idProductos);
 
         console.log(contenidoCarrito);
 
@@ -878,7 +885,7 @@ app.get('/factura/generar', async (req, res) => {
 
         
         const pdfBytes = await pdf(idFactura,fecha,usuario[0], direccion, 'Tarjeta crédito', productos,subtotal,descuento,iva, totalCompra);
-        console.log(usuario[0].correo_electronico+ " correo");
+      //  console.log(usuario[0].correo_electronico+ " correo");
         const correo= await controladorServer.enviarCorreoFactura(idFactura,usuario[0].correo_electronico,`./FACTURAS/factura_${idFactura}.pdf`);
         // Enviar el PDF como respuesta al cliente
         res.setHeader('Content-Type', 'application/pdf');
@@ -912,7 +919,7 @@ app.get('/Alianza/generarCatalogo', async function(req, res) {
         // Enviar el inventario a archivos.recibirProductos
         archivos.recibirProductos(inventario);
 
-        console.log("Productos en inventario:", inventario.productos);
+        //console.log("Productos en inventario:", inventario.productos);
         // Enviar respuesta al cliente
         res.send('Catálogo generado correctamente.');
     } catch (error) {
@@ -967,10 +974,10 @@ app.post('/Alianza/solicitarCotizacion', async (req, res) => {
                 cantidad: producto.cantidad
             }))
         };
-        console.log(cotizacion.productos);
+       // console.log(cotizacion.productos);
 
         const hola= await archivos.solicitudAlianza(cotizacion.productos);
-        console.log(hola);
+       // console.log(hola);
 
         const respuesta = await archivos.guardarRespuesta();
 
