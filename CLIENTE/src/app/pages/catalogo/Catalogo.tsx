@@ -23,23 +23,16 @@ export const Catalogo = () => {
       .then((res) => {
         let productos = res.data.productos as IProduct[];
         const categoria = search.get("categoria");
-  
-        // Filtrar productos por categoría si se proporciona una
         if (categoria) {
           productos = productos.filter(p => p.idCategoria === parseInt(categoria));
         }
-  
-        // Actualizar el estado de los productos
+
         setTodosProductos(productos);
         setActual(10);
         setProducts(productos.slice(0, 10));
-      })
-      .catch((error) => {
-        console.error('Error al obtener productos del inventario:', error);
-        // Manejar errores de solicitud
+
       });
-  }, []); 
-  
+  }, []);
 
   const addProducts = async () => {
     setLoading(true);
@@ -48,7 +41,6 @@ export const Catalogo = () => {
     setActual(a => a+10);
     setLoading(false);
   }
-
   return (
     <div className="w-full h-full flex flex-col">
       <Navigator
@@ -57,13 +49,8 @@ export const Catalogo = () => {
       <div className="grid lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-y-12">
         {
         productos.map(product => (
-          <div key={product.id} className="w-full h-full flex justify-center items-center my-4">
-            {/* Verifica si product.id es válido antes de construir el enlace */}
-            {product.id !== null && product.id !== undefined && (
-              <Link key={product.id} to={`/detalle?id=${product.id}`} className="w-full h-full flex justify-center items-center my-4">
-                <ProductCard product={product} />
-              </Link>
-            )}
+          <div className="w-full h-full flex justify-center items-center my-4">
+            <ProductCard product={product} />
           </div>
         ))
         }
