@@ -739,7 +739,7 @@ app.get('/resumenCompra', async (req, res) => {
         });
         const subtotal= await contenidoCarrito.calcularTotalCompra();
 
-        const total= costoEnvio+subtotal;
+        const total= await costoEnvio+subtotal;
 
 
         res.json({carrito: contenidoCarrito,direccion: dir,
@@ -767,37 +767,39 @@ app.post('/factura/agregar', async (req, res) => {
         const idDireccion = direccion.id_direccion;
         //console.log(idDireccion);
 
-        //PARA LOS ID_PRODUCTO DE ARRAY
+         //PARA LOS ID_PRODUCTO DE ARRAY
         const productos = await controladorServer.obtenerCarritoCompras(idUsuario);
 
-        const contenidoCarrito = new carritoDeCompra();
-
+            const contenidoCarrito = new carritoDeCompra();
     
-        let idProductos = [];
-
-        productos.forEach(item => {
-         //   console.log("Item del carrito:", item);
-            if (Array.isArray(item.producto)) {
-                item.producto.forEach(producto => {
-                    if (producto && producto.id_producto) {
-                        let integerInput = parseInt(producto.id_producto, 10);
-                        if (Number.isInteger(integerInput)) {
-                            idProductos.push(integerInput);
-                        } else {
-                            console.log("El valor ingresado no es un número entero");
-                        }
-                    }
-                    contenidoCarrito.agregarProducto(producto,item.cantidad);
-                });
-            }
-        });
-
-       // console.log("IDs de productos en el carrito:", idProductos);
-
-       // console.log(contenidoCarrito);
         
-        const valor_total= await contenidoCarrito.calcularTotalCompra();
-       // console.log("TOTAL: "+ valor_total);
+            let idProductos = [];
+    
+            productos.forEach(item => {
+                // console.log("Item del carrito:", item);
+                if (Array.isArray(item.producto)) {
+                    item.producto.forEach(producto => {
+                        if (producto && producto.id_producto) {
+                            let integerInput = parseInt(producto.id_producto, 10);
+                            if (Number.isInteger(integerInput)) {
+                                idProductos.push(integerInput);
+                            } else {
+                                console.log("El valor ingresado no es un número entero");
+                            }
+                        }
+                        contenidoCarrito.agregarProducto(producto,item.cantidad);
+                    });
+                }
+            });
+    
+            // console.log("IDs de productos en el carrito:", idProductos);
+    
+            console.log(contenidoCarrito);
+    
+            
+        
+        const valor_total= await contenidoCarrito.calcularTotalCompraNum();
+        console.log("TOTAL: "+ valor_total);
 
         const factura= await controladorServer.s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProductos);
         

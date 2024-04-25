@@ -36,7 +36,7 @@ export const Carrito = () => {
         <div className="flex justify-center">
             <div className="pt-6">
                 <h1 className="font-bold text-2xl">Carrito de compras</h1>
-                <div className="bg-white h-[500px] w-[990px] rounded-xl p-7 mt-7 drop-shadow-md">
+                <div className="bg-white min-h-[500px] w-[990px] rounded-xl p-7 mt-7 drop-shadow-md">
                     <div className="flex">
                         <div className="flex flex-col rounded-lg md:w-2/3">
                             <Item />
@@ -85,4 +85,4 @@ export const Carrito = () => {
             </div>
         </div>
     );
-};
+}    

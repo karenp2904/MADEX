@@ -350,6 +350,7 @@ async function db_obtenerHistorialDeCompra(id_usuario){
 //el idProducto es una lista
 async function db_añadirFactura(valor_total, idMetodoDePago, 
                                 idDireccion, idUsuario, idProducto){
+  console.log(valor_total + "service");
   try {
     const result = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', 
     [valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto]);

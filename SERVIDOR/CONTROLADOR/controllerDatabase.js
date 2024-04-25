@@ -468,6 +468,7 @@ async function obtenerHistorialDeCompra(idUsuario){
 
 async function añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto){
   try {
+    console.log(valor_total + "db");
     const factura = await services.db_añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
     return factura;
   } catch (error) {

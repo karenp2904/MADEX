@@ -182,7 +182,7 @@ class CarritoDeCompras {
 
 
         // Calcula el total a pagar de acuerdo con la fórmula
-        const total = subtotal - descuento + iva;
+        const total = await subtotal - descuento + iva;
 
         // Muestra los valores calculados en la consola para depuración
         //console.log("Subtotal:", subtotal);
@@ -245,6 +245,22 @@ class CarritoDeCompras {
         }
         //console.log("Total productos en pesos: " + totalProductos);
         return totalProductos;
+    }
+
+        
+    async calcularTotalCompraNum() {
+        const subtotal = await this.calcularTotalNum(); // asume que este método devuelve un número formateado como cadena
+        // Calcula el total de los descuentos
+        const descuento = await this.calcularDescuentoNum(); // asume que este método devuelve un número formateado como cadena
+        // Calcula el IVA
+        const iva = await this.calcularIvaNumero(19); // asume que este método devuelve un número formateado como cadena
+
+
+        // Calcula el total a pagar de acuerdo con la fórmula
+        const total = await subtotal - descuento + iva;
+
+        // Devuelve el total a pagar como número de punto flotante
+        return total;
     }
 
     vaciarCarrito() {
