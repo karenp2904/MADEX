@@ -483,7 +483,7 @@ module.exports = { db_añadirUsuario,
   db_guardarDireccionEnvio,
   db_obtenerDireccionPorUsuario,
   db_reestablecerContraseña,
-  db_añadirproductoDestacado,
-  db_obtenerproductoDestacado,
+  db_agregarProductoDestacado,
+  db_obtenerProductosDestacados,
   db_eliminarProductosDestacados
 };

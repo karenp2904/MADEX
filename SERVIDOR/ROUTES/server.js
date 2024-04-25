@@ -239,10 +239,10 @@ app.post('/usuario/actualizar', async function(req, res) {
 
 app.post('/empresa/registro', async function(req, res) {
     try {
-        const { idUsuario, nombre, apellido, correo, tipo_documento, contraseña, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
+        const { idUsuario, nombre, apellido, correo, tipo_documento, password, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro} = req.body;
     
         //console.log(nombre);
-        const usuario = await controladorServer.s_añadirEmpresa(idUsuario, nombre, apellido, correo, contraseña, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
+        const usuario = await controladorServer.s_añadirEmpresa(idUsuario, nombre, apellido, correo, password, tipo_documento, telefono, idRol, nitEmpresa, nombreEmpresa, razonSocial, cargo, rubro);
         // Enviar respuesta al cliente
         res.status(200).json({ success: true, usuario });
     } catch (error) {
@@ -253,7 +253,7 @@ app.post('/empresa/registro', async function(req, res) {
 });
 
 
-app.get('/usuario/obtenerPorId', async function(req, res) {
+app.post('/usuario/obtenerPorId', async function(req, res) {
     try {
         const { id_usuario } = req.body; // Obtén el ID del usuario del cuerpo de la solicitud
         //console.log(id_usuario); //
@@ -335,13 +335,13 @@ app.post('/producto/actualizarStock', async function(req, res) {
 
 app.get('/producto/obtenerProducto', async function(req, res) {
     try {
-        const { idProducto } = req.body; // ID del producto está en el cuerpo de la solicitud
+        const idProducto = req.query.idProducto; // Obtener el ID del producto desde la consulta en la URL
         const producto = await controladorServer.s_obtenerProducto(idProducto);
-        // Verifica si se encontró el producto
+        // Verificar si se encontró el producto
         if (!producto) {
             return res.status(404).send('Producto no encontrado');
         }
-        // Devuelve el producto encontrado en formato JSON
+        // Devolver el producto encontrado en formato JSON
         res.status(200).json(producto);
     } catch (error) {
         console.error('Error al obtener el producto:', error);
@@ -364,7 +364,7 @@ app.post('/producto/actualizar', async function(req, res) {
 
 app.get('/usuario/historialCompra', async function(req, res) {
     try {
-        const { id_usuario} = req.body; 
+        const { id_usuario} = req.query; 
         const lista = await controladorServer.s_obtenerHistorialCompra(id_usuario);
         res.status(200).json(lista);
     } catch (error) {
@@ -516,6 +516,7 @@ app.get('/producto/filtrarColor/:color', async (req, res) => {
         res.status(500).send('Error en la búsqueda del producto');
     }
 });
+
 app.get('/producto/CatalogoImagenes', async (req, res) => {
     try {
         // Obtener el inventario de productos
@@ -828,7 +829,7 @@ app.get('/factura/obtener', async (req, res) => {
 app.get('/factura/generar', async (req, res) => {
     try {
 
-        const {idFactura} = req.body;
+        const {idFactura} = req.query;
 
         //const { usuario, direccion, metodoPago, listaProductos, totalCompra } = req.body;
         const factura = await controladorServer.s_obtenerFactura(idFactura)

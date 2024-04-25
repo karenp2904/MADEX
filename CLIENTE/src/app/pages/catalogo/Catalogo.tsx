@@ -6,6 +6,7 @@ import { Delay } from "../../../utils/Delay";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { Navigator } from "../../../components/Navigator";
+import { Link } from "react-router-dom";
 
 export const Catalogo = () => {
 
@@ -40,7 +41,6 @@ export const Catalogo = () => {
     setActual(a => a+10);
     setLoading(false);
   }
-
   return (
     <div className="w-full h-full flex flex-col">
       <Navigator
@@ -48,11 +48,11 @@ export const Catalogo = () => {
       />
       <div className="grid lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-y-12">
         {
-          productos.map(product => (
-            <div className="w-full h-full flex justify-center items-center my-4">
-              <ProductCard product={product} />
-            </div>
-          ))
+        productos.map(product => (
+          <div className="w-full h-full flex justify-center items-center my-4">
+            <ProductCard product={product} />
+          </div>
+        ))
         }
       </div>
       <div className="w-full h-24 flex justify-center items-center">

@@ -3,6 +3,7 @@ import { Router } from "../../router/Router";
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
+
 export const Login = () => {
     const navigate = useNavigate();
     
@@ -10,6 +11,7 @@ export const Login = () => {
         correo: '',
         contraseña: ''
     });
+    const [usuario, setUsuario] = useState(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -33,13 +35,17 @@ export const Login = () => {
                 const data = await response.json();
                 console.log('Respuesta del servidor:', data);
                 if (data.success) {
-                    // Si el inicio de sesión fue exitoso, redirige a la página de categorías
-                    if(data.usuario.idRol==1){
-                        navigate(Router.adminInventario); 
-                    }else{
-                        navigate(Router.principal); 
+                    // Si el inicio de sesión fue exitoso, redirige a la página correspondiente
+                    if(data.usuario.idRol == 1){
+                        navigate(Router.adminInventario);
+                    } else {
+                        navigate(Router.principal);
                     }
-                
+    
+                    // Crear un objeto JSON con la información del usuario
+                    const usuarioJSON = JSON.stringify(data.usuario);
+                    console.log('Información del usuario en JSON:', usuarioJSON);
+                    
                 } else {
                     // Si hubo un error en el inicio de sesión, muestra el mensaje de error
                     console.error('Error en el inicio de sesión:', data.message);
@@ -55,6 +61,7 @@ export const Login = () => {
             // Manejar errores de red, etc.
         }
     };
+    
     
 
     return (
