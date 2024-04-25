@@ -41,16 +41,17 @@ app.use(helmet());
 
 app.use(cors());
 
+
 // Configurar middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'ruta/a/tu/carpeta/build')));
 
-// Middleware para permitir solicitudes CORS (si es necesario)
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5174'); // Cambia a la URL de tu aplicación React
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Cambia a la URL de tu aplicación Reac
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Solo un origen permitido
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
+
+
 
 
 // Iniciar el servidor
@@ -588,11 +589,12 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
 //ruta agregar un producto al carrito de compra
 app.post('/carrito/agregar', async (req, res) => {
     try {
-        const { idUsuario,idproducto, cantidad } = req.body;
+        const { idUsuario,idProducto, cantidad } = req.body;
+        console.log(idProducto + ' ' + "server" );
 
         // Llamar al controlador para agregar el producto al carrito con la cantidad especificada
-        const carrito=await controladorServer.añadirProductoCarritoCompras(idUsuario,idproducto, cantidad);
-
+        const carrito=await controladorServer.añadirProductoCarritoCompras(idUsuario,idProducto, cantidad);
+        console.log(carrito);
         res.status(201).json(carrito);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
@@ -608,6 +610,7 @@ app.put('/carrito/modificarCantidad',async (req, res) => {
     try {
         const { idUsuario,idproducto, cantidad } = req.body;
         const accion= await controladorServer.modificarCantidadProductoCarritoCompras( idUsuario,idproducto, cantidad);
+        console.log(accion);
         res.status(201).json('Cantidad de producto en el carrito modificada' + accion);
       //  res.send('Cantidad de producto en el carrito modificada');
     } catch (error) {

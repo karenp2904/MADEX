@@ -26,13 +26,18 @@ export const Catalogo = () => {
         if (categoria) {
           productos = productos.filter(p => p.idCategoria === parseInt(categoria));
         }
-
+  
         setTodosProductos(productos);
         setActual(10);
         setProducts(productos.slice(0, 10));
-
+  
+      })
+      .catch(error => {
+        console.error("Error al realizar la solicitud:", error);
+        // Manejar el error, por ejemplo, mostrando un mensaje al usuario
       });
   }, []);
+  
 
   const addProducts = async () => {
     setLoading(true);
