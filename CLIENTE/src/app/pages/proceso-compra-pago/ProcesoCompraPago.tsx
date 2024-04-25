@@ -25,19 +25,27 @@ export const ProcesoCompraPago = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Factura creada:', data);
-                setPagoExitoso(true); // Marcar el pago como exitoso si la factura se crea correctamente
+                setPagoExitoso(true);
+                navigate(Router.procesoFactura);
             } else {
                 console.error('Error al crear la factura:', response.statusText);
             }
         } catch (error) {
             console.error('Error en la solicitud:', error);
+            // Agrega un mensaje de error o manejo de errores aquí
         }
     };
     
 
+    
+
     const handleCloseNotification = () => {
+        // Cierra el letrero de "Pago Exitoso"
         setPagoExitoso(false);
+        // Navega a la página de proceso de factura
+        navigate(Router.procesoFactura);
     };
+    
     return (
         <div className="w-full h-full flex flex-col relative">
             {/* ... */}
@@ -52,18 +60,14 @@ export const ProcesoCompraPago = () => {
             </div>
             {pagoExitoso && (
                 <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50">
-                    <div className="bg-green-600 text-white rounded-md p-4 shadow-md">
-                        <div className="flex items-center justify-between">
+                    <div className="bg-green-600 text-white rounded-md p-4 shadow-md flex justify-between items-center">
+                        <div>
                             <span>¡Pago Exitoso!</span>
-                            <button onClick={handleCloseNotification} className="text-white hover:text-gray-200 focus:outline-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M13.414 10l3.293 3.293a1 1 0 01-1.414 1.414L12 11.414l-3.293 3.293a1 1 0 01-1.414-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414L12 8.586l3.293-3.293a1 1 0 111.414 1.414L13.414 10z" clipRule="evenodd" />
-                                </svg>
-                            </button>
+                            
                         </div>
                     </div>
                 </div>
             )}
         </div>
     );
-};
+} 

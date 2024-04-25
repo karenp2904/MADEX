@@ -18,6 +18,7 @@ import { Carrito } from '../pages/carrito/Carrito';
 import { ProcesoCompraConfirmar } from '../pages/proceso-compra-confirmar/ProcesoCompraConfirmar';
 import { ProcesoCompraDatos } from '../pages/proceso-compra-datos/ProcesoCompraDatos';
 import { ProcesoCompraPago } from '../pages/proceso-compra-pago/ProcesoCompraPago';
+import { ProcesoFactura } from '../pages/proceso-compra-pago/ProcesoFactura';
 
 
 const baseurl = import.meta.env.BASE_URL;
@@ -47,7 +48,7 @@ const AppRoutes: FC = () => {
           <Route path={Router.procesoCompraConfirmar} element={<ProcesoCompraConfirmar />} />
           <Route path={Router.procesoCompraDatos} element={<ProcesoCompraDatos />} />
           <Route path={Router.procesoCompraPago} element={<ProcesoCompraPago />} />
-          
+          <Route path={Router.procesoFactura} element={<ProcesoFactura />} />
 
 
           <Route path="*" element={<Navigate to={Router.login} />} />
