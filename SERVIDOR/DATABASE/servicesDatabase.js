@@ -4,7 +4,7 @@ const pool = require('./databaseConexion');
 async function db_obtenerTodosLosProductos () { 
   try {
     const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
-    console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
+   // console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
 
     return allProductos.rows;
   } catch (error) {
@@ -350,6 +350,7 @@ async function db_obtenerHistorialDeCompra(id_usuario){
 //el idProducto es una lista
 async function db_añadirFactura(valor_total, idMetodoDePago, 
                                 idDireccion, idUsuario, idProducto){
+  console.log(valor_total + "service");
   try {
     const result = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', 
     [valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto]);
@@ -391,7 +392,6 @@ async function db_guardarDireccionEnvio(ID_Usuario, Calle, Ciudad, Codigo_Postal
 async function db_obtenerDireccionPorUsuario(idUsuario) {
   try {
     const direccion = await pool.query('SELECT * FROM db_obtenerDireccionPorUsuario($1);', [idUsuario]); 
-
     return direccion.rows;
 
   } catch (error) {
@@ -401,10 +401,10 @@ async function db_obtenerDireccionPorUsuario(idUsuario) {
 }
 
 
-async function db_reestablecerContraseña(password) {
+async function db_reestablecerContraseña(idUsuario, password) { 
   try {
     
-
+    const restablecer = await pool.query('CALL db_reestablecerContraseña($1, $2)', [idUsuario], [password]);
     return true;
 
   } catch (error) {
@@ -417,7 +417,7 @@ async function db_reestablecerContraseña(password) {
 async function db_agregarProductoDestacado(idProducto,idUsuario) {
   try {
     
-
+    const restablecer = await pool.query('CALL db_agregarProductoDestacado($1, $2)', [idProducto], [idUsuario]);
     return true;
 
   } catch (error) {
@@ -430,7 +430,19 @@ async function db_agregarProductoDestacado(idProducto,idUsuario) {
 async function db_obtenerProductosDestacados(idUsuario) {
   try {
     
+    const favoritos = await pool.query('SELECT * FROM db_obtenerProductosDestacados($1);', [idUsuario]); 
+    return favoritos.rows;
 
+  } catch (error) {
+    console.error("Error al obtener destacados", error);
+    throw new Error("Error al obtener destacados"+ error.message);
+  }
+}
+
+async function db_eliminarProductosDestacados(idUsuario) {
+  try {
+    
+    const eliminar = await pool.query('CALL db_eliminarProductosDestacados($1)', [idUsuario]);
     return true;
 
   } catch (error) {
@@ -439,11 +451,11 @@ async function db_obtenerProductosDestacados(idUsuario) {
   }
 }
 
-
-
 module.exports = { db_añadirUsuario,
-  db_obtenerTodosLosProductos, db_obtenerCategoriaPorId,
-  db_obtenerProductoPorId, db_obtenerNombreProveedorPorId,
+  db_obtenerTodosLosProductos, 
+  db_obtenerCategoriaPorId,
+  db_obtenerProductoPorId, 
+  db_obtenerNombreProveedorPorId,
   db_obtenerListaProveedores,
   db_obtenerListaCategorias,
   db_añadirUsuario,
@@ -459,12 +471,20 @@ module.exports = { db_añadirUsuario,
   db_editarStock,
   db_logInventario,
   db_logUsuarios,
-  db_añadirProductoCarrito,db_modificarCantidadProductoCarrito,
+  db_añadirProductoCarrito,
+  db_modificarCantidadProductoCarrito,
   db_eliminarProductoCarrito,
   db_verificarClienteActivo,
   db_obtenerCarrito,
   db_obtenerHistorialDeCompra,
   db_añadirFactura,
-  db_obtenerFactura,db_agregarProductoDestacado,db_obtenerProductosDestacados,
-  db_guardarDireccionEnvio,db_obtenerDireccionPorUsuario
+  db_obtenerFactura,
+  db_agregarProductoDestacado,
+  db_obtenerProductosDestacados,
+  db_guardarDireccionEnvio,
+  db_obtenerDireccionPorUsuario,
+  db_reestablecerContraseña,
+  db_agregarProductoDestacado,
+  db_obtenerProductosDestacados,
+  db_eliminarProductosDestacados
 };

@@ -1,37 +1,86 @@
-import NumberInput from "../../detalle/components/NumberInput"
-
+import { useState, useEffect } from 'react';
+import NumberInput from "../../detalle/components/NumberInput";
 
 const Item = () => {
+    const [cartItems, setCartItems] = useState([]);
+
+
+    useEffect(() => {
+        const fetchCartItems = async () => {
+            try {
+                // Obtener el ID del usuario de algún lugar (por ejemplo, desde el estado o las props)
+                const userId = '1097490756'; 
+            
+                const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
+
+                const data = await response.json();
+                // Actualizar el estado con los items del carrito
+                setCartItems(data.carritoCompras.productos);
+            } catch (error) {
+                console.error('Error al obtener los items del carrito:', error);
+            }
+        };
+    
+        fetchCartItems();
+    }, []);
+    
+
+    const handleQuantityChange = async (idProducto, newQuantity) => {
+        try {
+            // Realizar la solicitud PUT al endpoint /carrito/modificarCantidad
+            const response = await fetch('http://localhost:3000/carrito/modificarCantidad', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ idUsuario: "666", idProducto: idProducto, cantidad: newQuantity })
+            });
+            if (response.ok) {
+                console.log('Cantidad del producto en el carrito modificada exitosamente');
+                // Actualizar los items del carrito después de modificar la cantidad
+                const updatedItems = cartItems.map(item => {
+                    if (item.producto.id_producto === idProducto) {
+                        return { ...item, cantidad: newQuantity };
+                    }
+                    return item;
+                });
+                setCartItems(updatedItems);
+            } else {
+                console.error('Error al modificar la cantidad del producto en el carrito:', response.statusText);
+            }
+        
+        } catch (error) {
+            console.error('Error al procesar la solicitud:', error);
+        }
+    };
+
     return (
-        <div className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
-                        <img src="https://maderkit.vtexassets.com/arquivos/ids/166212-800-auto?v=638218472572600000&width=800&height=auto&aspect=true" alt="product-image" className="w-full rounded-lg sm:w-40" />
-                        <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-                            <div className="mt-5 sm:mt-0">
-                                <h2 className="text-lg font-bold text-gray-900">Puerta madera melánimica</h2>
-                                <h6 className="text-xs font-bold text-gray-900 py-2">100.000 COP</h6>
-                                <div className=" py-1 flex">
-                                    <h6 className="text-xs font-bold text-gray-900">Envío:</h6>
-                                    <p className=" pl-1 text-xs text-gray-700"> 2 a 5 días hábiles</p>
-                                </div>
-                                <div className=" py-1 flex">
-                                    <h6 className="text-xs font-bold text-gray-900">Stock:</h6>
-                                    <p className=" pl-1 text-xs text-green-500 font-semibold">Disponible</p>
-                                </div>
+        <>
+            {cartItems.map(item => (
+                <div key={item.producto.id_producto} className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
+                    {/* Contenido del item del carrito */}
+                    <img src={item.producto.imagen} alt="product-image" className="w-full rounded-lg sm:w-40" />
+                    {/* Resto del contenido del item */}
+                    <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
+                        <div className="mt-5 sm:mt-0">
+                            {/* Detalles del producto */}
+                            <h2 className="text-lg font-bold text-gray-900">{item.producto.nombre}</h2>
+                            <h6 className="text-xs font-bold text-gray-900 py-2">{item.producto.precio} COP</h6>
+                            {/* Más detalles del producto */}
+                        </div>
+                        {/* Opciones del item, como modificar cantidad */}
+                        <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
+                            <div className="flex items-center border-gray-100">
+                                {/* Componente NumberInput para modificar cantidad */}
+                                <NumberInput value={item.cantidad} onValueChange={(newQuantity) => handleQuantityChange(item.producto.id_producto, newQuantity)} />
                             </div>
-                            <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                                <div className="flex items-center border-gray-100">
-                                    <NumberInput />
-                                </div>
-                                <div className="flex items-center space-x-4">
-                                    <p className="text-sm">$200.000 COP</p>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </div>
-                            </div>
+                            {/* Resto de opciones del item */}
                         </div>
                     </div>
-    )
+                </div>
+            ))}
+        </>
+    );
 };
 
 export default Item;

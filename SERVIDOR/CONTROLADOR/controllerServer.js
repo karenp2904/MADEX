@@ -111,7 +111,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             });
     
             // Devuelve el array de objetos "producto"
-            console.log("En server" + productos);
+           // console.log("En server" + productos);
             return productos;
         } catch (error) {
             console.error('Error al obtener los productos:', error);
@@ -440,7 +440,9 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     
     async function s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto){
         try {
-        const factura = await controllerDB.añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
+            console.log(valor_total + "controller");
+        const factura = await controllerDB.añadirFactura(valor_total, Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
+        
         return factura;
         } catch (error) {
         console.error("Error al añadir la factura", error);
