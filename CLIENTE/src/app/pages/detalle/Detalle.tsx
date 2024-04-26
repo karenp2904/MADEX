@@ -3,6 +3,7 @@ import { Rating } from "@material-tailwind/react";
 import NumberInput from "./components/NumberInput";
 import Gallery from "./components/Gallery";
 import { useLocation } from "react-router-dom";
+import { IProduct } from "../../../models/interfaces/IProduct";
 
 export const Detalle = () => {
     // Obtiene la información del producto de la ruta

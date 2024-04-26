@@ -1,9 +1,7 @@
 
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
-import { Router } from "../../router/Router";
-import React, { useState, useEffect } from 'react';
-import Logo from "/LogoFinal.svg";
+import { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export const ProcesoFactura = () => {
