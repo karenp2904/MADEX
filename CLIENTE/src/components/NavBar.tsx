@@ -17,7 +17,10 @@ export const NavBar = () => {
             <div className="flex-[1 flex p-1">
                 <img className="w-1/2 aspect-square" src={Logo} />
             </div>
-            <div className=" font-semibold w-auto text-sm flex justify-center items-center text-white hover:cursor-pointer hover:text-gray-300">
+            <div
+                className=" font-semibold w-auto text-sm flex justify-center items-center text-white hover:cursor-pointer hover:text-gray-300"
+                onClick={() => navigate(Router.principal)}
+            >
                 <span>Inicio</span>
             </div>
             <div

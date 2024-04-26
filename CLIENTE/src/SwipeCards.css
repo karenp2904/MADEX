@@ -1,0 +1,3 @@
+.swipe-cards {
+    @apply overflow-x-scroll scrollbar-hide mb-4 relative px-0.5;
+  }

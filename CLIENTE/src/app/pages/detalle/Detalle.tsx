@@ -1,15 +1,54 @@
 import { Rating } from "@material-tailwind/react"
 import NumberInput from "./components/NumberInput"
 import Gallery from "./components/Gallery"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { IProductImagen } from "../../../models/interfaces/IProductImagen"
+import { useSearchParams } from "react-router-dom"
+import { IProduct } from "../../../models/interfaces/IProduct"
 
 export const Detalle = () => {
+
+    const [images, setImages] = useState<IProductImagen[]>([]);
+    const [producto, setProducto] = useState<string | null>(null);
+
+    const [producto2, setProducto2] = useState<IProduct | null>(null);
+
+    const [url] = useSearchParams();
+
+    useEffect(() => {
+
+        const producto = url.get("producto");
+
+        if (producto) {
+            axios.get(`http://localhost:3000/buscar-producto/${producto}`)
+                .then((res) => {
+                    console.log(res)
+                });
+            setProducto(producto);
+        }
+
+    }, [url]);
+
+    useEffect(() => {
+        if (producto) {
+            console.log("hola")
+            axios.get(`http://localhost:3000/producto/obtenerProducto/?idProducto=${producto}`)
+                .then((res) => {
+                    console.log("im", res)
+                    const imagenes: IProductImagen[] = res.data ?? [];
+                    setImages([...imagenes]);
+                });
+        }
+    }, [producto]);
+
     return (
         <div className="flex justify-center p-8">
             <div className="bg-white h-[580px] w-[960px] rounded-xl">
                 <div className="container flex justify-center p-6">
                     <div className=" bg-gray-200 h-[510px] w-[580px] rounded-lg m-1 ">
                         <div className=" justify-center">
-                        <Gallery />
+                            <Gallery imagenes={images} />
                         </div>
                     </div>
                     <div className=" w-[700px] m-2 inline-flex flex-col">
@@ -23,9 +62,8 @@ export const Detalle = () => {
                         <div className="py-6">
                             <span className=" font-bold text-md">Descripción:</span>
                             <br />
-                            <p>Esta mesa de centro es el detalle que hará ver tu sala especia, en su superficie coloca libros,
-                                el portaretrato con tu ser amado, un florero u otro objeto de tu preferencia. El vidrio le da un toque
-                                elegante y sobrio.
+                            <p>
+
                             </p>
                         </div>
                         <div className="flex flex-col">
