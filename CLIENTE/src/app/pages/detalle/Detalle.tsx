@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Rating } from "@material-tailwind/react";
 import NumberInput from "./components/NumberInput";
 import Gallery from "./components/Gallery";

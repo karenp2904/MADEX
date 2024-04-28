@@ -11,8 +11,6 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { IProduct } from "../models/interfaces/IProduct";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Router } from "../app/router/Router";
 
 export type ProductCardProps = {
   product: IProduct
@@ -24,14 +22,51 @@ export function ProductCard({
 
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const [image, setImage] = useState<string|null>(null)
-
-  const navigate = useNavigate()
+  const [image, setImage] = useState<string | null>(null)
 
   useEffect(() => {
     axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
       .then((res) => {
-        if(res.data && res.data[0]){
+        if (res.data && res.data[0]) {
+          setImage(res.data[0].base64)
+        }
+      })
+  }, []);
+
+
+
+  const handleAddFavorites = async () => {
+    try {
+      // Realizar la solicitud para agregar el producto al carrito
+      console.log(product.id_producto);
+      const response = await axios.post('http://localhost:3000/producto/agregarDestacados', {
+        idProducto: product.id_producto,
+        idUsuario: '1097490756',
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.status === 201 || response.status === 200) {
+        const data = response.data;
+        console.log(data)
+        // Si la solicitud se completa correctamente, mostrar el mensaje de éxito
+        setMensaje('¡Producto agregado a favoritos!');
+      } else {
+        // Si hay algún problema con la solicitud, mostrar un mensaje de error
+        setMensaje('Error al agregar a favoritos');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      setMensaje('Error en la solicitud');
+    }
+  };
+
+  useEffect(() => {
+    axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
+      .then((res) => {
+        if (res.data && res.data[0]) {
           setImage(res.data[0].base64)
         }
       })
@@ -42,67 +77,35 @@ export function ProductCard({
 
   const handleAddToCart = async () => {
     try {
-        // Realizar la solicitud para agregar el producto al carrito
-        console.log(product.id_producto);
-        const response = await axios.post('http://localhost:3000/carrito/agregar', {
-            idUsuario: '1097490756',
-            idProducto: product.id_producto, 
-            cantidad: '1' 
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (response.status === 201 || response.status === 200) {
-            const data = response.data;
-            console.log(data)
-            // Si la solicitud se completa correctamente, mostrar el mensaje de éxito
-            setMensaje('¡Producto agregado al carrito!');
-        } else {
-            // Si hay algún problema con la solicitud, mostrar un mensaje de error
-            setMensaje('Error al agregar el producto al carrito');
-        }
-    } catch (error) {
-        console.error('Error en la solicitud:', error);
-        setMensaje('Error en la solicitud');
-    }
-};
-
-const handleAddFavorites= async () => {
-  try {
       // Realizar la solicitud para agregar el producto al carrito
       console.log(product.id_producto);
-      const response = await axios.post('http://localhost:3000/producto/agregarDestacados', {
-          idProducto: product.id_producto, 
-          idUsuario: '1097490756',
+      const response = await axios.post('http://localhost:3000/carrito/agregar', {
+        idUsuario: '1097490756',
+        idProducto: product.id_producto,
+        cantidad: '1'
       }, {
-          headers: {
-              'Content-Type': 'application/json'
-          }
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.status === 201 || response.status === 200) {
-          const data = response.data;
-          console.log(data)
-          // Si la solicitud se completa correctamente, mostrar el mensaje de éxito
-          setMensaje('¡Producto agregado a favoritos!');
+        const data = response.data;
+        console.log(data)
+        // Si la solicitud se completa correctamente, mostrar el mensaje de éxito
+        setMensaje('¡Producto agregado al carrito!');
       } else {
-          // Si hay algún problema con la solicitud, mostrar un mensaje de error
-          setMensaje('Error al agregar a favoritos');
+        // Si hay algún problema con la solicitud, mostrar un mensaje de error
+        setMensaje('Error al agregar el producto al carrito');
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error en la solicitud:', error);
       setMensaje('Error en la solicitud');
-  }
-};
-
-
+    }
+  };
 
   return (
-    <Card
-      onClick={() => navigate(Router.detalle + `?id=${product.id_producto}`)}
-      className="w-[226px] h-[310px] hover:cursor-pointer hover:shadow-2xl overflow-hidden flex shadow-xl rounded-3xl">
+    <Card className="w-[226px] h-[310px] hover:cursor-pointer hover:shadow-2xl overflow-hidden flex shadow-xl rounded-3xl">
       <CardHeader
         floated={false}
         shadow={false}
@@ -150,15 +153,15 @@ const handleAddFavorites= async () => {
           <i className="fa-solid fa-cart-plus fa-xl"></i>
         </IconButton>
         {mensaje && (
-              <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50">
-                  <div className="bg-green-600 text-white rounded-md p-4 shadow-md flex justify-between items-center">
-                      <div>
-                          <span>{mensaje}</span>
-                          
-                      </div>
-                  </div>
+          <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50">
+            <div className="bg-green-600 text-white rounded-md p-4 shadow-md flex justify-between items-center">
+              <div>
+                <span>{mensaje}</span>
+
               </div>
-          )}
+            </div>
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

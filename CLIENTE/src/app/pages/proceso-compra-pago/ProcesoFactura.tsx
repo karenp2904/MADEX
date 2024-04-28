@@ -1,11 +1,10 @@
 
 import { Button } from "@material-tailwind/react";
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export const ProcesoFactura = () => {
-    const navigate = useNavigate();
+    
     const [factura, setFactura] = useState(null);
 
     useEffect(() => {
@@ -37,9 +36,10 @@ export const ProcesoFactura = () => {
         handleFacturas();
     }, []); 
 
-
     const handleDescargarFactura = async () => {
         try {
+            if(factura == null) return;
+
             const response = await fetch(`http://localhost:3000/factura/generar?idFactura=${factura.id_factura}`, {
                 method: 'GET',
                 headers: {
