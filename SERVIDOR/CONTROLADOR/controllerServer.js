@@ -515,6 +515,18 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             console.error('Error al obtener destacados:', error);
         }
     }
+
+    async function s_logInventario() {
+        try {
+            const lista = await controllerDB.logInventario();
+    
+            return lista;
+        } catch (error) {
+            console.error('Error al obtener auditoria Inventario:', error);
+        }
+    }
+
+
     
     
 
@@ -597,7 +609,7 @@ async function enviarCodigoPorCorreo(destinatario) {
 
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
-    listaDeProductos,manejarInicioSesion,s_actualizarProducto,s_actualizarStockProducto,
+    listaDeProductos,manejarInicioSesion,s_actualizarProducto,s_actualizarStockProducto,s_logInventario,
     definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra,s_añadirFactura, s_obtenerFactura,
