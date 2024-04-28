@@ -84,6 +84,10 @@ class Inventario {
         
                         if (imagenesBase64.length == 5) {
                             return;
+                        }else{
+                            if (imagenesBase64.length < 5) {
+                                return;
+                            }
                         }
                     }
                 });
