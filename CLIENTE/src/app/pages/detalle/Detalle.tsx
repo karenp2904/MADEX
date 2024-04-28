@@ -21,7 +21,7 @@ export const Detalle = () => {
                     const producto = await response.json();
                     console.log('Producto obtenido:', producto);
                     // Almacena el producto obtenido en el estado local
-                    setProducto(producto);
+                    setProducto(producto[0]);
                 } else {
                     console.error('Error al obtener el producto:', response.statusText);
                     // Manejar el caso en que la solicitud no sea exitosa
