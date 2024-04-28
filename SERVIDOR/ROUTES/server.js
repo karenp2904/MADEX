@@ -567,7 +567,6 @@ app.get('/producto/CatalogoImagenes/:nombre', async (req, res) => {
 
 
 app.get('/producto/rutas/:nombre', async (req, res) => {
-   
 
     try {
         const nombre = req.params.nombre; 
@@ -584,6 +583,23 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
         res.status(500).send('Error en la búsqueda de la ruta');
     }
 });
+
+
+app.get('/auditoria/inventario', async (req, res) => {
+    try {
+
+        const lista = await controladorServer.s_logInventario();
+
+        // Devolver los resultados como respuesta
+        res.status(201).json(lista);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la audi inventario:', error);
+        res.status(500).send('Error en la ruta');
+    }
+});
+
+
 
 
 //ruta agregar un producto al carrito de compra
