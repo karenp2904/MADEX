@@ -42,7 +42,7 @@ export const HistorialCompra = () => {
         }
     };
 
-       
+    
     const formatDate = (date) => {
         // Extract only the date part (YYYY-MM-DD) from the ISO string representation of the Date object
         return date.toISOString().split('T')[0];
