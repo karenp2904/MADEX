@@ -417,12 +417,13 @@ async function db_reestablecerContraseña(idUsuario, password) {
 async function db_agregarProductoDestacado(idProducto,idUsuario) {
   try {
     
-    const restablecer = await pool.query('CALL db_agregarProductoDestacado($1, $2)', [idProducto], [idUsuario]);
+    const restablecer = await pool.query('CALL db_agregarProductoDestacado($1, $2)', [idProducto,idUsuario]);
     return true;
 
   } catch (error) {
     console.error("Error al añadir destacado", error);
     throw new Error("Error al añadir destacado"+ error.message);
+    return false;
   }
 }
 
