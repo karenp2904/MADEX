@@ -39,7 +39,7 @@
       "descripcion": "La Casa de Madera para Gato presenta un diseño elegante y moderno, construido con madera de alta calidad para garantizar durabilidad y resistencia. Elevada sobre patas, esta casa proporciona a tu gato una sensación de seguridad y comodidad, además de protegerlo del frío y la humedad del suelo.",
       "precio": "370.000",
       "color": "Marrón",
-      "stock": 200,
+      "stock": 196,
       "descuento": 15,
       "idProveedor": 1,
       "idCategoria": 1
@@ -615,6 +615,138 @@
       "descuento": 15,
       "idProveedor": 3,
       "idCategoria": 3
+    },
+    {
+      "id_producto": 60,
+      "nombre": "Panel Sandwich Madera",
+      "descripcion": "El Panel Sandwich Madera Friso Abeto combina la protección y aislamiento de los paneles sándwich con la elegancia de la madera natural. Está compuesto por un núcleo aislante de poliestireno extruido de alta densidad, unitedo a un tablero hidrófugo de aglomerado de 16 o 19 mm y por el otro lado, láminas de madera natural de abeto con acabado en el color de tu preferencia.",
+      "precio": "120.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 61,
+      "nombre": "Placas de rejillas de madera",
+      "descripcion": "Placa para techos con diseño de rejilla en madera. Proporciona un atractivo efecto visual en el techo. Fabricada con láminas de madera natural prensadas. Fácil instalación con adhesivo.",
+      "precio": "180.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 62,
+      "nombre": "Placas perforadas de madera",
+      "descripcion": "Panel acústico de madera perforada de nogal para techos. Ayuda a mejorar la acústica ambiental al absorber el ruido. Con elegante acabado en fina madera natural. Disponible en varios diseños de perforación. Ideal para restaurantes, oficinas, salas de reuniones, etc.",
+      "precio": "200.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 3,
+      "idCategoria": 3
+    },
+    {
+      "id_producto": 63,
+      "nombre": "Ventiladores de techo",
+      "descripcion": "Ventilador de techo de 4 aspas en acero con acabado bronce y luz LED integrada de la marca Casa Bonita. Ideal para refrescar y iluminar habitaciones y espacios. Fácil de instalar, bajo consumo energético y eficiente. Aspas reversibles para circulación de aire en verano e invierno.",
+      "precio": "500.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 64,
+      "nombre": "Silla Terra",
+      "descripcion": "Silla apilable para exterior en madera maciza de pino con asiento y respaldo inclinados para mayor comodidad. Acabado inmunizado y cepillado. No requiere ensamblaje. Dimensiones: 55 x 50 x 83 cm. Peso: 13,8 kg. Altura asiento: 45 cm.",
+      "precio": "320.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 65,
+      "nombre": "Butaco Terra",
+      "descripcion": "Butaco versátil para exterior en madera maciza de pino, puede usarse como asiento o mesa auxiliar. Acabado inmunizado y cepillado. No requiere ensamblaje. Dimensiones: 40 x 40 x 45 cm. Peso: 11,4 kg. Altura asiento: 45 cm.",
+      "precio": "280.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 66,
+      "nombre": "Mesa Terra",
+      "descripcion": "Mesa para 4 a 6 personas para exterior en madera maciza de pino. Superficie de 100x100 cm y 75 cm de alto. Acabado inmunizado y cepillado. Ensamblaje no requerido. Ideal para espacios al aire libre.",
+      "precio": "650.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 67,
+      "nombre": "Jardinera",
+      "descripcion": "Jardinera en tablones de madera de pino con tratamiento a presión contra insectos y humedad. Ideal para cultivar plantas y flores en exteriores. La madera natural respira y puede presentar pequeñas grietas, sin afectar su resistencia.",
+      "precio": "200.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 68,
+      "nombre": "Encimera para baño",
+      "descripcion": "Encimera suspendida para baño en melamina con acabado roble África de la línea Spirit de Salgar. Ancho de 60 a 120cm, 46cm fondo y 4cm alto. Incluye escuadras para instalación. Sin agujero para grifería. Ideal para instalar lavabo sobre encimera.",
+      "precio": "750.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 69,
+      "nombre": "Persiana de madera",
+      "descripcion": "Persiana enrollable de láminas de madera natural en color miel de 1.80m x 1.80m. Proporciona privacidad, confort térmico y estética a tus ventanas. Fácil de subir, bajar y ajustar el ángulo de apertura. Fabricadas con madera flexible resistente.",
+      "precio": "500.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 70,
+      "nombre": "Repisa hexagonal",
+      "descripcion": "Set de 3 repisas flotantes hexagonales Hades en color beige para interior. Elaboradas en madera aglomerada recubierta en melamina de alta calidad.",
+      "precio": "120.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
+    },
+    {
+      "id_producto": 71,
+      "nombre": "Marcos de madera",
+      "descripcion": "Marco de madera de ayous pintado en nogal satinado con efecto poro abierto. Ancho de 2cm. Se envía armado y listo para colgar. Recomendado para cuadros de hasta 80x80cm por su grosor y consistencia.",
+      "precio": "35.000",
+      "color": "Marron",
+      "stock": 200,
+      "descuento": 15,
+      "idProveedor": 4,
+      "idCategoria": 4
     },
     {
       "id_producto": 72,
