@@ -262,6 +262,16 @@ async function db_logUsuarios(){
 
 }
 
+async function  db_obtenerlogproductos(){
+  try {
+    const log = await pool.query('SELECT * FROM db_obtenerlogproductos();');
+    return log.rows;
+  } catch (error) {
+    console.error("Error al obtener el historial de productos");
+    throw new Error("Error al obtener el historial de productos"+ error.message);
+  }
+}
+
 //Retorna un booleano
 async function db_verificarClienteActivo(idUsuario){
   try {
@@ -440,6 +450,7 @@ async function db_obtenerProductosDestacados(idUsuario) {
   }
 }
 
+//Elimina todos los productos favoritos que estén relacionados al usuario
 async function db_eliminarProductosDestacados(idUsuario) {
   try {
     
@@ -447,8 +458,20 @@ async function db_eliminarProductosDestacados(idUsuario) {
     return true;
 
   } catch (error) {
-    console.error("Error al obtener destacados", error);
-    throw new Error("Error al obtener destacados"+ error.message);
+    console.error("Error al eliminar destacados", error);
+    throw new Error("Error al elilminar destacados"+ error.message);
+  }
+}
+
+async function db_eliminarProductoDestacado(idUsuario, idProducto) {
+  try {
+    
+    const eliminar = await pool.query('CALL db_eliminarProductoDestacado($1)', [idUsuario], [idProducto]);
+    return true;
+
+  } catch (error) {
+    console.error("Error al liminar destacados", error);
+    throw new Error("Error al eliminar destacados"+ error.message);
   }
 }
 
@@ -472,6 +495,7 @@ module.exports = { db_añadirUsuario,
   db_editarStock,
   db_logInventario,
   db_logUsuarios,
+  db_obtenerlogproductos,
   db_añadirProductoCarrito,
   db_modificarCantidadProductoCarrito,
   db_eliminarProductoCarrito,
@@ -485,7 +509,7 @@ module.exports = { db_añadirUsuario,
   db_guardarDireccionEnvio,
   db_obtenerDireccionPorUsuario,
   db_reestablecerContraseña,
-  db_agregarProductoDestacado,
-  db_obtenerProductosDestacados,
-  db_eliminarProductosDestacados
+  db_añadirproductoDestacado,
+  db_eliminarProductosDestacados, //varios
+  db_eliminarProductoDestacado //uno solo
 };
