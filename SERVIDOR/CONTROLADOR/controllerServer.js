@@ -111,7 +111,7 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             });
     
             // Devuelve el array de objetos "producto"
-            console.log("En server" + productos);
+           // console.log("En server" + productos);
             return productos;
         } catch (error) {
             console.error('Error al obtener los productos:', error);
@@ -440,7 +440,9 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
     
     async function s_añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto){
         try {
-        const factura = await controllerDB.añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
+            console.log(valor_total + "controller");
+        const factura = await controllerDB.añadirFactura(valor_total, Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
+        
         return factura;
         } catch (error) {
         console.error("Error al añadir la factura", error);
@@ -513,6 +515,18 @@ async function s_verificarCredencialUsuario(correo, contraseña) {
             console.error('Error al obtener destacados:', error);
         }
     }
+
+    async function s_logInventario() {
+        try {
+            const lista = await controllerDB.logInventario();
+    
+            return lista;
+        } catch (error) {
+            console.error('Error al obtener auditoria Inventario:', error);
+        }
+    }
+
+
     
     
 
@@ -595,7 +609,7 @@ async function enviarCodigoPorCorreo(destinatario) {
 
 module.exports = {
     s_actualizarUsuario,s_eliminarUsuario,s_añadirUsuario,s_añadirEmpresa,guardarDireccion,s_obtenerUsuarioId,s_verificarCredencialUsuario,
-    listaDeProductos,manejarInicioSesion,s_actualizarProducto,s_actualizarStockProducto,
+    listaDeProductos,manejarInicioSesion,s_actualizarProducto,s_actualizarStockProducto,s_logInventario,
     definirDescuento,modificarCantidadProductoCarritoCompras,obtenerCarritoCompras,s_obtenerTodosUsuarios,
     s_añadirProducto,s_eliminarProducto,s_descontinuarProducto,s_obtenerProducto, aplicarDescuento,obtenerDireccion,
     actualizarInventario, añadirProductoCarritoCompras,eliminarProductoCarritoCompras,s_obtenerHistorialCompra,s_añadirFactura, s_obtenerFactura,

@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const Gallery = () => {
+const Gallery = ({ productName }) => {
     const [image, setImage] = useState(1);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/producto/CatalogoImagenes/${productName}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    //setImages(data.imagenes); // Suponiendo que la respuesta del servidor contiene un arreglo de imágenes
+                } else {
+                    console.error('Error al obtener las imágenes del producto');
+                }
+            } catch (error) {
+                console.error('Error de red:', error);
+            }
+        };
+
+        if (productName) {
+            fetchImages();
+        }
+    }, [productName]);
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">

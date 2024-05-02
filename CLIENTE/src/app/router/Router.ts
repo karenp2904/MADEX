@@ -18,5 +18,6 @@ export const Router = {
     "procesoCompraConfirmar": "/proceso-compra-confirmar",
     "procesoCompraDatos": "/proceso-compra-datos",
     "procesoCompraPago": "/proceso-compra-pago",
-
+    "procesoFactura": "/proceso-factura",
+    "historialCompra": "/historialCompra",
 }

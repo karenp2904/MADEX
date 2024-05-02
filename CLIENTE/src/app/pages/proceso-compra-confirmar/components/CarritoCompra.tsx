@@ -1,26 +1,43 @@
 import { useNavigate } from "react-router-dom";
 import Item from "../../carrito/components/Item";
 import { Router } from "../../../router/Router";
+import { useEffect, useState } from "react";
+
+
 
 const CarritoCompra = () => {
 
+    const [subtotal, setSubtotal] = useState(0); // Estado para almacenar el subtotal
     const navigate = useNavigate();
+
+    // Función para obtener el subtotal del carrito de compras
+    const fetchSubtotal = async () => {
+        try {
+            const userId = '1097490756'; // ID del usuario
+            const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
+            const data = await response.json();
+            setSubtotal(data.subtotal); // Actualizar el estado con el subtotal obtenido del backend
+            console.log(data.subtotal , "°°°");
+        } catch (error) {
+            console.error('Error al obtener el subtotal del carrito:', error);
+        }
+    };
+
+    // Llamar a fetchSubtotal al cargar el componente
+    useEffect(() => {
+        fetchSubtotal();
+    }, []);
 
     return (
         <div className=" h-[500px] w-[990px] rounded-xl p-4  drop-shadow-md">
                     <div className="flex">
                         <div className=" flex flex-col rounded-lg md:w-2/3">
                             <Item />
-                            <Item />
                         </div>
                         <div className="flex flex-col px-6">
                             <div className="flex">
-                                <p className=" p-4 text-ardilla font-bold text-lg">
-                                    Subtotal:
-                                </p>
-                                <p className=" pt-4 pr-4 text-black font-semibold text-lg">
-                                    $400.000 COP
-                                </p>
+                                <p className="p-4 text-ardilla font-bold text-lg">Subtotal:</p>
+                                <p className="pt-4 pr-4 text-black font-semibold text-lg">${subtotal} COP</p>
                             </div>
                             <div className="px-2">
                                 <button onClick={() => navigate(Router.procesoCompraDatos)} className="bg-ardilla text-white font-semibold rounded-lg p-2 w-full">

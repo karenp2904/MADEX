@@ -4,7 +4,7 @@ const pool = require('./databaseConexion');
 async function db_obtenerTodosLosProductos () { 
   try {
     const allProductos = await pool.query('SELECT * FROM db_obtenerTodosLosProductos()');
-    console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
+   // console.log("productos en db", allProductos.rowCount); // Ver los resultados antes de devolverlos
 
     return allProductos.rows;
   } catch (error) {
@@ -360,6 +360,7 @@ async function db_obtenerHistorialDeCompra(id_usuario){
 //el idProducto es una lista
 async function db_añadirFactura(valor_total, idMetodoDePago, 
                                 idDireccion, idUsuario, idProducto){
+  console.log(valor_total + "service");
   try {
     const result = await pool.query('CALL db_añadirFactura($1, $2, $3, $4, $5);', 
     [valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto]);
@@ -426,12 +427,13 @@ async function db_reestablecerContraseña(idUsuario, password) {
 async function db_agregarProductoDestacado(idProducto,idUsuario) {
   try {
     
-    const restablecer = await pool.query('CALL db_agregarProductoDestacado($1, $2)', [idProducto], [idUsuario]);
+    const restablecer = await pool.query('CALL db_agregarProductoDestacado($1, $2)', [idProducto,idUsuario]);
     return true;
 
   } catch (error) {
     console.error("Error al añadir destacado", error);
     throw new Error("Error al añadir destacado"+ error.message);
+    return false;
   }
 }
 

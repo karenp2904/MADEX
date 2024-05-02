@@ -3,10 +3,58 @@ import { Input } from "../../../components/form/Input"
 import UserInfoCard from "./components/UserInfoCard"
 import { useNavigate } from "react-router-dom"
 import { Router } from "../../router/Router"
+import { useState } from "react";
+import axios from 'axios'; 
 
 export const ProcesoCompraDatos = () => {
 
     const navigate = useNavigate();
+
+    // Estado para almacenar los datos del formulario
+    const [formData, setFormData] = useState<{[key: string]: string}>({
+        ID_Usuario: "1097490756", 
+        Calle: "",
+        Ciudad: "",
+        Codigo_Postal: "",
+        departamento: "",
+        barrio: "",
+        descripcion: ""
+    });
+
+    // Función para manejar el envío del formulario
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            // Realizar la solicitud POST al endpoint /direccion/agregar utilizando Axios
+            const response = await axios.post("http://localhost:3000/direccion/agregar", formData, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.status === 201|| response.status === 200) {
+                const direccionGuardada = response.data;
+                console.log("Dirección guardada:", direccionGuardada);
+
+                // Redirigir a la siguiente página
+                navigate(Router.procesoCompraPago);
+            } else {
+                console.error("Error al guardar la dirección:", response.statusText);
+                // Aquí podrías mostrar un mensaje de error al usuario
+            }
+        } catch (error) {
+            console.error("Error al procesar la solicitud:", error);
+            // Aquí podrías mostrar un mensaje de error al usuario
+        }
+    };
+
+    // Función para manejar cambios en los campos del formulario
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
 
     return (
         <div className="w-full h-full flex flex-col">
@@ -46,46 +94,46 @@ export const ProcesoCompraDatos = () => {
                             <h1>Datos de envío</h1>
                             <div className="grid grid-cols-2">
                                 <Input
-                                    name="apellido_usuario"
+                                    name="departamento"
                                     label="Departamento*"
-                                    formData={{}}
-                                    setFormData={() => { }}
+                                    formData={formData}
+                                    setFormData={setFormData}
                                 />
                                 <Input
                                     name="apellido_usuario"
                                     label="Nombre del destinatario*"
-                                    formData={{}}
-                                    setFormData={() => { }}
+                                    formData={formData}
+                                    setFormData={setFormData}
                                 />
                                 <Input
-                                    name="apellido_usuario"
+                                    name="Ciudad"
                                     label="Ciudad*"
-                                    formData={{}}
-                                    setFormData={() => { }}
+                                    formData={formData}
+                                    setFormData={setFormData}
                                 />
                                 <Input
-                                    name="apellido_usuario"
+                                    name="Codigo_Postal"
                                     label="Código postal*"
-                                    formData={{}}
-                                    setFormData={() => { }}
+                                    formData={formData}
+                                    setFormData={setFormData}
                                 />
                                 <Input
-                                    name="apellido_usuario"
+                                    name="barrio"
                                     label="Barrio"
-                                    formData={{}}
-                                    setFormData={() => { }}
+                                    formData={formData}
+                                    setFormData={setFormData}
                                 />
                                 <Input
-                                    name="apellido_usuario"
+                                    name="Calle"
                                     label="Dirección"
-                                    formData={{}}
-                                    setFormData={() => { }}
+                                    formData={formData}
+                                    setFormData={setFormData}
                                 />
                                 <Input
-                                    name="apellido_usuario"
+                                    name="descripcion"
                                     label="Información adicional"
-                                    formData={{}}
-                                    setFormData={() => { }}
+                                    formData={formData}
+                                    setFormData={setFormData}
                                 />
                             </div>
                         </div>
@@ -93,7 +141,7 @@ export const ProcesoCompraDatos = () => {
 
                     <div className="flex-1 flex justify-evenly items-center">
                         <span onClick={() => navigate(Router.procesoCompraConfirmar)} className="hover:cursor-pointer hover:underline" >Volver al carrito</span>
-                        <Button onClick={() => navigate(Router.procesoCompraPago)}>Continuar al Pago</Button>
+                        <Button type="submit" onClick={handleSubmit}>Continuar al Pago</Button>
                     </div>
                 </div>
 
