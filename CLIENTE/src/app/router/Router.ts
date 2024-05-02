@@ -20,4 +20,5 @@ export const Router = {
     "procesoCompraPago": "/proceso-compra-pago",
     "procesoFactura": "/proceso-factura",
     "historialCompra": "/historialCompra",
+    "userCuenta": "/user-cuenta",
 }

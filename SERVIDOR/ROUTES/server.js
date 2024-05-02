@@ -395,7 +395,7 @@ app.get('/producto/agregarDestacados', async function(req, res) {
     try {
         const { idProducto, idUsuario } = req.body; // Obtén el ID del usuario del cuerpo de la solicitud
         const productos = await controladorServer.s_agregarProductoDestacado(idProducto,idUsuario);
-        res.send(productos);
+        res.status(200).json(productos);
     } catch (error) {
         // Manejo de errores
         console.error('Error al  agregar destacados:', error);
@@ -406,9 +406,11 @@ app.get('/producto/agregarDestacados', async function(req, res) {
 // Ruta para generar el inventario
 app.get('/producto/obtenerDestacados', async function(req, res) {
     try {
-        const { idUsuario } = req.body; // Obtén el ID del usuario del cuerpo de la solicitud
+        const { idUsuario } = req.query; // Obtén el ID del usuario del cuerpo de la solicitud
+        console.log(idUsuario);
         const productos = await controladorServer.s_obtenerDestacados(idUsuario);
-        res.send(productos);
+        console.log(productos);
+        res.status(200).json(productos);
     } catch (error) {
         // Manejo de errores
         console.error('Error al  obtenerDestacados:', error);
@@ -428,7 +430,7 @@ app.get('/producto/catalogo', async function(req, res) {
     
         //console.log("Productos en inventario:", inventario.productos);
         // Enviar respuesta al cliente
-        res.send(inventario);
+        res.status(200).json(inventario);
     } catch (error) {
         // Manejo de errores
         console.error('Error al generar el catálogo:', error);
@@ -452,7 +454,7 @@ app.get('/producto/verificarStock', async function(req, res) {
         const tieneStockSuficiente = inventario.verificarStock(idProducto, cantidad);
         
         // Enviar una respuesta al cliente indicando si hay suficiente stock o no
-        res.json(tieneStockSuficiente);
+        res.status(200).json(tieneStockSuficiente);
     } catch (error) {
         // Manejar cualquier error que ocurra durante el proceso
         console.error('Error al verificar el stock del producto:', error);
@@ -567,7 +569,6 @@ app.get('/producto/CatalogoImagenes/:nombre', async (req, res) => {
 
 
 app.get('/producto/rutas/:nombre', async (req, res) => {
-   
 
     try {
         const nombre = req.params.nombre; 
@@ -584,6 +585,23 @@ app.get('/producto/rutas/:nombre', async (req, res) => {
         res.status(500).send('Error en la búsqueda de la ruta');
     }
 });
+
+
+app.get('/auditoria/inventario', async (req, res) => {
+    try {
+
+        const lista = await controladorServer.s_logInventario();
+
+        // Devolver los resultados como respuesta
+        res.status(201).json(lista);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la audi inventario:', error);
+        res.status(500).send('Error en la ruta');
+    }
+});
+
+
 
 
 //ruta agregar un producto al carrito de compra

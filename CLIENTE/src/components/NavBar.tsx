@@ -26,7 +26,7 @@ export const NavBar = () => {
                 // Manejar los datos devueltos por la búsqueda
                 console.log('Productos encontrados:', data);
                 // Redirigir a la página de resultados de búsqueda
-                navigate(`/resultados-busqueda?nombre=${searchTerm}`);
+                navigate(Router.catalogo);
             })
             .catch(error => {
                 console.error('Error al buscar productos:', error);

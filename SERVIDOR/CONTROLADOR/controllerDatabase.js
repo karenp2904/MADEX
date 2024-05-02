@@ -377,15 +377,19 @@ async function logInventario(){
     const lista= await services.db_logInventario();
     return lista;
   }catch (error) {
-    console.error('Error al obtener el log inventario:', error.message);
+    console.error('Error log users:', error.message);
   }
 }
 
 
 
 async function logUsuarios(){
-  const lista= await services.db_logUsuarios();
-  return lista;
+  try{
+    const lista= await services.db_logUsuarios();
+    return lista;
+  }catch (error) {
+    console.error('Error log users:', error.message);
+  }
 }
 
 async function añadirProductoCarrito(idUsuario,idproducto, cantidad){

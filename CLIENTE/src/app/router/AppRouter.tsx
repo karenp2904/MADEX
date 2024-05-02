@@ -20,6 +20,7 @@ import { ProcesoCompraDatos } from '../pages/proceso-compra-datos/ProcesoCompraD
 import { ProcesoCompraPago } from '../pages/proceso-compra-pago/ProcesoCompraPago';
 import { ProcesoFactura } from '../pages/proceso-compra-pago/ProcesoFactura';
 import { HistorialCompra } from '../pages/user-historialCompra/HistorialCompra';
+import { UserCuenta } from '../pages/user-cuenta/UserCuenta';
 
 
 const baseurl = import.meta.env.BASE_URL;
@@ -51,6 +52,7 @@ const AppRoutes: FC = () => {
           <Route path={Router.procesoCompraPago} element={<ProcesoCompraPago />} />
           <Route path={Router.procesoFactura} element={<ProcesoFactura />} />
           <Route path={Router.historialCompra} element={<HistorialCompra />} />
+          <Route path={Router.userCuenta} element={<UserCuenta />} />
 
 
           <Route path="*" element={<Navigate to={Router.login} />} />

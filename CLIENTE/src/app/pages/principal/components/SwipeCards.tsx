@@ -130,22 +130,18 @@ const SwipeCards: React.FC = () => {
                   </span>
                   <a
                     href={card.link}
-                    className="text-white bg-fuchsia-950 hover:bg-fuchsia-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" ref={swipeCardsRef}
+                    className="text-white bg-ardilla hover:bg-black font-medium rounded-lg text-sm px-5 py-2.5 text-center" ref={swipeCardsRef}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-5 h-5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25l9-19.5M7.5 14.25l9 19.5"
-                      />
+                    <svg 
+                    fill="white" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    id="Bold" 
+                    viewBox="0 0 24 24" 
+                    width="20" 
+                    height="20"><circle cx="7" cy="22" r="2"/><circle cx="17" cy="22" r="2"/>
+                    <path d="M22.984,6.018A3.675,3.675,0,0,0,20.364,5H5.654L5.391,2.938A3.328,3.328,0,0,0,2.087,0H1.5A1.5,1.5,0,0,0,0,1.5H0A1.5,1.5,0,0,0,1.5,3h.587a.331.331,0,0,1,.326.3l1.5,11.759A3.327,3.327,0,0,0,7.217,18H17.339a5.5,5.5,0,0,0,5.3-4.042l1.246-4.531A3.489,3.489,0,0,0,22.984,6.018ZM19.75,13.163A2.508,2.508,0,0,1,17.339,15H7.217a.329.329,0,0,1-.325-.3L6.037,8H20.514A.5.5,0,0,1,21,8.632Z"/>
                     </svg>
+
                   </a>
                 </div>
               </div>

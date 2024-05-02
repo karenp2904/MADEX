@@ -1,3 +1,5 @@
+import InvoiceTable from "./components/InvoiceTable"
+
 export const AdminFacturas = () => {
 
     const Opcion = ({
@@ -23,8 +25,8 @@ export const AdminFacturas = () => {
             </div>
             <div className="bg-white shadow-xl aspect-auto rounded-xl m-5">
                 <div className='m-3 p-4'>
-                    <div className="card p-fluid">
-                        
+                    <div className="card p-fluid py-5 px-28">
+                        <InvoiceTable />
                     </div>
                 </div>
 

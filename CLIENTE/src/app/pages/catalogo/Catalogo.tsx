@@ -6,7 +6,7 @@ import { Delay } from "../../../utils/Delay";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { Navigator } from "../../../components/Navigator";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 export const Catalogo = () => {
 
