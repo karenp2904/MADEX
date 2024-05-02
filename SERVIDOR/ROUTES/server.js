@@ -1004,25 +1004,27 @@ app.post('/Alianza/solicitarCotizacion', async (req, res) => {
        // console.log(hola);
 
         const respuesta = await archivos.guardarRespuesta();
-
+        console.log(respuesta);
         // por cada cotizacion se actualiza el inventario
         inventario = await archivos.actualizarInventario();
         console.log(Array.isArray(inventario.productos)); // Debería devolver true si es un array
 
         const inventarioArray = Array.from(inventario.productos);
 
-        // Iterar sobre el inventario para actualizar el stock de cada producto
+
+
+        // Devolver los resultados como respuesta
+        res.send(respuesta);
+
+        //NOTAAA: Puse la actualizacion despues de la respuesta para que cuando el server se reinicie me mande antes la respuesta
+
+
+         // Iterar sobre el inventario para actualizar el stock de cada producto
         for (const producto of inventario.productos) {
             await controladorServer.s_actualizarStockProducto(producto.id_producto, producto.stock);
             console.log(producto.id_producto + ' -> ' + producto.stock);
         }
 
-
-        // Devolver los resultados como respuesta
-        res.json(respuesta);
-
-        // Enviar una respuesta al cliente
-       // res.status(200).send('Cotización generada y guardada correctamente.');
     } catch (error) {
         // Manejar cualquier error que ocurra durante el proceso
         console.error('Error en la solicitud de cotización:', error);

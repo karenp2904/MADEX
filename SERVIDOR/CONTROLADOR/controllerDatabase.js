@@ -374,7 +374,7 @@ async function editarStock(idProducto, nuevoStock){
 
 async function logInventario(){
   try{
-    const lista= await services.db_logInventario();
+    const lista= await services.db_obtenerlogproductos();
     return lista;
   }catch (error) {
     console.error('Error log users:', error.message);
