@@ -11,29 +11,6 @@ export const NavBar = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
 
-    const handleSearch = () => {
-        // Realizar la solicitud fetch para buscar productos por nombre
-        fetch(`http://localhost:3000/buscar-producto/${searchTerm}`)
-            .then(response => {
-                if (response.ok) {
-                    navigate(Router.categorias);
-                
-                    return response.json();
-                }
-                throw new Error('Error en la solicitud de búsqueda');
-            })
-            .then(data => {
-                // Manejar los datos devueltos por la búsqueda
-                console.log('Productos encontrados:', data);
-                // Redirigir a la página de resultados de búsqueda
-                navigate(Router.catalogo);
-            })
-            .catch(error => {
-                console.error('Error al buscar productos:', error);
-                // Manejar errores de búsqueda
-            });
-    };
-
     return (
         <header className="sticky w-full h-14 bg-primary-color flex justify-evenly">
             <div className="h-full aspect-square flex justify-center items-center hover:cursor-pointer">
@@ -62,10 +39,10 @@ export const NavBar = () => {
             </div>
             <div className=" font-semibold w-auto text-sm flex justify-center items-center text-white hover:cursor-pointer hover:text-gray-300">
                 <span>Sobre Nosotros</span>
-            
+
             </div>
             <div className="w-42 flex justify-end items-center text-white hover:cursor-pointer hover:text-gray-300">
-                <input 
+                <input
                     className="bg-[length:0.8rem] bg-[18px] bg-buscar bg-no-repeat outline-none indent-10 bg-transparent placeholder:text-white text-white w-96 border-2 border-white rounded-md"
                     type="text"
                     placeholder="Buscar en el sitio"
@@ -73,7 +50,7 @@ export const NavBar = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter') {
-                            handleSearch();
+                            navigate(`/catalogo?q=${searchTerm}`)
                         }
                     }}
                 />

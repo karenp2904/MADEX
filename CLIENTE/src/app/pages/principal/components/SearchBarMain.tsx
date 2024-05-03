@@ -1,6 +1,12 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const SearchBar = () => {
+
+    const navigate = useNavigate();
+    const [busqueda, setBusqueda] = useState("");
+
     return (
         <form className="max-w-md mx-auto">
             <label
@@ -33,10 +39,13 @@ const SearchBar = () => {
                     className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50   dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                     placeholder="Ej: Vigas de soporte"
                     required
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
                 />
                 <button
                     type="submit"
                     className="text-white absolute right-2.5 bottom-2.5 bg-ardilla hover:bg-gray-500  focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 "
+                    onClick={() => navigate(`/catalogo?q=${busqueda}`)}
                 >
                     Buscar
                 </button>

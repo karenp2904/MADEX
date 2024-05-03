@@ -1,28 +1,38 @@
 import { useEffect, useState } from "react";
 import Item from "./components/Item";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { Router } from "@/app/router/Router";
 
 export const Carrito = () => {
-    const [subtotal, setSubtotal] = useState(0); // Estado para almacenar el subtotal
+    
+    const user = useAuth(s => s.user);
     const navigate = useNavigate();
+    const [subtotal, setSubtotal] = useState(0);
 
-    // Función para obtener el subtotal del carrito de compras
-    const fetchSubtotal = async () => {
-        try {
-            const userId = '1097490756'; // ID del usuario
-            const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
-            const data = await response.json();
-            setSubtotal(data.subtotal); // Actualizar el estado con el subtotal obtenido del backend
-            console.log(data.subtotal , "°°°");
-        } catch (error) {
-            console.error('Error al obtener el subtotal del carrito:', error);
-        }
-    };
+    
 
     // Llamar a fetchSubtotal al cargar el componente
     useEffect(() => {
+        if (!user) {
+            alert("El usuario no esta logeado");
+            navigate(Router.login)
+            return
+        }
+        // Función para obtener el subtotal del carrito de compras
+        const fetchSubtotal = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=${user.id_usuario}`);
+                const data = await response.json();
+                setSubtotal(data.subtotal); // Actualizar el estado con el subtotal obtenido del backend
+                console.log(data.subtotal, "°°°");
+            } catch (error) {
+                console.error('Error al obtener el subtotal del carrito:', error);
+            }
+        };
+
         fetchSubtotal();
-    }, []);
+    }, [user]);
 
     const handleSeguirComprando = () => {
         navigate('/categorias');

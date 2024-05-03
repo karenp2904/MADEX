@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { Button } from "@material-tailwind/react";
 import { Tarjeta } from "../../../components/Tarjeta";
-import UserInfoCard from "../proceso-compra-datos/components/UserInfoCard";
 import { useNavigate } from "react-router-dom";
 import { Router } from "../../router/Router";
+import { useAuth } from '@/hooks/useAuth';
 
 export const ProcesoCompraPago = () => {
+    const user = useAuth(s => s.user);
     const navigate = useNavigate();
     const [pagoExitoso, setPagoExitoso] = useState(false);
 
     const handleContinuarPago = async () => {
+        if (!user) {
+            alert("El usuario no esta logeado");
+            navigate(Router.login)
+            return
+        }
         try {
             const response = await fetch('http://localhost:3000/factura/agregar', {
                 method: 'POST',
@@ -17,7 +23,7 @@ export const ProcesoCompraPago = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    idUsuario: '1097490756', 
+                    idUsuario: user.id_usuario, 
                     idMetodoDePago: '1' 
                 })
             });

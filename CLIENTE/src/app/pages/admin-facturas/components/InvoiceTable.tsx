@@ -1,21 +1,31 @@
+import { Router } from "@/app/router/Router";
+import { useAuth } from "@/hooks/useAuth";
 import { IFactura } from "@/models/interfaces/IFactura";
 import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, TableFooter } from "@/ui/components/ui/table";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
   
  
   
   export function InvoiceTable() {
 
+    const user = useAuth(s => s.user);
+    const navigate = useNavigate();
     const [facturas, setFacutaras] = useState<IFactura[]>([]);
 
     useEffect(() => {
-      axios.get("http://localhost:3000/usuario/historialCompra?id_usuario=1097490756")
+      if(!user) {
+         alert("El usuario no esta logeado");
+         navigate(Router.login)
+         return
+      }
+      axios.get(`http://localhost:3000/usuario/historialCompra?id_usuario=${user.id_usuario}`)
         .then((res) => {
           setFacutaras(res.data)
         });
-    }, []);
+    }, [user]);
     
     return (
       <Table>

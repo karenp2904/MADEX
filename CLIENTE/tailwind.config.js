@@ -47,10 +47,12 @@ module.exports = {
         "secondary-color": "var(--secondary-color)",
         "ardilla": "var(--color-ardilla)",
         "gris": "var(--color-gris)",
+        "marron": "var(--color-marron)"
       },
       backgroundImage: {
         "auth": "url('bg.svg')",
         "user": "url('user/user-primary.svg')",
+        "userw": "url('user.svg')",
         "lupa": "url('buscar.svg')",
         "lock": "url('password/cerrar-primary.svg')",
         "carrito": "url('carrito-de-compras.svg')",
@@ -59,7 +61,11 @@ module.exports = {
         "m-users": "url('user/m-users.svg')",
         "roles": "url('user/roles.svg')",
         "facturas": "url('facturas/facturas.svg')",
-        "muebles": "url('categorias/centro e irl.webp')"
+        "muebles": "url('categorias/centro e irl.webp')",
+        "pedidos": "url('pedidos.svg')",
+        "fav": "url('fav.svg')",
+        "historial": "url('historial.svg')",
+
       },
       screens: {
         'sm': '650px',
