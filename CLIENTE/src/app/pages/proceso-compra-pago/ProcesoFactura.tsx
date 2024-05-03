@@ -21,8 +21,8 @@ export const ProcesoFactura = () => {
                 if (facturaResponse.ok) {
                     const facturaData = await facturaResponse.json();
                     console.log('Factura de compra:', facturaData);
-                    console.log('Factura de compra:', facturaData[facturaData.length - 1]);
-                    setFactura(facturaData[facturaData.length - 1]);
+                    console.log('Factura de compra:', facturaData[facturaData.length]);
+                    setFactura(facturaData[facturaData.length]);
                     console.log(factura)
                 } else {
                     console.error('Error al obtener la factura de compra:', facturaResponse.statusText);
@@ -39,30 +39,34 @@ export const ProcesoFactura = () => {
     const handleDescargarFactura = async () => {
         try {
             if(factura == null) return;
-
-            const response = await fetch(`http://localhost:3000/factura/generar?idFactura=${factura.id_factura}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
             
-            if (response.ok) {
-                // Si la respuesta es exitosa, obtén el PDF
-                const pdfBlob = await response.blob();
-                // Crea una URL para el PDF
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                // Crea un enlace para descargar el PDF
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.download = 'factura.pdf'; // Nombre del archivo a descargar
-                // Simula un clic en el enlace para iniciar la descarga
-                link.click();
-                // Libera la URL creada para el PDF
-                URL.revokeObjectURL(pdfUrl);
-            } else {
-                console.error('Error al descargar la factura:', response.statusText);
+            else{
+                const response = await fetch(`http://localhost:3000/factura/generar?idFactura=${factura.id_factura}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Si la respuesta es exitosa, obtén el PDF
+                    const pdfBlob = await response.blob();
+                    // Crea una URL para el PDF
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    // Crea un enlace para descargar el PDF
+                    const link = document.createElement('a');
+                    link.href = pdfUrl;
+                    link.download = 'factura.pdf'; // Nombre del archivo a descargar
+                    // Simula un clic en el enlace para iniciar la descarga
+                    link.click();
+                    // Libera la URL creada para el PDF
+                    URL.revokeObjectURL(pdfUrl);
+                } else {
+                    console.error('Error al descargar la factura:', response.statusText);
+                }
             }
+
+        
         } catch (error) {
             console.error('Error en la solicitud:', error);
         }

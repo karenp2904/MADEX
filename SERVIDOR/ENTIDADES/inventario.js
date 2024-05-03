@@ -6,6 +6,7 @@ const Usuario = require('./usuario');
 class Inventario {
         constructor() {
         this.productos = []; //  tu lista de productos
+        this.cache = {};
         /*
         this.rl = readline.createInterface({
             input: process.stdin,
@@ -27,6 +28,8 @@ class Inventario {
             return rutaImagen;
         }
     */
+
+        //devuelve la primera imagen de cada producto
         async obtenerRutaImagenPorNombreProducto(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
           //  console.log(directorioImagenes);
@@ -59,7 +62,7 @@ class Inventario {
         }
         
 
-
+        //devuelve la lista
         async  obtenerRutasbase64(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
             const imagenesBase64 = [];
@@ -99,11 +102,18 @@ class Inventario {
             return imagenesBase64;
         }
 
+        //devuelve una imagen por producto
         async obtenerUnaImagenbase64(nombreProducto) {
+
+            // Verificar si ya se ha buscado esta imagen antes y está en caché
+            if (this.cache[nombreProducto]) {
+                return this.cache[nombreProducto];
+            }
+        
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
-            
+        
             try {
-                const archivos = fs.readdirSync(directorioImagenes);
+                const archivos = await fs.promises.readdir(directorioImagenes);
         
                 for (const archivo of archivos) {
                     const nombreProductoLimpio = nombreProducto.trim();
@@ -113,7 +123,10 @@ class Inventario {
                     if (regex.test(archivoLimpio)) {
                         const rutaImagen = path.join(directorioImagenes, archivo);
                         const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
-                        
+        
+                        // Almacenar en caché la imagen encontrada
+                        this.cache[nombreProducto] = [imagenBase64];
+        
                         // Devuelve la primera imagen encontrada
                         return [imagenBase64];
                     }
@@ -125,6 +138,7 @@ class Inventario {
             // Si no se encontró ninguna imagen, devuelve un arreglo vacío
             return [];
         }
+        
         
         
 

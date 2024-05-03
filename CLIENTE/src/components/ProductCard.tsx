@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { IProduct } from "../models/interfaces/IProduct";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export type ProductCardProps = {
   product: IProduct
@@ -19,6 +20,8 @@ export type ProductCardProps = {
 export function ProductCard({
   product
 }: ProductCardProps) {
+
+  const navigate = useNavigate();
 
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -104,8 +107,13 @@ export function ProductCard({
     }
   };
 
+  const handleCardClick = () => {
+    // Navegar a la página de detalle del producto con el ID del producto como parámetro
+    navigate(`/detalle?id=${product.id_producto}`);
+  };
+
   return (
-    <Card className="w-[226px] h-[310px] hover:cursor-pointer hover:shadow-2xl overflow-hidden flex shadow-xl rounded-3xl">
+    <Card className="w-[226px] h-[308px] hover:cursor-pointer hover:shadow-2xl overflow-hidden flex shadow-xl rounded-3xl"onClick={handleCardClick}>
       <CardHeader
         floated={false}
         shadow={false}
@@ -118,7 +126,7 @@ export function ProductCard({
           alt="ui/ux review check"
         />
       </CardHeader>
-      <CardBody className="relative p-0">
+      <CardBody className="relative p-0 h-14">
         {(product.descuento && product.descuento > 0) && (
           <div className="absolute right-0 w-[101px] h-9 z-10 flex flex-col items-end">
             <div className="w-full h-5 bg-red-700 rounded-bl-2xl flex justify-center text-white text-sm">
@@ -138,7 +146,7 @@ export function ProductCard({
           </Typography>
         </div>
       </CardBody>
-      <CardFooter className="h-7 flex items-center justify-start px-4 py-4">
+      <CardFooter className="h-7 flex items-center justify-start px-4">
         <IconButton
           variant="text"
           className="w-7 h-7"
@@ -149,8 +157,8 @@ export function ProductCard({
         >
           <i className={clsx("fas fa-heart fa-xl", { "text-red-700": isFavorite })} />
         </IconButton>
-        <IconButton variant="text" className="w-7 h-7" onClick={handleAddToCart}>
-          <i className="fa-solid fa-cart-plus fa-xl"></i>
+        <IconButton variant="text" className="w-7 h-7"onClick={handleAddToCart}>
+            <i className="fa-solid fa-cart-plus fa-xl"></i>
         </IconButton>
         {mensaje && (
           <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50">
