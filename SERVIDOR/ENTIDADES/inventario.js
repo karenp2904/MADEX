@@ -27,6 +27,8 @@ class Inventario {
             return rutaImagen;
         }
     */
+
+        //devuelve la primera imagen de cada producto
         async obtenerRutaImagenPorNombreProducto(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
           //  console.log(directorioImagenes);
@@ -57,9 +59,40 @@ class Inventario {
             }
             return null; // Retorna null si no se encontró ninguna imagen
         }
+
+        //devuelve la primera imagen de cada producto
+        async obtenerRutaListaImagenesNombreProducto(nombreProducto) {
+            const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
+            const listaImagenes= [];
+
+          //  console.log(directorioImagenes);
+        
+            try {
+                const archivos = await fs.promises.readdir(directorioImagenes);
+                for (const archivo of archivos) {
+                        //console.log(archivo + ' imagenENServidor');
+                        const archivoLimpio = archivo.trim(); // Eliminar espacios en blanco al principio y al final del nombre del archivo
+                        const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+                        if (regex.test(archivoLimpio)) {
+                           // console.log(nombreProductoLimpio + " prueba ruta");
+                            const rutaImagen = path.join(__dirname, '../IMAGENES', archivo); // Ruta relativa de la imagen
+                            listaImagenes.push({imagen: rutaImagen});
+                        }
+                        if(listaImagenes.length>3){
+                            return listaImagenes;
+                        }
+                    }
+                
+                
+            } catch (error) {
+                console.error('Error al leer el directorio de imágenes:', error);
+                return null; // Retorna null en caso de error
+            }
+            return null; // Retorna null si no se encontró ninguna imagen
+        }
         
 
-
+        //devuelve la lista
         async  obtenerRutasbase64(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
             const imagenesBase64 = [];
@@ -82,12 +115,8 @@ class Inventario {
                             imagenes: imagenBase64
                         });
         
-                        if (imagenesBase64.length == 5) {
-                            return;
-                        }else{
-                            if (imagenesBase64.length < 5) {
-                                return;
-                            }
+                        if (imagenesBase64.length > 3) {
+                            return imagenesBase64;
                         }
                     }
                 });
@@ -99,11 +128,16 @@ class Inventario {
             return imagenesBase64;
         }
 
+        //devuelve una imagen por producto
         async obtenerUnaImagenbase64(nombreProducto) {
+            const imagen=[];
+    
+        
+        
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
-            
+        
             try {
-                const archivos = fs.readdirSync(directorioImagenes);
+                const archivos = await fs.promises.readdir(directorioImagenes);
         
                 for (const archivo of archivos) {
                     const nombreProductoLimpio = nombreProducto.trim();
@@ -113,10 +147,13 @@ class Inventario {
                     if (regex.test(archivoLimpio)) {
                         const rutaImagen = path.join(directorioImagenes, archivo);
                         const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
-                        
+        
+                    
+                    
                         // Devuelve la primera imagen encontrada
                         return [imagenBase64];
                     }
+                    
                 }
             } catch (error) {
                 console.error('Error al leer el directorio de imágenes:', error);
@@ -125,6 +162,7 @@ class Inventario {
             // Si no se encontró ninguna imagen, devuelve un arreglo vacío
             return [];
         }
+        
         
         
 

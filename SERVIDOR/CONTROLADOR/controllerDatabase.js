@@ -14,14 +14,14 @@ async function obtenerTodosLosProductos() {
     if (!Array.isArray(allProductos)) {
       throw new Error('El servicio db_obtenerTodosLosProductos no devolvió una lista de productos.');
     }
-    
+    /*
     const productosCompletosPromises = allProductos.map(producto =>
-      obtenerProductoDatos(producto)
+    obtenerProductoDatos(producto)
     );
 
     // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
     const productosCompletos = await Promise.all(productosCompletosPromises);
-
+    */
     //console.log('Productos:', productosCompletos);
 
     return allProductos;

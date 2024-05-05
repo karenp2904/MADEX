@@ -41,14 +41,14 @@ export const Categorias = () => {
                 </div>
                 <div
                     className="col-span-2 h-64 drop-shadow-xl relative hover:scale-105 hover:cursor-pointer"
-                    onClick={() => IrAProductos("2")}
+                    onClick={() => IrAProductos("3")}
                 >
                     <Opcion nombre="Pisos y Techos" className="align-middle text-center text-ardilla px-4" />
                     <img src="categorias/piso-de-bamboo-mexico.jpg" alt="Pisos y Techos" className="h-full w-full object-cover rounded-xl" />
                 </div>
                 <div
                     className="h-64 drop-shadow-xl relative hover:scale-105 hover:cursor-pointer"
-                    onClick={() => IrAProductos("3")}
+                    onClick={() => IrAProductos("2")}
                 >
                     <Opcion nombre="Exterior" className="align-middle text-center text-ardilla px-4" />
                     <img src="categorias/childrenhouse-1024x608.jpg" alt="Exterior" className="h-full w-full object-cover rounded-xl" />

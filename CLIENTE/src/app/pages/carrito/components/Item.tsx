@@ -1,28 +1,82 @@
 import { useState, useEffect } from 'react';
 import NumberInput from "../../detalle/components/NumberInput";
+import axios from "axios";
 
 const Item = () => {
     const [cartItems, setCartItems] = useState([]);
 
 
     useEffect(() => {
-        const fetchCartItems = async () => {
-            try {
-                // Obtener el ID del usuario de algún lugar (por ejemplo, desde el estado o las props)
-                const userId = '1097490756'; 
-            
-                const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
+            const data = await response.json();
+            // Obtener los items del carrito
+            const cartItemsData = data.carritoCompras.productos;
 
+         // Cargar las imágenes de los productos
+        const updatedCartItems = await Promise.all(cartItemsData.map(async (item) => {
+            try {
+                const response = await axios.get(`http://localhost:3000/producto/CatalogoImagenes/${item.producto.nombre}`);
+                const imagen = response.data;
+                const updatedItem = { ...item, imageURL: imagen };
+                return updatedItem;
+            } catch (error) {
+                console.error('Error al obtener la imagen del producto:', error);
+                // Si hay un error al cargar la imagen, simplemente devolver el item sin la imagen
+                return item;
+            }
+        }));
+
+        // Actualizar el estado con los items del carrito que ahora incluyen la URL de la imagen
+        await setCartItems(updatedCartItems);
+        } catch (error) {
+            console.error('Error al obtener los items del carrito:', error);
+        }
+    };
+
+    fetchData();
+}, []); 
+
+/*
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
                 const data = await response.json();
                 // Actualizar el estado con los items del carrito
                 setCartItems(data.carritoCompras.productos);
+                loadProductImages(data.carritoCompras.productos);
+    
             } catch (error) {
                 console.error('Error al obtener los items del carrito:', error);
             }
         };
     
-        fetchCartItems();
+        fetchData();
+        
     }, []);
+    
+    const loadProductImages = async (items) => {
+        const updatedCartItems = [];
+        for (const item of items) {
+            try {
+                console.log(item.producto.nombre);
+                axios.get(`http://localhost:3000/producto/CatalogoImagenes/${item.producto.nombre}`)
+                    .then((res) => {
+                        if (res.data && res.data) {
+                        const imagen= res.data;
+                        const updatedItem = { ...item, imageURL: imagen};
+                        updatedCartItems.push(updatedItem);
+                        }
+                    }) 
+            } catch (error) {
+                console.error('Error al obtener la imagen del producto:', error);
+                // Si hay un error al cargar la imagen, simplemente agregar el item sin la imagen
+            }
+        }
+        setCartItems(updatedCartItems);
+    };*/
     
 
     const handleQuantityChange = async (idProducto, newQuantity) => {
@@ -44,7 +98,6 @@ const Item = () => {
                     }
                     return item;
                 });
-                setCartItems(updatedItems);
             } else {
                 console.error('Error al modificar la cantidad del producto en el carrito:', response.statusText);
             }
@@ -59,7 +112,11 @@ const Item = () => {
             {cartItems.map(item => (
                 <div key={item.producto.id_producto} className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
                     {/* Contenido del item del carrito */}
-                    <img src={item.producto.imagen} alt="product-image" className="w-full rounded-lg sm:w-40" />
+                    <img
+                    className="w-full rounded-lg sm:w-20"
+                    src={item.imageURL ? `data:image/png;base64,${item.imageURL}` : ""}
+                    alt="product-image"
+                    />
                     {/* Resto del contenido del item */}
                     <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
                         <div className="mt-5 sm:mt-0">
