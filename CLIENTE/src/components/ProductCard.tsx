@@ -27,17 +27,6 @@ export function ProductCard({
 
   const [image, setImage] = useState<string | null>(null)
 
-  useEffect(() => {
-    axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
-      .then((res) => {
-        if (res.data && res.data[0]) {
-          setImage(res.data[0].base64)
-        }
-      })
-  }, []);
-
-
-
   const handleAddFavorites = async () => {
     try {
       // Realizar la solicitud para agregar el producto al carrito
@@ -70,7 +59,7 @@ export function ProductCard({
     axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
       .then((res) => {
         if (res.data && res.data[0]) {
-          setImage(res.data[0].base64)
+          setImage(res.data)
         }
       })
   }, []);
@@ -146,31 +135,42 @@ export function ProductCard({
           </Typography>
         </div>
       </CardBody>
-      <CardFooter className="h-7 flex items-center justify-start px-4">
-        <IconButton
-          variant="text"
-          className="w-7 h-7"
-          onClick={() => {
-            setIsFavorite(f => !f);
-            handleAddFavorites();
-          }}
-        >
-          <i className={clsx("fas fa-heart fa-xl", { "text-red-700": isFavorite })} />
-        </IconButton>
-        <IconButton variant="text" className="w-7 h-7"onClick={handleAddToCart}>
-            <i className="fa-solid fa-cart-plus fa-xl"></i>
-        </IconButton>
-        {mensaje && (
-          <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50">
-            <div className="bg-green-600 text-white rounded-md p-4 shadow-md flex justify-between items-center">
-              <div>
-                <span>{mensaje}</span>
-
+          <CardFooter className="flex items-center justify-start px-4">
+              <div className="flex">
+                  <IconButton
+                      variant="text"
+                      className="w-7 h-7"
+                      onClick={(e) => {
+                          e.stopPropagation(); // Detiene la propagación del evento click
+                          setIsFavorite(f => !f);
+                          handleAddFavorites();
+                      }}
+                  >
+                      <i className={clsx("fas fa-heart fa-xl", { "text-red-700": isFavorite })} />
+                  </IconButton>
+                  <IconButton
+                      variant="text"
+                      className="w-7 h-7 ml-2"
+                      onClick={(e) => {
+                          e.stopPropagation(); // Detiene la propagación del evento click
+                          handleAddToCart();
+                      }}
+                  >
+                      <i className="fa-solid fa-cart-plus fa-xl"></i>
+                  </IconButton>
               </div>
-            </div>
-          </div>
-        )}
-      </CardFooter>
+              {mensaje && (
+                  <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50">
+                      <div className="bg-green-600 text-white rounded-md p-4 shadow-md flex justify-between items-center">
+                          <div>
+                              <span>{mensaje}</span>
+                          </div>
+                      </div>
+                  </div>
+              )}
+          </CardFooter>
+
+
     </Card>
   );
 }  

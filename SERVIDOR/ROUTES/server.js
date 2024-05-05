@@ -551,18 +551,11 @@ app.get('/producto/CatalogoImagenes', async (req, res) => {
 app.get('/producto/CatalogoImagenes/:nombre', async (req, res) => {
     try {
         const nombre = req.params.nombre; 
-        console.log(nombre);
+        
         inventario =  await obtenerProductosConInventario(req, res);
         const listaImagenes = await inventario.obtenerUnaImagenbase64(nombre);
         
-        res.write(JSON.stringify({
-            producto: nombre,
-            imagenes: Array.isArray(listaImagenes) 
-                        ? listaImagenes[0] 
-                            ? listaImagenes[0] 
-                            : listaImagenes
-                        : listaImagenes
-        }));
+        res.status(201).json(listaImagenes);
     } catch (error) {
         // Manejar cualquier error que ocurra durante la búsqueda
         console.error('Error al obtener el catálogo de imágenes de productos:', error);
@@ -591,7 +584,7 @@ app.get('/producto/ImagenesDetalle/:nombre', async (req, res) => {
 });
 
 //devuelve la primera imagen del producto
-app.get('/producto/imagenesConPath/:nombre', async (req, res) => {
+app.get('/producto/imagenConPath/:nombre', async (req, res) => {
 
     try {
         const nombre = req.params.nombre; 
@@ -611,6 +604,27 @@ app.get('/producto/imagenesConPath/:nombre', async (req, res) => {
     }
 });
 
+
+//devuelve la primera imagen del producto
+app.get('/producto/imagenesDetallePath/:nombre', async (req, res) => {
+
+    try {
+        const nombre = req.params.nombre; 
+        // Realizar la búsqueda del producto en el inventario
+        inventario =  await obtenerProductosConInventario(req, res);
+       // console.log(nombre);
+    
+        //devuelve la primera imagen de cada producto
+        const lista = await inventario.obtenerRutaListaImagenesNombreProducto(nombre);
+
+        // Devolver los resultados como respuesta
+        res.status(201).json(lista);
+    } catch (error) {
+        // Manejar cualquier error que ocurra durante la búsqueda
+        console.error('Error en la búsqueda de la ruta:', error);
+        res.status(500).send('Error en la búsqueda de la ruta');
+    }
+});
 
 app.get('/auditoria/inventario', async (req, res) => {
     try {

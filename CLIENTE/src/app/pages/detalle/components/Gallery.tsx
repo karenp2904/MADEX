@@ -10,27 +10,29 @@ const Gallery = ({ productName }) => {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/producto/ImagenesDetalle/${productName}`);
-                if (response.status === 200 || response.status === 201) {
-                    setImages(response.data.imagenes);
+                console.log(productName);
+                const response = await axios.get(`http://localhost:3000/producto/CatalogoImagenes/${productName}`);
+                if (response.status === 201) {
+                    setImages(response.data);
                 } else {
                     console.error('Error fetching images:', response.statusText);
+                    // Podrías considerar notificar al usuario sobre el error aquí
                 }
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching images:', error);
+                // Podrías considerar notificar al usuario sobre el error aquí
                 setLoading(false);
             }
         };
-
+    
         if (productName) {
             fetchImages();
         }
+    
+        // Aquí podrías considerar agregar más dependencias si es necesario
     }, [productName]);
-
-    const changeImage = (index) => {
-        setImage(index);
-    };
+    
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">

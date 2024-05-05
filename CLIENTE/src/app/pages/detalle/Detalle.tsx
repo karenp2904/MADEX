@@ -34,12 +34,16 @@ export const Detalle = () => {
             }
         };
         
-        
-       // Verificar si productId está presente antes de realizar la solicitud
+        // Verificar si productId está presente antes de realizar la solicitud
         if (productId) {
-        obtenerProductoPorId(productId);
-    }
-}, [productId]);
+            obtenerProductoPorId(productId);
+        } else {
+            // Si productId no está presente, establece producto en null o un valor predeterminado
+            setProducto(null); // o setProducto(defaultProduct);
+        }
+    
+    }, [productId]);
+    
 
     // Si el producto aún no se ha cargado, puedes mostrar un mensaje de carga o spinner
     if (!producto) {
