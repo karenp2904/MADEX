@@ -93,7 +93,7 @@ function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, ro
     }
 }
 */
-function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, rowHeight) {
+function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, rowHeight,pageHeight) {
     // Configuración de estilo para los encabezados de la tabla
     doc.font('Helvetica-Bold').fontSize(12);
     doc.fillColor('#000'); // Establecer color de texto negro
@@ -110,31 +110,43 @@ function drawTable(doc, tableHeaders, tableRows, xPositions, y, columnWidths, ro
     // Configuración de estilo para las filas de la tabla
     doc.font('Helvetica').fontSize(10);
     
-    // Dibujar filas de la tabla con bordes y texto centrado
-    for (let i = 0; i < tableRows.length; i++) {
-        const row = tableRows[i];
-        const yPos = y + (i + 1) * rowHeight; // Posición vertical de la fila
+   // Dibujar filas de la tabla con bordes y texto centrado
+   for (let i = 0; i < tableRows.length; i++) {
+    const row = tableRows[i];
+    const yPos = y + (i + 1) * rowHeight; // Posición vertical de la fila
 
-        for (let j = 0; j < row.length; j++) {
-            // Dibujar borde de la celda
-            doc.rect(xPositions[j]+10, yPos, columnWidths[j], rowHeight).stroke();
-            
-            // Ajustar el texto para que quepa dentro de la celda
-            let cellText = row[j];
-            let fontSize = 10; // Tamaño inicial de la fuente
-
-            // Reducir el tamaño de la fuente hasta que el texto quepa dentro de la celda
-            let textWidth = doc.widthOfString(cellText, { font: 'Helvetica', size: fontSize });
-        
-            // Establecer el tamaño de la fuente y dibujar el texto centrado en la celda
-            doc.fontSize(fontSize);
-            doc.text(cellText, xPositions[j]+10, yPos + rowHeight / 2, {
-                width: columnWidths[j],
-                align: 'center',
-                baseline: 'middle'
-            }).fillColor('#000');
-        }
+    // Verificar si la fila se dibujará en la página actual
+    if (yPos + rowHeight > pageHeight) {
+        doc.addPage(); // Cambiar a la siguiente página
+        currentPage = doc.page; // Actualizar la página actual
+        y = currentPage.margins.top; // Restablecer la posición vertical
     }
+
+    for (let j = 0; j < row.length; j++) {
+        // Dibujar borde de la celda
+        doc.rect(xPositions[j]+10, yPos, columnWidths[j], rowHeight).stroke();
+
+        // Ajustar el texto para que quepa dentro de la celda
+        let cellText = row[j];
+        let fontSize = 10; // Tamaño inicial de la fuente
+
+        // Reducir el tamaño de la fuente hasta que el texto quepa dentro de la celda
+        let textWidth = doc.widthOfString(cellText, { font: 'Helvetica', size: fontSize });
+        while (textWidth > columnWidths[j] - 5 && fontSize > 6) {
+            fontSize--; // Reducir tamaño de la fuente
+            doc.fontSize(fontSize);
+            textWidth = doc.widthOfString(cellText, { font: 'Helvetica', size: fontSize });
+        }
+
+        // Establecer el tamaño de la fuente y dibujar el texto centrado en la celda
+        doc.fontSize(fontSize);
+        doc.text(cellText, xPositions[j]+10, yPos + rowHeight / 2, {
+            width: columnWidths[j],
+            align: 'center',
+            baseline: 'middle'
+        }).fillColor('#000');
+    }
+}
 }
 
 
@@ -343,13 +355,13 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
     const lineHeight = fontSize * 1.2; // Altura de línea aproximada (ajustable)
     const rowHeight = lineHeight + 18; // Altura de fila con un pequeño espacio adicional
 
-
+     
     // Calcular la posición y inicial
     let y = pdfDoc.y + 15;
+    const pageHeight= pdfDoc.y;
 
-    // Dibujar la tabla con el contenido alineado y columnas más anchas
-    drawTable(pdfDoc, tableHeaders, tableRows, xPositions, y, columnWidths, rowHeight);
-
+    // Llamar a la función drawTable para dibujar la tabla en el documento PDF
+    drawTable(pdfDoc, tableHeaders, tableRows, xPositions, pdfDoc.y, columnWidths, rowHeight, 600);
 
 
 

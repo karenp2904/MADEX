@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+interface Usuario {
+    nombre: string;
+    id_usuario: string;
+    correo_electronico: string;
+    telefono: string;
+    correo: string;
+    nombre_usuario: string;
+    idRol: number;
+}
 
 export const AdminUsuarios = () => {
-    const [usuarios, setUsuarios] = useState([]);
+    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
     useEffect(() => {
         const obtenerUsuarios = async () => {

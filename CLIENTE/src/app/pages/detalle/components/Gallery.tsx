@@ -23,6 +23,7 @@ const Gallery = ({ productName }) => {
                 console.error('Error fetching images:', error);
                 // Podrías considerar notificar al usuario sobre el error aquí
                 setLoading(false);
+                loading;
             }
         };
     

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from "@material-tailwind/react";
 import { Tarjeta } from "../../../components/Tarjeta";
-import UserInfoCard from "../proceso-compra-datos/components/UserInfoCard";
+//import UserInfoCard from "../proceso-compra-datos/components/UserInfoCard";
 import { useNavigate } from "react-router-dom";
 import { Router } from "../../router/Router";
 
@@ -38,13 +38,14 @@ export const ProcesoCompraPago = () => {
     
 
     
-
+        /*
     const handleCloseNotification = () => {
         // Cierra el letrero de "Pago Exitoso"
         setPagoExitoso(false);
         // Navega a la página de proceso de factura
         navigate(Router.procesoFactura);
     };
+    */
     
     return (
         <div className="w-full h-full flex flex-col relative">

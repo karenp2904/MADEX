@@ -1,9 +1,17 @@
-import React from 'react';
-import { useNavigate } from "react-router-dom";
+//import React from 'react';
+//import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+interface Usuario {
+    nombre: string;
+    id_usuario: string;
+    correo_electronico: string;
+    telefono: string;
+}
+
+
 const UserInfoCard = () => {
-    const [usuario, setUsuario] = useState(null);
+    const [usuario, setUsuario] = useState<Usuario | null>(null);
 
     useEffect(() => {
         const obtenerUsuarioPorId = async () => {

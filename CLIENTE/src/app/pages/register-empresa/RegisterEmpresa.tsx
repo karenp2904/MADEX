@@ -2,7 +2,7 @@ import Logo from "/icon/icon-primary.svg";
 import Arrow from "/arrow/arrow-left-primary.svg";
 import { Router } from "../../router/Router";
 import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Input } from "../../../components/form/Input";
 
 
@@ -33,12 +33,15 @@ export const RegisterEmpresa = () => {
     useEffect(() => {
         // Verificar si las contraseñas coinciden
         setPasswordsMatch(formData.password === formData.confirmar_contraseña);
+        setTermsAccepted(false);
     }, [formData.password, formData.confirmar_contraseña]);
     
+    /*
     // Función para manejar el cambio en la aceptación de términos
     const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTermsAccepted(e.target.checked);
     };
+    */
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -210,11 +213,12 @@ export const RegisterEmpresa = () => {
                         </div>
                         <div className="w-full h-14 flex justify-center items-center">
                             <button
-                                type="submit" 
-                                className="w-28 h-8 text-[14px] rounded-3xl bg-primary-color text-white"
+                                type="submit"
+                                className={`w-28 h-8 text-[14px] rounded-3xl bg-primary-color text-white ${!termsAccepted && 'opacity-50 cursor-not-allowed'}`}
                                 style={{
                                     boxShadow: "-2px 2px 2px gray"
                                 }}
+                                disabled={!termsAccepted || !passwordsMatch}
                             >
                                 Enviar
                             </button>

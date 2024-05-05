@@ -1,4 +1,4 @@
-import { FormEvent } from "primereact/ts-helpers";
+//import { FormEvent } from "primereact/ts-helpers";
 import { FormEventHandler, useState } from "react";
 
 export const Tarjeta = () => {
@@ -18,7 +18,8 @@ export const Tarjeta = () => {
     };
 
     const [inputCardNumberValue, setInputCardNumberValue] = useState("");
-    const [imageCardNumberValue, setImageCardNumberValue] = useState("");
+    //const [imageCardNumberValue, setImageCardNumberValue] = useState("");
+    const [imageCarNumberValue, setImageCardNumberValue] = useState("");
 
     const handleInputCardNumber: FormEventHandler<HTMLInputElement> = (event) => {
         //   Remove all non-numeric characters from the input
@@ -34,6 +35,7 @@ export const Tarjeta = () => {
         }
         setInputCardNumberValue(formattedInput);
         setImageCardNumberValue(formattedInput);
+        imageCarNumberValue;
     }
 
     // Handle CCV update
@@ -44,12 +46,15 @@ export const Tarjeta = () => {
         const input = event.target.value.replace(/\D/g, "");
         setInputCCVNumber(input);
         setImageCCVNumber(input);
+        imageCCVNumber;
     }
 
     // Handle Exp Date update
     const [expirationDate, setExpirationDate] = useState(""); // document.getElementById("expDate");
     const [imageExpDate, setImageExpRate] = useState(""); // document.getElementById("imageExpDate");
 
+
+    
     const handleInputExpirationDate = (event) => {
         const input = event.target.value.replace(/\D/g, "");
 
@@ -63,6 +68,8 @@ export const Tarjeta = () => {
 
         setExpirationDate(formattedInput);
         setImageExpRate(formattedInput);
+        imageExpDate;
+
 
     }
 
@@ -79,8 +86,7 @@ export const Tarjeta = () => {
             <div className="w-full lg:w-1/2 lg:pr-8 lg:border-r-2 lg:border-slate-300">
                 <div className="mb-4">
                     <label className="text-neutral-800 font-bold text-sm mb-2 block"
-                    >Card number:</label
-                    >
+                    >Card number:</label>
                     <input
                         id="cardNumber"
                         type="text"
@@ -91,49 +97,54 @@ export const Tarjeta = () => {
                         placeholder="XXXX XXXX XXXX XXXX"
                         value={inputCardNumberValue}
                     />
+
                 </div>
                 <div className="flex gap-x-2 mb-4">
                     <div className="block">
                         <label className="text-neutral-800 font-bold text-sm mb-2 block"
-                        >Exp. date:</label
-                        >
+                        >Exp. date:</label>
                         <input
                             id="expDate"
                             type="text"
                             onClick={hideBackCard}
+                            onInput={handleInputExpirationDate}
                             className="flex h-10 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 undefined"
                             maxLength={5}
                             placeholder="MM/YY"
-                            value="12/24"
+                            value={expirationDate}
+                        
                         />
                     </div>
                     <div className="block">
-                        <label className="text-neutral-800 font-bold text-sm mb-2 block"
-                        >CCV:</label
-                        >
+                        <label className="text-neutral-800 font-bold text-sm mb-2 block">CCV:</label>
                         <input
                             id="ccvNumber"
                             type="text"
                             onClick={showBackCard}
-                            className="flex h-10 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 undefined"
+                            className="flex h-10 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             maxLength={3}
                             placeholder="123"
-                            value="342"
+                            value={inputCCVNumber}
+                            onChange={handleInputCCVNumber}
                         />
+
+
                     </div>
+
                 </div>
                 <div className="mb-4">
                     <label className="text-neutral-800 font-bold text-sm mb-2 block"
-                    >Card holder:</label
-                    >
+                    >Card holder:</label>
                     <input
                         id="cardName"
                         type="text"
                         onClick={hideBackCard}
+                        onInput={handleInputCardName} 
                         className="flex h-10 w-full rounded-md border-2 bg-background px-4 py-1.5 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-purple-600 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 undefined"
-                        placeholder="John Doe"
-                        value="John Doe"
+                        placeholder="Nombre completo"
+                        value={inputCardName} 
                     />
+
                 </div>
             </div>
             <div className="flex justify-center items-center w-full lg:w-1/2 lg:pl-8">
@@ -186,28 +197,24 @@ export const Tarjeta = () => {
                                         id="imageCardNumber"
                                         className="font-medium tracking-more-wider h-6"
                                     >
-                                        4256 4256 4256 4256
+                                        {inputCardNumberValue}
                                     </p>
                                 </div>
                                 <div className="pt-6 flex justify-between">
                                     <div>
                                         <p className="font-light">Name</p>
-                                        <p
-                                            id="imageCardName"
-                                            className="font-medium tracking-widest h-6"
-                                        >
-                                            John Doe
+                                        <p id="imageCardName" className="font-medium tracking-widest h-6">
+                                            {imageCardName}
                                         </p>
                                     </div>
+
                                     <div>
                                         <p className="font-light">Expiry</p>
-                                        <p
-                                            id="imageExpDate"
-                                            className="font-medium tracking-wider h-6 w-14"
-                                        >
-                                            12/24
+                                        <p id="imageExpDate" className="font-medium tracking-wider h-6 w-14">
+                                            {expirationDate || 'MM/YY'}
                                         </p>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -228,7 +235,7 @@ export const Tarjeta = () => {
                                             id="imageCCVNumber"
                                             className="bg-white text-black flex items-center pl-4 pr-2 w-14"
                                         >
-                                            342
+                                            {inputCCVNumber}
                                         </p>
                                     </div>
                                     <p className="font-light flex justify-end text-xs mt-2">
@@ -268,5 +275,5 @@ export const Tarjeta = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    )}
+
