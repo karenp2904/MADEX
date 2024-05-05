@@ -3,9 +3,16 @@ import { Button } from "@material-tailwind/react";
 import { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
+interface Factura {
+    id_factura: number;
+    fecha: string; // Asumo que la fecha es una cadena en formato ISO (por ejemplo, "2024-05-05T10:30:00")
+    total: number;
+    // Otros campos de la factura si los hay
+}
+
 export const ProcesoFactura = () => {
     
-    const [factura, setFactura] = useState(null);
+    const [factura, setFactura] = useState<Factura[]>([]); // Tipo Factura[] para facturas
 
     useEffect(() => {
         // Función para cargar las facturas al iniciar la ventana
@@ -22,7 +29,7 @@ export const ProcesoFactura = () => {
                     const facturaData = await facturaResponse.json();
                     console.log('Factura de compra:', facturaData);
                     console.log('Factura de compra:', facturaData[facturaData.length]);
-                    setFactura(facturaData[facturaData.length]);
+                    setFactura(facturaData[facturaData.length - 1]);
                     console.log(factura)
                 } else {
                     console.error('Error al obtener la factura de compra:', facturaResponse.statusText);
@@ -36,41 +43,31 @@ export const ProcesoFactura = () => {
         handleFacturas();
     }, []); 
 
-    const handleDescargarFactura = async () => {
+    const handleDescargarFactura = async (facturaId) => {
         try {
-            if(factura == null) return;
-            
-            else{
-                const response = await fetch(`http://localhost:3000/factura/generar?idFactura=${factura.id_factura}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    // Si la respuesta es exitosa, obtén el PDF
-                    const pdfBlob = await response.blob();
-                    // Crea una URL para el PDF
-                    const pdfUrl = URL.createObjectURL(pdfBlob);
-                    // Crea un enlace para descargar el PDF
-                    const link = document.createElement('a');
-                    link.href = pdfUrl;
-                    link.download = 'factura.pdf'; // Nombre del archivo a descargar
-                    // Simula un clic en el enlace para iniciar la descarga
-                    link.click();
-                    // Libera la URL creada para el PDF
-                    URL.revokeObjectURL(pdfUrl);
-                } else {
-                    console.error('Error al descargar la factura:', response.statusText);
+            const response = await fetch(`http://localhost:3000/factura/generar?idFactura=${facturaId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
+            });
+    
+            if (response.ok) {
+                const pdfBlob = await response.blob();
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = 'factura.pdf';
+                link.click();
+                URL.revokeObjectURL(pdfUrl);
+            } else {
+                console.error('Error al descargar la factura:', response.statusText);
             }
-
-        
         } catch (error) {
             console.error('Error en la solicitud:', error);
         }
     };
+    
     
 
     return (
@@ -83,7 +80,7 @@ export const ProcesoFactura = () => {
                         <FaCheckCircle className="w-24 h-24 text-green-600 mb-4" />
                         <p className="text-center text-2xl font-semibold mb-8">¡Gracias por su compra!</p>
                         <div className="flex justify-center">
-                            <Button onClick={handleDescargarFactura}>Descargar Factura</Button>
+                        <Button onClick={() => handleDescargarFactura(factura[0].id_factura)}>Descargar Factura</Button>
                         </div>
                     </div>
                 </div>

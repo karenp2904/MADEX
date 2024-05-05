@@ -10,7 +10,6 @@ export const Login = () => {
         correo: '',
         contraseña: ''
     });
-    const [usuario, setUsuario] = useState(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

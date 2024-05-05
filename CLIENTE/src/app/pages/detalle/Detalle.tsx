@@ -13,6 +13,8 @@ export const Detalle = () => {
     const productId = new URLSearchParams(location.search).get("id");
     const [notificationMessage, setNotificationMessage] = useState('');
 
+    const [quantity, setQuantity] = useState(0);
+
     // Estado para almacenar la información del producto
     const [producto, setProducto] = useState<IProduct | null>(null);
 
@@ -177,7 +179,10 @@ export const Detalle = () => {
                         </div>
                         <div className="">
                             <div className=" float-start py-3">
-                                <NumberInput />
+                            <NumberInput 
+                                value={quantity}  
+                                onChange={(newQuantity) => setQuantity(newQuantity)} 
+                            />
                             </div>
                         </div>
                             <div className="py-3 inline-block">

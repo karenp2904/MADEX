@@ -13,7 +13,7 @@ const CarritoCompra = () => {
     // Función para obtener el subtotal del carrito de compras
     const fetchSubtotal = async () => {
         try {
-            const userId = '1097490756'; // ID del usuario
+           // const userId = '1097490756'; // ID del usuario
             const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
             const data = await response.json();
             setSubtotal(data.subtotal); // Actualizar el estado con el subtotal obtenido del backend

@@ -48,6 +48,7 @@ export const ProcesoCompraDatos = () => {
         }
     };
 
+    /*
     // Función para manejar cambios en los campos del formulario
     const handleChange = (e) => {
         setFormData({
@@ -55,6 +56,7 @@ export const ProcesoCompraDatos = () => {
             [e.target.name]: e.target.value
         });
     };
+    */
 
     return (
         <div className="w-full h-full flex flex-col">

@@ -2,9 +2,22 @@ import { useState, useEffect } from 'react';
 import NumberInput from "../../detalle/components/NumberInput";
 import axios from "axios";
 
-const Item = () => {
-    const [cartItems, setCartItems] = useState([]);
+interface CartItem {
+    producto: {
+        id_producto: string;
+        nombre: string;
+        precio: number;
+    };
+    cantidad: number;
+    imageURL?: string;
+}
 
+const Item = () => {
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    //const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+    // Luego, puedes utilizar esta interfaz para definir el tipo de updatedCartItems:
+    const [updatedCartItems, setUpdatedCartItems] = useState<CartItem[]>([]);
 
     useEffect(() => {
     const fetchData = async () => {
@@ -15,7 +28,7 @@ const Item = () => {
             const cartItemsData = data.carritoCompras.productos;
 
          // Cargar las imágenes de los productos
-        const updatedCartItems = await Promise.all(cartItemsData.map(async (item) => {
+        const updated = await Promise.all(cartItemsData.map(async (item) => {
             try {
                 const response = await axios.get(`http://localhost:3000/producto/CatalogoImagenes/${item.producto.nombre}`);
                 const imagen = response.data;
@@ -28,8 +41,12 @@ const Item = () => {
             }
         }));
 
+        setUpdatedCartItems(updated);
+
         // Actualizar el estado con los items del carrito que ahora incluyen la URL de la imagen
         await setCartItems(updatedCartItems);
+
+
         } catch (error) {
             console.error('Error al obtener los items del carrito:', error);
         }
@@ -92,12 +109,14 @@ const Item = () => {
             if (response.ok) {
                 console.log('Cantidad del producto en el carrito modificada exitosamente');
                 // Actualizar los items del carrito después de modificar la cantidad
+                /*
                 const updatedItems = cartItems.map(item => {
                     if (item.producto.id_producto === idProducto) {
                         return { ...item, cantidad: newQuantity };
                     }
                     return item;
                 });
+                */
             } else {
                 console.error('Error al modificar la cantidad del producto en el carrito:', response.statusText);
             }
@@ -117,21 +136,27 @@ const Item = () => {
                     src={item.imageURL ? `data:image/png;base64,${item.imageURL}` : ""}
                     alt="product-image"
                     />
-                    {/* Resto del contenido del item */}
+                
                     <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
                         <div className="mt-5 sm:mt-0">
-                            {/* Detalles del producto */}
+                            
                             <h2 className="text-lg font-bold text-gray-900">{item.producto.nombre}</h2>
                             <h6 className="text-xs font-bold text-gray-900 py-2">{item.producto.precio} COP</h6>
-                            {/* Más detalles del producto */}
+                            
                         </div>
                         {/* Opciones del item, como modificar cantidad */}
                         <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
                             <div className="flex items-center border-gray-100">
-                                {/* Componente NumberInput para modificar cantidad */}
-                                <NumberInput value={item.cantidad} onValueChange={(newQuantity) => handleQuantityChange(item.producto.id_producto, newQuantity)} />
-                            </div>
-                            {/* Resto de opciones del item */}
+                            <NumberInput 
+                                value={item.cantidad}  
+                                onChange={async (newQuantity: number) => {
+                                    await handleQuantityChange(item.producto.id_producto, newQuantity);
+                                }} 
+                            />
+
+
+                    </div>
+                        
                         </div>
                     </div>
                 </div>

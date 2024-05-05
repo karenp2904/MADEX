@@ -1,9 +1,18 @@
 import { Button } from "@material-tailwind/react";
 import { useState, useEffect } from 'react';
-import { FaCheckCircle } from 'react-icons/fa';
+//import { FaCheckCircle } from 'react-icons/fa';
+
+interface Factura {
+    id_factura: number;
+    fecha: string; // Asumo que la fecha es una cadena en formato ISO (por ejemplo, "2024-05-05T10:30:00")
+    total: number;
+    // Otros campos de la factura si los hay
+}
+
 
 export const HistorialCompra = () => {
-    const [facturas, setFacturas] = useState([]);
+
+    const [facturas, setFacturas] = useState<Factura[]>([]); // Tipo Factura[] para facturas
 
     useEffect(() => {
         const fetchFacturas = async () => {
@@ -42,11 +51,6 @@ export const HistorialCompra = () => {
         }
     };
 
-    
-    const formatDate = (date) => {
-        // Extract only the date part (YYYY-MM-DD) from the ISO string representation of the Date object
-        return date.toISOString().split('T')[0];
-    };
 
     const formatTotal= (total) => {
         const totalFormateado = total.toLocaleString('es-CO', {

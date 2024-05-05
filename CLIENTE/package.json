@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "npm run start:client",
+    "start:client": "cd ../CLIENTE && npm run dev",
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "cmd.exe /C cd ../CLIENTE && tsc && vite build && npm run dev",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -42,7 +44,10 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.5",
     "vite": "^5.1.6"
+  },
+  "resolutions": { 
+    "@babel/preset-env": "7.5.5" 
   }
 }

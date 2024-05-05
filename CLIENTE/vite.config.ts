@@ -9,4 +9,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    exclude: ['react-router-dom'],
+    // Otros módulos para incluir o excluir aquí
+  },
+  build: {
+    chunkSizeWarningLimit: 5000 
+  },
+});
+
+
+
