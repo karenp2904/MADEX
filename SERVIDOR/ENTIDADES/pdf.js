@@ -173,7 +173,7 @@ async function generarPDFCliente(idFactura,dia,usuario, direccion, metodoPago, l
     // Agregar la fecha a la izquierda
     pdfDoc.moveDown().fontSize(10);
     pdfDoc.font('Helvetica-Bold').text('\nFecha expedición:', pdfDoc.page.margins.left, infoYY+160, { continued: true });
-    pdfDoc.font('Helvetica').text(` 11/04/2024`, { align: 'left' });
+    pdfDoc.font('Helvetica').text(dia.toLocaleDateString(), { align: 'left' });
     pdfDoc.moveDown().fontSize(12);
 
 

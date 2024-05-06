@@ -29,23 +29,23 @@ class Inventario {
     */
         async obtenerRutaImagenPorNombreProducto(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
-            console.log(directorioImagenes);
+          //  console.log(directorioImagenes);
         
             try {
                 // Leer el contenido del directorio de imágenes de forma asíncrona
                 const archivos = await fs.promises.readdir(directorioImagenes);
-                console.log(archivos);
+                //console.log(archivos);
                 
                 // Filtrar los archivos para obtener solo las imágenes que contienen el nombre del producto
                 const nombreProductoLimpio = nombreProducto.trim(); // Eliminar espacios en blanco al principio y al final del nombre del producto
                 const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
         
                 for (const archivo of archivos) {
-                    console.log(archivo + ' imagenENServidor');
+                    //console.log(archivo + ' imagenENServidor');
                     const archivoLimpio = archivo.trim(); // Eliminar espacios en blanco al principio y al final del nombre del archivo
-                    console.log(regex + ' lectura');
+                  //  console.log(regex + ' lectura');
                     if (regex.test(archivoLimpio)) {
-                        console.log(nombreProductoLimpio + " prueba ruta");
+                       // console.log(nombreProductoLimpio + " prueba ruta");
                         const rutaImagen = path.join(__dirname, '../IMAGENES', archivo); // Ruta relativa de la imagen
                         return rutaImagen; // Retorna la primera imagen encontrada y termina la función
                     }
@@ -66,7 +66,7 @@ class Inventario {
         
             try {
                 const archivos = fs.readdirSync(directorioImagenes);
-                console.log(archivos);
+                //console.log(archivos);
         
                 archivos.forEach(archivo => {
                     const nombreProductoLimpio = nombreProducto.trim();
@@ -84,6 +84,10 @@ class Inventario {
         
                         if (imagenesBase64.length == 5) {
                             return;
+                        }else{
+                            if (imagenesBase64.length < 5) {
+                                return;
+                            }
                         }
                     }
                 });
@@ -304,7 +308,7 @@ class Inventario {
                 
                 let productosConColor = []; 
                 const colorABuscar = color.toLowerCase(); 
-                console.log(colorABuscar + " color a buscar");
+              //  console.log(colorABuscar + " color a buscar");
                 // Iterar sobre la lista de productos
                 for (const producto of this.productos) {
                     const palabrasProducto = producto.color.toLowerCase().split(' ');

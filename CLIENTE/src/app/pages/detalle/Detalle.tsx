@@ -1,19 +1,59 @@
-import { Rating } from "@material-tailwind/react"
-import NumberInput from "./components/NumberInput"
-import Gallery from "./components/Gallery"
+import React, { useEffect, useState } from "react";
+import { Rating } from "@material-tailwind/react";
+import NumberInput from "./components/NumberInput";
+import Gallery from "./components/Gallery";
+import { useLocation } from "react-router-dom";
 
 export const Detalle = () => {
+    // Obtiene la información del producto de la ruta
+    const location = useLocation();
+    const productId = new URLSearchParams(location.search).get("id");
+
+    // Estado para almacenar la información del producto
+    const [producto, setProducto] = useState<IProduct | null>(null);
+
+    useEffect(() => {
+        const obtenerProductoPorId = async (idProducto) => {
+            try {
+                const response = await fetch(`http://localhost:3000/producto/obtenerProducto?idProducto=${idProducto}`);
+                if (response.ok) {
+                    const producto = await response.json();
+                    console.log('Producto obtenido:', producto);
+                    // Almacena el producto obtenido en el estado local
+                    setProducto(producto);
+                } else {
+                    console.error('Error al obtener el producto:', response.statusText);
+                    // Manejar el caso en que la solicitud no sea exitosa
+                    throw new Error('Error en la solicitud de obtener el producto');
+                }
+            } catch (error) {
+                console.error('Error al obtener el producto:', error);
+                // Manejar errores de red, etc.
+                throw error;
+            }
+        };
+        
+        obtenerProductoPorId(productId);
+    }, [productId]);
+
+    // Si el producto aún no se ha cargado, puedes mostrar un mensaje de carga o spinner
+    if (!producto) {
+        return <div>Cargando...</div>;
+    }
+
+    // Una vez que el producto está disponible, muestra los detalles
     return (
         <div className="flex justify-center p-8">
             <div className="bg-white h-[580px] w-[960px] rounded-xl">
                 <div className="container flex justify-center p-6">
                     <div className=" bg-gray-200 h-[510px] w-[580px] rounded-lg m-1 ">
                         <div className=" justify-center">
-                        <Gallery />
+                            {/* Renderiza la galería con las imágenes del producto */}
+                            <Gallery productName={producto.nombre} />
                         </div>
                     </div>
                     <div className=" w-[700px] m-2 inline-flex flex-col">
-                        <strong className=" text-xl pb-2">Centro de entretenimiento</strong>
+                        <strong className=" text-xl pb-2">{producto.nombre}</strong>
                         <Rating />
                         <div className=" inline-block py-4">
                             <strong className=""> $530.000 COP</strong>
@@ -23,10 +63,7 @@ export const Detalle = () => {
                         <div className="py-6">
                             <span className=" font-bold text-md">Descripción:</span>
                             <br />
-                            <p>Esta mesa de centro es el detalle que hará ver tu sala especia, en su superficie coloca libros,
-                                el portaretrato con tu ser amado, un florero u otro objeto de tu preferencia. El vidrio le da un toque
-                                elegante y sobrio.
-                            </p>
+                            <p>{producto.descripcion}</p>
                         </div>
                         <div className="flex flex-col">
                             <div className=" inline-block">
@@ -59,10 +96,8 @@ export const Detalle = () => {
                             </button>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
-    )
+    );
 }

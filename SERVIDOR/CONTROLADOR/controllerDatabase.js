@@ -22,7 +22,7 @@ async function obtenerTodosLosProductos() {
     // Espera a que todas las promesas de obtenerProductoPorId se resuelvan
     const productosCompletos = await Promise.all(productosCompletosPromises);
 
-    console.log('Productos:', productosCompletos);
+    //console.log('Productos:', productosCompletos);
 
     return allProductos;
   } catch (error) {
@@ -86,7 +86,6 @@ async function obtenerProductoPorId(id){
     return producto;
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Error en el servidor');
   }
 };
 
@@ -97,7 +96,7 @@ async function obtenerCategoriaID(id){
     return categoria;
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Error en el servidor');
+   
   }
 };
 
@@ -107,9 +106,9 @@ async function obtenerProveedorId(id){
     return proveedor;
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Error en el servidor');
-  }
+   
 };
+}
 
 
 
@@ -378,15 +377,19 @@ async function logInventario(){
     const lista= await services.db_logInventario();
     return lista;
   }catch (error) {
-    console.error('Error al obtener el log inventario:', error.message);
+    console.error('Error log users:', error.message);
   }
 }
 
 
 
 async function logUsuarios(){
-  const lista= await services.db_logUsuarios();
-  return lista;
+  try{
+    const lista= await services.db_logUsuarios();
+    return lista;
+  }catch (error) {
+    console.error('Error log users:', error.message);
+  }
 }
 
 async function añadirProductoCarrito(idUsuario,idproducto, cantidad){
@@ -469,6 +472,7 @@ async function obtenerHistorialDeCompra(idUsuario){
 
 async function añadirFactura(valor_total, idMetodoDePago, idDireccion, idUsuario, idProducto){
   try {
+    console.log(valor_total + "db");
     const factura = await services.db_añadirFactura(Number(valor_total), Number(idMetodoDePago), Number(idDireccion), Number(idUsuario), idProducto);
     return factura;
   } catch (error) {
