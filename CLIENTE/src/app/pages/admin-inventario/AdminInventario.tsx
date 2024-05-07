@@ -6,13 +6,14 @@ import { useEffect, useState } from 'react';
 import { IProduct } from '../../../models/interfaces/IProduct';
 import { TablaAdminiventario } from './components/TablaAdminInventario';
 import { obtenerProductos } from '../../../services/productService';
+import { useNavigate } from "react-router-dom";
 //import { ProductService } from './service/ProductService';
 
 
 export const AdminInventario = () => {
 
     const [productos, setProductos] = useState<IProduct[]>([]);
-
+    const navigate = useNavigate();
     useEffect(() => {
         obtenerProductos()
             .then((res) => {
@@ -55,26 +56,35 @@ export const AdminInventario = () => {
 
     ];
 */
+
+
     const Opcion = ({
-        nombre, className
-    }: {nombre: string, className?: string}) => {
+        nombre,
+        className,
+        onClick
+    }: {
+        nombre: string,
+        className?: string,
+        onClick?: () => void
+    }) => {
         return (
             <div
-                className={`${className} hover:text-gray-400 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat`}
+                className={`hover:text-gray-400 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat ${className}`}
+                onClick={onClick}
             >
                 <strong>{nombre}</strong>
             </div>
-        )
-    }
+        );
+    };
 
     return (
         <div className="container flex pt-4">
             <div className="m-5 bg-gray-800 shadow-xl rounded-large w-60 h-screen ">
                 <div className='grid-cols-1 m-5 grid gap-y-8 text-white my-10'>
-                    <Opcion nombre="Inventario" className="bg-aplicaciones" />
-                    <Opcion nombre="Auditlog" className="bg-auditlog" />
-                    <Opcion nombre="Usuarios" className="bg-m-users" />
-                    <Opcion nombre="Facturas" className="bg-facturas" />
+                    <Opcion nombre="Inventario" className="bg-aplicaciones" onClick={() => navigate('/admin-inventario') }/>
+                    <Opcion nombre="Auditlog" className="bg-auditlog"  onClick={() => navigate('/admin-log') }/>
+                    <Opcion nombre="Usuarios" className="bg-m-users"  onClick={() => navigate('/admin-usuarios') }/>
+                    <Opcion nombre="Facturas" className="bg-facturas"  onClick={() => navigate('/admin-facturas') }/>
                 </div>
             </div>
             <div className="bg-white shadow-xl aspect-auto rounded-xl m-5">
