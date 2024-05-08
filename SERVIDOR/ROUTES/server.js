@@ -776,7 +776,8 @@ app.get('/resumenCompra', async (req, res) => {
 
         //console.log(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion);
 
-        let direccionGuardada= new Direccion(dir[0].id_direccion, dir[0].id_usuario, dir[0].calle, dir[0].ciudad, dir[0].codigo_postal, dir[0].departamento, dir[0].barrio, dir[0].descripcion );
+        const direccion= dir[dir.length];
+        let direccionGuardada= new Direccion(direccion.id_direccion, direccion.id_usuario, direccion.calle, direccion.ciudad, direccion.codigo_postal, direccion.departamento, direccion.barrio, direccion.descripcion );
         
         const costoEnvio= direccionGuardada.calcularCostoEnvio();
         const fecha= direccionGuardada.calcularFechaEstimadaEntrega();
@@ -840,6 +841,7 @@ app.post('/factura/agregar', async (req, res) => {
                             let integerInput = parseInt(producto.id_producto, 10);
                             if (Number.isInteger(integerInput)) {
                                 idProductos.push(integerInput);
+                                controladorServer.s_actualizarStockProducto(producto.id_product, producto.stock);
                             } else {
                                 console.log("El valor ingresado no es un número entero");
                             }
