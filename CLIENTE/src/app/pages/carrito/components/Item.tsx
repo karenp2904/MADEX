@@ -3,6 +3,7 @@ import NumberInput from "../../detalle/components/NumberInput";
 import axios from "axios";
 
 interface CartItem {
+    
     producto: {
         id_producto: string;
         nombre: string;
@@ -18,43 +19,40 @@ const Item = () => {
 
     // Luego, puedes utilizar esta interfaz para definir el tipo de updatedCartItems:
     const [updatedCartItems, setUpdatedCartItems] = useState<CartItem[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
-            const data = await response.json();
-            // Obtener los items del carrito
-            const cartItemsData = data.carritoCompras.productos;
-
-         // Cargar las imágenes de los productos
-        const updated = await Promise.all(cartItemsData.map(async (item) => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/producto/CatalogoImagenes/${item.producto.nombre}`);
-                const imagen = response.data;
-                const updatedItem = { ...item, imageURL: imagen };
-                return updatedItem;
+                const response = await fetch(`http://localhost:3000/carrito/contenido/idUsuario?idUsuario=1097490756`);
+                const data = await response.json();
+                // Obtener los items del carrito
+                const cartItemsData = data.carritoCompras.productos;
+    
+                // Cargar las imágenes de los productos
+                const updated = await Promise.all(cartItemsData.map(async (item) => {
+                    try {
+                        const response = await axios.get(`http://localhost:3000/producto/CatalogoImagenes/${item.producto.nombre}`);
+                        const imagen = response.data;
+                        return { ...item, imageURL: imagen };
+                    } catch (error) {
+                        console.error('Error al obtener la imagen del producto:', error);
+                        // Si hay un error al cargar la imagen, simplemente devolver el item sin la imagen
+                        return item;
+                    }
+                }));
+    
+                // Actualizar el estado con los items del carrito que ahora incluyen la URL de la imagen
+                setCartItems(updated);
+                setLoading(false); // Marcar como cargado una vez que se obtienen los datos
             } catch (error) {
-                console.error('Error al obtener la imagen del producto:', error);
-                // Si hay un error al cargar la imagen, simplemente devolver el item sin la imagen
-                return item;
+                console.error('Error al obtener los items del carrito:', error);
             }
-        }));
-
-        setUpdatedCartItems(updated);
-
-        // Actualizar el estado con los items del carrito que ahora incluyen la URL de la imagen
-        await setCartItems(updatedCartItems);
-
-
-        } catch (error) {
-            console.error('Error al obtener los items del carrito:', error);
-        }
-    };
-
-    fetchData();
-}, []); 
-
+        };
+    
+        fetchData();
+    }, []);
+    
 /*
     useEffect(() => {
         const fetchData = async () => {
@@ -104,7 +102,7 @@ const Item = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ idUsuario: "666", idProducto: idProducto, cantidad: newQuantity })
+                body: JSON.stringify({ idUsuario: "1097490756", idProducto: idProducto, cantidad: newQuantity })
             });
             if (response.ok) {
                 console.log('Cantidad del producto en el carrito modificada exitosamente');

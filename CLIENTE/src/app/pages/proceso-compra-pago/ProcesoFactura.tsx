@@ -29,7 +29,7 @@ export const ProcesoFactura = () => {
                     const facturaData = await facturaResponse.json();
                     console.log('Factura de compra:', facturaData);
                     console.log('Factura de compra:', facturaData[facturaData.length]);
-                    setFactura(facturaData[facturaData.length - 1]);
+                    setFactura(facturaData[facturaData.length]);
                     console.log(factura)
                 } else {
                     console.error('Error al obtener la factura de compra:', facturaResponse.statusText);

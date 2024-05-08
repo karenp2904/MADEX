@@ -169,7 +169,7 @@ export const Detalle = () => {
                         <div className="flex flex-col">
                             <div className=" inline-block">
                                 <span className="font-bold">Seleccione un color:</span>
-                                <span className="px-1">Gris claro</span>
+                                <span className="px-1">{producto.color}</span>
                             </div>
                             <div className=" pb-5">
                                 <div className="mr-1 bg-gray-300 rounded-full size-5 inline-flex hover:cursor-pointer"></div>
