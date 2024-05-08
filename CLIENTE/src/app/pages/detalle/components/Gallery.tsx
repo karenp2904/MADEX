@@ -11,28 +11,29 @@ const Gallery = ({ productName }) => {
         const fetchImages = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/producto/ImagenesDetalle/${productName}`);
-
+            
                 if (response.status === 201) {
                     const respuesta: { imagenBase64: string }[] = response.data;
                     const imagenes: string[] = [];
-                    
-                    for (let index = 0; index < 4; index++) {
-                        imagenes.push(respuesta[index].imagenBase64);
+                    if(respuesta.length<4){
+                        for (let index = 0; index < respuesta.length; index++) {
+                            imagenes.push(respuesta[index].imagenBase64);
+                        
+                        }   
+                    }else{
+                        for (let index = 0; index < 4; index++) {
+                            imagenes.push(respuesta[index].imagenBase64);
+                        
+                        } 
                     }
                     
-
-                setImages(imagenes);
-                
+            
+                    setImages(imagenes);
                 } else {
-                    console.error('Error fetching images:', response.statusText);
-                
+                    console.error('Error al obtener las imágenes: Código de estado', response.status);
                 }
-                setLoading(false);
             } catch (error) {
-                console.error('Error fetching images:', error);
-                
-                setLoading(false);
-                loading;
+                console.error('Error al obtener las imágenes:', error);
             }
         };
     
@@ -43,6 +44,7 @@ const Gallery = ({ productName }) => {
         // Aquí podrías considerar agregar más dependencias si es necesario
     }, [loading, productName]);
     
+
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">

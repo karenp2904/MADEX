@@ -1,16 +1,13 @@
 
 
 const NumberInput = ({ value, onChange }) => {
-  // No necesitamos un estado local para la cantidad, ya que estamos utilizando el valor pasado como prop
   // const [quantity, setQuantity] = useState(value);
 
   const handleIncrement = () => {
-    // Actualizamos el valor usando la función onChange
     onChange(value + 1);
   };
 
   const handleDecrement = () => {
-    // Verificamos si el valor es mayor que 0 antes de decrementarlo
     if (value > 0) {
       // Actualizamos el valor usando la función onChange
       onChange(value - 1);

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Item from "./components/Item";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { Router } from '@/app/router/Router';
 
 export const Carrito = () => {
     
@@ -13,7 +14,7 @@ export const Carrito = () => {
     useEffect(() => {
         if (!user) {
             //alert("El usuario no esta logeado");
-            //navigate(Router.login)
+            navigate(Router.login)
             return
         }
         // Función para obtener el subtotal del carrito de compras

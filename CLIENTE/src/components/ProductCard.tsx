@@ -35,7 +35,7 @@ export function ProductCard({
     axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
       .then((res) => {
         if (res.data && res.data[0]) {
-          setImage(res.data[0].base64)
+          setImage(res.data[0])
         }
       })
   }, []);
@@ -72,15 +72,6 @@ export function ProductCard({
       setMensaje('Error en la solicitud');
     }
   };
-
-  useEffect(() => {
-    axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
-      .then((res) => {
-        if (res.data && res.data[0]) {
-          setImage(res.data)
-        }
-      })
-  }, []);
 
 
   const [mensaje, setMensaje] = useState('');

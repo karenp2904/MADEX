@@ -6,13 +6,18 @@ import { useLocation } from "react-router-dom";
 import { IProduct } from "../../../models/interfaces/IProduct";
 import axios from "axios";
 import Notification from "../../../components/Notification";
+import { useAuth } from '@/hooks/useAuth';
+import { Router } from '@/app/router/Router';
+import { useNavigate } from "react-router-dom";
+
 
 export const Detalle = () => {
      // Obtiene la información del producto de la ruta
     const location = useLocation();
+    const user = useAuth(s => s.user);
     const productId = new URLSearchParams(location.search).get("id");
     const [notificationMessage, setNotificationMessage] = useState('');
-
+    const navigate = useNavigate();
     const [quantity, setQuantity] = useState(0);
 
     // Estado para almacenar la información del producto
@@ -54,24 +59,28 @@ export const Detalle = () => {
 
     const handleAddToCart = async () => {
             try {
-            // Realizar la solicitud para agregar el producto al carrito
-            console.log(producto.id_producto );
-            const response = await axios.post('http://localhost:3000/carrito/agregar', {
-                idUsuario: '1097490756',
-                idProducto: producto.id_producto,
-                cantidad: '1'
-            }, {
-                headers: {
-                'Content-Type': 'application/json'
+                if(!user){
+                    navigate(Router.login);
+                }else{
+                    // Realizar la solicitud para agregar el producto al carrito
+                    console.log(producto.id_producto );
+                    const response = await axios.post('http://localhost:3000/carrito/agregar', {
+                        idUsuario: user.id_usuario,
+                        idProducto: producto.id_producto,
+                        cantidad: '1'
+                    }, {
+                        headers: {
+                        'Content-Type': 'application/json'
+                        }
+                    });
+                
+                    if (response.status === 201 || response.status === 200) {
+                        const data = response.data;
+                        console.log(data)
+                        setNotificationMessage('Producto añadido al carrito correctamente');
+                        // Si la solicitud se completa correctamente, mostrar el mensaje de éxito
+                    }
                 }
-            });
-        
-            if (response.status === 201 || response.status === 200) {
-                const data = response.data;
-                console.log(data)
-                setNotificationMessage('Producto añadido al carrito correctamente');
-                // Si la solicitud se completa correctamente, mostrar el mensaje de éxito
-            }
             } catch (error) {
             console.error('Error en la solicitud:', error);
             }
@@ -80,23 +89,25 @@ export const Detalle = () => {
         
     const handleAddFavorites = async () => {
         try {
-        // Realizar la solicitud para agregar el producto al carrito
-        console.log(producto.id_producto + "favoritos");
-        const response = await axios.post('http://localhost:3000/producto/agregarDestacados', {
-            idProducto: producto.id_producto,
-            idUsuario: '1097490756',
-        }, {
-            headers: {
-            'Content-Type': 'application/json'
-            }
-        });
+        if(!user){
+            navigate(Router.login);
+        }else{
+            // Realizar la solicitud para agregar el producto al carrito
+            console.log(producto.id_producto + "favoritos");
+            const response = await axios.post('http://localhost:3000/producto/agregarDestacados', {
+                idProducto: producto.id_producto,
+                idUsuario: user.id_usuario,
+            }, {
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
 
-        if (response.status === 201 || response.status === 200) {
-            const data = response.data;
-            console.log(data)
-        
-        } else {
-        
+            if (response.status === 201 || response.status === 200) {
+                const data = response.data;
+                console.log(data)
+            
+            } 
         }
         } catch (error) {
         console.error('Error en la solicitud:', error);

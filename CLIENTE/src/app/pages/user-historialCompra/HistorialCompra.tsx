@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
 
 interface Factura {
     id_factura: number;
-    fecha: string; // Asumo que la fecha es una cadena en formato ISO (por ejemplo, "2024-05-05T10:30:00")
+    fecha: string;
     total: number;
-    // Otros campos de la factura si los hay
+    
 }
 
 
