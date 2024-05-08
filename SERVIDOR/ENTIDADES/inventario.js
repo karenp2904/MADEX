@@ -92,41 +92,44 @@ class Inventario {
         }
         
 
-        //devuelve la lista
-        async  obtenerRutasbase64(nombreProducto) {
+        
+        //devuelve una imagen por producto
+        async obtenerRutasbase64(nombreProducto) {
             const directorioImagenes = path.resolve(__dirname, '../IMAGENES');
-            const imagenesBase64 = [];
+            const listaImagenes= [];
+
+          //  console.log(directorioImagenes);
         
             try {
-                const archivos = fs.readdirSync(directorioImagenes);
-                //console.log(archivos);
-        
-                archivos.forEach(archivo => {
-                    const nombreProductoLimpio = nombreProducto.trim();
-                    const archivoLimpio = archivo.trim();
-                    const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
-        
-                    if (regex.test(archivoLimpio)) {
-                        const rutaImagen = path.join(directorioImagenes, archivo);
-                        const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
-                        
-                        imagenesBase64.push({
-                            nombre: archivo,
-                            imagenes: imagenBase64
-                        });
-        
-                        if (imagenesBase64.length > 3) {
-                            return imagenesBase64;
+                const archivos = await fs.promises.readdir(directorioImagenes);
+                for (const archivo of archivos) {
+                        //console.log(archivo + ' imagenENServidor');
+                        const archivoLimpio = archivo.trim(); // Eliminar espacios en blanco al principio y al final del nombre del archivo
+                        const regex = new RegExp(`^${nombreProducto.replace(/^:/, '')}\\s*\\d+\\.png$`);
+                        if (regex.test(archivoLimpio)) {
+                           // console.log(nombreProductoLimpio + " prueba ruta");
+                            const rutaImagen = path.join(__dirname, '../IMAGENES', archivo); // Ruta relativa de la imagen
+                            const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
+                            listaImagenes.push({imagenBase64});
+            
                         }
+                        if(listaImagenes>4){
+                            break;
+                        }
+                    
                     }
-                });
-        
+                    return listaImagenes;
+                
+                
             } catch (error) {
                 console.error('Error al leer el directorio de imágenes:', error);
+                return null; // Retorna null en caso de error
             }
         
-            return imagenesBase64;
         }
+        
+        
+        
 
         //devuelve una imagen por producto
         async obtenerUnaImagenbase64(nombreProducto) {
@@ -147,8 +150,6 @@ class Inventario {
                     if (regex.test(archivoLimpio)) {
                         const rutaImagen = path.join(directorioImagenes, archivo);
                         const imagenBase64 = fs.readFileSync(rutaImagen).toString('base64');
-        
-                    
                     
                         // Devuelve la primera imagen encontrada
                         return [imagenBase64];
