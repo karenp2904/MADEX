@@ -41,7 +41,7 @@ const Gallery = ({ productName }) => {
         }
     
         // Aquí podrías considerar agregar más dependencias si es necesario
-    }, [productName]);
+    }, [loading, productName]);
     
 
     return (

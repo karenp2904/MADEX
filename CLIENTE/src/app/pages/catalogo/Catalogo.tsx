@@ -19,31 +19,41 @@ export const Catalogo = () => {
   const [productos, setProducts] = useState<IProduct[]>([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/producto/catalogo")
-      .then((res) => {
-        let productos = res.data.productos as IProduct[];
-        const categoria = search.get("categoria");
-        if (categoria) {
-          productos = productos.filter(p => p.idCategoria === parseInt(categoria));
-        }
-  
-        setTodosProductos(productos);
-        setActual(10);
-        setProducts(productos.slice(0, 10));
-  
-      })
-      .catch(error => {
-        console.error("Error al realizar la solicitud:", error);
-        // Manejar el error, por ejemplo, mostrando un mensaje al usuario
-      });
+    const categoria = search.get("categoria");
+
+    const q = search.get("q");
+    if (q) {
+      axios.get(`http://localhost:3000/buscar-producto/${q}`)
+        .then(data => {
+          setProducts(data.data);
+        })
+    } else {
+      axios.get("http://localhost:3000/producto/catalogo")
+        .then((res) => {
+          let productos = res.data.productos as IProduct[];
+          if (categoria) {
+            productos = productos.filter(p => p.idCategoria === parseInt(categoria));
+          }
+
+          setTodosProductos(productos);
+          setActual(10);
+          setProducts(productos.slice(0, 10));
+
+        })
+        .catch(error => {
+          console.error("Error al realizar la solicitud:", error);
+          // Manejar el error, por ejemplo, mostrando un mensaje al usuario
+        });
+    }
+
   }, []);
-  
+
 
   const addProducts = async () => {
     setLoading(true);
     await Delay(500);
     setProducts(p => [...p, ...todosProductos.slice(actual, actual + 10)]);
-    setActual(a => a+10);
+    setActual(a => a + 10);
     setLoading(false);
   }
   return (
@@ -53,11 +63,11 @@ export const Catalogo = () => {
       />
       <div className="grid lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-y-12">
         {
-        productos.map(product => (
-          <div className="w-full h-full flex justify-center items-center my-4">
-            <ProductCard product={product} />
-          </div>
-        ))
+          productos.map(product => (
+            <div className="w-full h-full flex justify-center items-center my-4">
+              <ProductCard product={product} />
+            </div>
+          ))
         }
       </div>
       <div className="w-full h-24 flex justify-center items-center">

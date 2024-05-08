@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Login, Verificar, Register } from '../pages';
 import { Router } from './Router';
@@ -21,11 +21,19 @@ import { ProcesoCompraPago } from '../pages/proceso-compra-pago/ProcesoCompraPag
 import { ProcesoFactura } from '../pages/proceso-compra-pago/ProcesoFactura';
 import { HistorialCompra } from '../pages/user-historialCompra/HistorialCompra';
 import { UserCuenta } from '../pages/user-cuenta/UserCuenta';
-
+import { useAuth } from '@/hooks/useAuth';
+import { UserFavoritos } from '../pages/user-favoritos/UserFavoritos';
 
 const baseurl = import.meta.env.BASE_URL;
 
 const AppRoutes: FC = () => {
+
+  const auth = useAuth(s => s.auth)
+
+  useEffect(() => {
+    auth();
+  }, [])
+
   return (
     <BrowserRouter basename={baseurl}>
       <Routes>
@@ -53,6 +61,7 @@ const AppRoutes: FC = () => {
           <Route path={Router.procesoFactura} element={<ProcesoFactura />} />
           <Route path={Router.historialCompra} element={<HistorialCompra />} />
           <Route path={Router.userCuenta} element={<UserCuenta />} />
+          <Route path={Router.userFavoritos} element={<UserFavoritos />} />
 
 
           <Route path="*" element={<Navigate to={Router.login} />} />

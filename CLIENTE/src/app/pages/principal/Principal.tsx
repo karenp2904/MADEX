@@ -6,9 +6,6 @@ import SwipeCards from "./components/SwipeCards"
 
 export const Principal = () => {
 
-
-
-
     return (
 
         <div>
