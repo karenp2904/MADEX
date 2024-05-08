@@ -15,8 +15,8 @@ export const Carrito = () => {
     // Llamar a fetchSubtotal al cargar el componente
     useEffect(() => {
         if (!user) {
-            alert("El usuario no esta logeado");
-            navigate(Router.login)
+            //alert("El usuario no esta logeado");
+            //navigate(Router.login)
             return
         }
         // Función para obtener el subtotal del carrito de compras

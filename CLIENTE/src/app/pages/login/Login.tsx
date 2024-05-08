@@ -36,6 +36,7 @@ export const Login = () => {
                 console.log('Respuesta del servidor:', data);
                 if (data.success) {
                     localStorage.setItem("usuario", JSON.stringify(data.usuario))
+                    auth()
                     // Si el inicio de sesión fue exitoso, redirige a la página correspondiente
                     if(data.usuario.idRol == 1){
                         navigate(Router.adminInventario);

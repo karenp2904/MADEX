@@ -14,8 +14,8 @@ const Item = () => {
 
     useEffect(() => {
         if (!user) {
-            alert("El usuario no esta logeado");
-            navigate(Router.login)
+            //alert("El usuario no esta logeado");
+            //navigate(Router.login)
             return
         }
         const fetchCartItems = async () => {
@@ -38,8 +38,8 @@ const Item = () => {
 
     const handleQuantityChange = async (idProducto, newQuantity) => {
         if (!user) {
-            alert("El usuario no esta logeado");
-            navigate(Router.login)
+            //alert("El usuario no esta logeado");
+            //navigate(Router.login)
             return
         }
         try {

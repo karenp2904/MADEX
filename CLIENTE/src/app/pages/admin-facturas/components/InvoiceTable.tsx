@@ -16,9 +16,10 @@ import { useNavigate } from "react-router-dom";
     const [facturas, setFacutaras] = useState<IFactura[]>([]);
 
     useEffect(() => {
+      console.log(user)
       if(!user) {
-         alert("El usuario no esta logeado");
-         navigate(Router.login)
+         //alert("El usuario no esta logeado");
+         //navigate(Router.login)
          return
       }
       axios.get(`http://localhost:3000/usuario/historialCompra?id_usuario=${user.id_usuario}`)
@@ -32,10 +33,10 @@ import { useNavigate } from "react-router-dom";
         <TableCaption>Lista de tus facturas recientes.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead className="w-[100px]">Factura</TableHead>
+            <TableHead>Estado</TableHead>
             <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="text-right">Cantidad</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

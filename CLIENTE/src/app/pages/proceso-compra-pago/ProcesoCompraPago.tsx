@@ -12,8 +12,8 @@ export const ProcesoCompraPago = () => {
 
     const handleContinuarPago = async () => {
         if (!user) {
-            alert("El usuario no esta logeado");
-            navigate(Router.login)
+            //alert("El usuario no esta logeado");
+            //navigate(Router.login)
             return
         }
         try {

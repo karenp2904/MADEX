@@ -1,5 +1,4 @@
 
-import Footer from "@/components/Footer"
 import SearchBar from "./components/SearchBarMain"
 import SwipeCards from "./components/SwipeCards"
 

@@ -22,6 +22,7 @@ import { ProcesoFactura } from '../pages/proceso-compra-pago/ProcesoFactura';
 import { HistorialCompra } from '../pages/user-historialCompra/HistorialCompra';
 import { UserCuenta } from '../pages/user-cuenta/UserCuenta';
 import { useAuth } from '@/hooks/useAuth';
+import { UserFavoritos } from '../pages/user-favoritos/UserFavoritos';
 
 const baseurl = import.meta.env.BASE_URL;
 
@@ -60,6 +61,7 @@ const AppRoutes: FC = () => {
           <Route path={Router.procesoFactura} element={<ProcesoFactura />} />
           <Route path={Router.historialCompra} element={<HistorialCompra />} />
           <Route path={Router.userCuenta} element={<UserCuenta />} />
+          <Route path={Router.userFavoritos} element={<UserFavoritos />} />
 
 
           <Route path="*" element={<Navigate to={Router.login} />} />
