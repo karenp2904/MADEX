@@ -71,8 +71,65 @@ const productos= ([
 
 ]);
 const SwipeCards: React.FC = () => {
-  const [cards] = useState<Card[]>(productos);
-
+  const [cards, setCards] = useState<Card[]>([
+    {
+        id: 1,
+        image: `https://madecentro.com/cdn/shop/files/pmskkt7ihr-_281_29_564x564.jpg?v=1694016022`,
+        title: 'Asiento Oslo',
+        description: 'El asiento acolchado de la silla "Oslo" proporciona un experiencia de asiento cómoda y ergonómica',
+        price: 200,
+        link: ''
+      },
+      {
+        id: 2,
+        image: `https://madecentro.com/cdn/shop/products/CLW2978-ComedorVolder-Wengue-Ambientada_898x674.jpg?v=1666217979`,
+        title: 'Comedor Azalea',
+        description: ' Con acabado Wegué, ofrece un punto focal impresionante para tus comidas familiares o reuniones con amigos',
+        price: 1500,
+        link: ''
+      },
+      {
+        id: 3,
+        image: `https://madecentro.com/cdn/shop/products/BLC4457-BarEsquineroCeleste-Chocolate-Ambientado-C-RTA-Virtual-Muebles-VM-Hogar_897x673.jpg?v=1666216354`,
+        title: 'Bar Esquinero',
+        description: 'Construido con materiales de alta calidad, el bar garantiza durabilidad y resistencia para resistir el uso diario',
+        price: 710,
+        link: ''
+      },
+      {
+        id: 4,
+        image: `https://madecentro.com/cdn/shop/products/AMH3505-MesaAuxiliarRecibidorAureli-CaobayMiel-Ambientada-C_801x601.jpg?v=1666215660`,
+        title: 'Helado de lulo',
+        description: 'Añade un toque de elegancia y funcionalidad a la entrada de tu hogar con la mesa auxiliar "Aureli" en miel y blanco',
+        price: 460,
+        link: ''
+      },
+      {
+        id: 5,
+        image: `https://madecentro.com/cdn/shop/products/VLW3800Veladormultifuncional_consolasanmartin__Wwngue1500x1500_897x897.jpg?v=1666217384`,
+        title: 'Tocador Zaha',
+        description: 'Equipado con un espejo grande y práctico, te ofrece un lugar conveniente para arreglarte y prepararte para el día',
+        price: 400,
+        link: ''
+      },
+      {
+        id: 6,
+        image: `https://maderkit.vtexassets.com/arquivos/ids/166628-800-auto?v=638332388344770000&width=800&height=auto&aspect=true`,
+        title: 'Mesa de Centro',
+        description: 'Transforma tu sala de estar en un oasis de elegancia moderna con nuestra mesa de centro con vidrio "Hood"',
+        price: 250,
+        link: ''
+      },
+      {
+        id: 7,
+        image: `https://madecentro.com/cdn/shop/products/ZLB7107-CALGARYSHOERACK-DARKBROWNAbierta_FM_897x897.jpg?v=1666217012`,
+        title: 'Zapatero Lida',
+        description: 'Garantiza durabilidad y resistencia para soportar el peso de tus zapatos y mantenerlos ordenados',
+        price: 240,
+        link: ''
+      }
+    
+  ]);
 
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -127,7 +184,7 @@ const SwipeCards: React.FC = () => {
         {cards.map((card) => (
           <div className="flex-none w-64 snap-center" key={card.id}>
             <div className="bg-white border-1 border border-gray-200 rounded-lg overflow-hidden mb-4">
-              <img src={card.image} alt="" className="w-full h-40 object-cover" />
+              <img src={card.image} alt="" className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg leading-6 font-bold text-gray-900">{card.title}</h3>
                 <p className="text-gray-600 mt-2 text-sm">{card.description}</p>

@@ -11,7 +11,9 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { IProduct } from "../models/interfaces/IProduct";
 import axios from "axios";
+import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { Router } from "@/app/router/Router";
 
 export type ProductCardProps = {
   product: IProduct
@@ -27,13 +29,29 @@ export function ProductCard({
 
   const [image, setImage] = useState<string | null>(null)
 
+  const user = useAuth(s => s.user);
+  
+  useEffect(() => {
+    axios.get(`http://localhost:3000/producto/CatalogoImagenes/${product.nombre}`)
+      .then((res) => {
+        if (res.data && res.data[0]) {
+          setImage(res.data[0].base64)
+        }
+      })
+  }, []);
+
   const handleAddFavorites = async () => {
+    if (!user) {
+        //alert("El usuario no esta logeado");
+        //navigate(Router.login)
+        return
+    }
     try {
       // Realizar la solicitud para agregar el producto al carrito
       console.log(product.id_producto);
       const response = await axios.post('http://localhost:3000/producto/agregarDestacados', {
         idProducto: product.id_producto,
-        idUsuario: '1097490756',
+        idUsuario: user.id_usuario,
       }, {
         headers: {
           'Content-Type': 'application/json'
@@ -68,11 +86,16 @@ export function ProductCard({
   const [mensaje, setMensaje] = useState('');
 
   const handleAddToCart = async () => {
+    if (!user) {
+        //alert("El usuario no esta logeado");
+        //navigate(Router.login)
+        return
+    }
     try {
       // Realizar la solicitud para agregar el producto al carrito
       console.log(product.id_producto);
       const response = await axios.post('http://localhost:3000/carrito/agregar', {
-        idUsuario: '1097490756',
+        idUsuario: user.id_usuario,
         idProducto: product.id_producto,
         cantidad: '1'
       }, {

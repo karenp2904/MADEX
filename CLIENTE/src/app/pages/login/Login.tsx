@@ -2,9 +2,11 @@ import Logo from "/icon/icon-primary.svg";
 import { Router } from "../../router/Router";
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Login = () => {
     const navigate = useNavigate();
+    const auth = useAuth(s => s.auth);
     
     const [formData, setFormData] = useState({
         correo: '',
@@ -33,6 +35,8 @@ export const Login = () => {
                 const data = await response.json();
                 console.log('Respuesta del servidor:', data);
                 if (data.success) {
+                    localStorage.setItem("usuario", JSON.stringify(data.usuario))
+                    auth()
                     // Si el inicio de sesión fue exitoso, redirige a la página correspondiente
                     if(data.usuario.idRol == 1){
                         navigate(Router.adminInventario);
