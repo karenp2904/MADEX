@@ -24,15 +24,16 @@ export const UserFavoritos = () => {
             </div>
         )
     }
+
     
     return (
         <div className="container flex p-4">
             <div className="m-5 bg-marron shadow-xl rounded-large w-60 h-auto">
                 <div className="grid-cols-1 m-5 grid gap-y-8 text-white my-10">
                 <Opcion nombre="Cuenta" className="bg-userw" onClick={() => navigate('/user-cuenta') }/>
-                    <Opcion nombre="Pedidos" className="bg-pedidos" onClick={() => navigate('') }/>
-                    <Opcion nombre="Favoritos" className="bg-fav" onClick={() => navigate('/user-favoritos') }/>
-                    <Opcion nombre="Historial" className="bg-historial" onClick={() => navigate('/historialCompra') }/>
+                <Opcion nombre="Pedidos" className="bg-pedidos" onClick={() => navigate('/user-pedidos') }/>
+                <Opcion nombre="Favoritos" className="bg-fav" onClick={() => navigate('/user-favoritos') }/>
+                <Opcion nombre="Historial" className="bg-historial" onClick={() => navigate('/historialCompra') }/>
                 </div>
             </div>
             <div className="bg-white shadow-xl w-full h-auto rounded-xl m-5">
@@ -42,7 +43,7 @@ export const UserFavoritos = () => {
                 <div>
                     <div>
                         <div className=" ">
-                            <FavItem/>
+                            <FavItem />
                         </div>
                     </div>
                 </div>

@@ -17,9 +17,7 @@ export const UserCuenta = () => {
 
     useEffect(() => {
 
-        if(!user){
-            navigate('/login');
-        }
+        
         const obtenerUsuarioPorId = async () => {
             try {
                 const response = await fetch('http://localhost:3000/usuario/obtenerPorId', {
@@ -27,7 +25,7 @@ export const UserCuenta = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ id_usuario: user.id_usuario })
+                    body: JSON.stringify({ id_usuario: 123123 })
                 });
         
                 if (response.ok) {
@@ -74,11 +72,11 @@ export const UserCuenta = () => {
         <div className="container flex p-4">
             <div className="m-5 bg-marron shadow-xl rounded-large w-60 h-auto">
                 <div className="grid-cols-1 m-5 grid gap-y-8 text-white my-10">
-                    <Opcion nombre="Cuenta" className="bg-userw" onClick={() => navigate('/user-cuenta') }/>
-                    <Opcion nombre="Pedidos" className="bg-pedidos" onClick={() => navigate('') }/>
-                    <Opcion nombre="Favoritos" className="bg-fav" onClick={() => navigate('/user-favoritos') }/>
-                    <Opcion nombre="Historial" className="bg-historial" onClick={() => navigate('/historialCompra') }/>
-                    </div>
+                <Opcion nombre="Cuenta" className="bg-userw" onClick={() => navigate('/user-cuenta') }/>
+                <Opcion nombre="Pedidos" className="bg-pedidos" onClick={() => navigate('/user-pedidos') }/>
+                <Opcion nombre="Favoritos" className="bg-fav" onClick={() => navigate('/user-favoritos') }/>
+                <Opcion nombre="Historial" className="bg-historial" onClick={() => navigate('/historialCompra') }/>
+                </div>
             </div>
             <div className="bg-white shadow-xl w-full h-auto rounded-xl m-5">
                 <div className=" ml-7  mt-10 ">
