@@ -16,6 +16,8 @@ interface Factura {
 
 
 
+
+
 export const HistorialCompra = () => {
 
     const [facturas, setFacturas] = useState<Factura[]>([]); // Tipo Factura[] para facturas

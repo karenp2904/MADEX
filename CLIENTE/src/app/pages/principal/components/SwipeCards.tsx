@@ -77,7 +77,11 @@ const SwipeCards: React.FC = () => {
         image: `https://madecentro.com/cdn/shop/files/pmskkt7ihr-_281_29_564x564.jpg?v=1694016022`,
         title: 'Asiento Oslo',
         description: 'El asiento acolchado de la silla "Oslo" proporciona un experiencia de asiento cómoda y ergonómica',
+<<<<<<< HEAD
         price: '200.000',
+=======
+        price: 200,
+>>>>>>> FrontEnd
         link: ''
       },
       {
