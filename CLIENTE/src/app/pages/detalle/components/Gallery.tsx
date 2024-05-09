@@ -10,7 +10,7 @@ const Gallery = ({ productName }) => {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/producto/ImagenesDetalle/${productName}`);
+                const response = await axios.get(http://localhost:3000/producto/ImagenesDetalle/${productName});
             
                 if (response.status === 201) {
                     const respuesta: { imagenBase64: string }[] = response.data;
@@ -53,12 +53,12 @@ const Gallery = ({ productName }) => {
                     <div>
                         <div className="h-64 md:h-80 rounded-lg bg-gray-100 mb-4">
                             <div
-                                className={`h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center`}
+                                className="h-64 md:h-80 rounded-lg bg-gray-100 mb-4 flex items-center justify-center"
                             >
                                 {imagenes[image] ? (
                                     <img
                                         className="object-contain max-h-full max-w-full"
-                                        src={`data:image/jpeg;base64,${imagenes[image]}`}
+                                        src="data:image/jpeg;base64,${imagenes[image]}"
                                         alt="Gallery Image"
                                     />
                                 ) : (
@@ -80,7 +80,7 @@ const Gallery = ({ productName }) => {
                                     >
                                         <img
                                             className="object-cover max-h-full max-w-full"
-                                            src={`data:image/png;base64,${img}`}
+                                            src="{data:image/png;base64,${img}}"
                                             alt="Gallery Thumbnail"
                                         />
                                     </button>
