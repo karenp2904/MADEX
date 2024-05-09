@@ -5,11 +5,23 @@ import Cart from "/carrito-de-compras.svg";
 import { useNavigate } from "react-router-dom";
 import { Router } from "../app/router/Router";
 import { useState } from "react";
+import { useAuth } from '@/hooks/useAuth';
 
 export const NavBar = () => {
 
-    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
+    const user = useAuth(s => s.user);
+    const navigate = useNavigate();
+
+    const handleIconClick = () => {
+        if (!user) {
+            // Si el usuario no ha iniciado sesión, redirigir a la página de inicio de sesión
+            navigate('/login');
+        } else {
+            // Si el usuario ha iniciado sesión, redirigir a su cuenta
+            navigate('/user-cuenta');
+        }
+    };
 
     return (
         <header className="sticky w-full h-14 bg-primary-color flex justify-evenly">
@@ -37,7 +49,9 @@ export const NavBar = () => {
             >
                 <span>Productos</span>
             </div>
-            <div className=" font-semibold w-auto text-sm flex justify-center items-center text-white hover:cursor-pointer hover:text-gray-300">
+            <div className=" font-semibold w-auto text-sm flex justify-center items-center text-white hover:cursor-pointer hover:text-gray-300"
+                onClick={() => navigate(Router.catalogo)}
+            >
                 <span>Sobre Nosotros</span>
 
             </div>
@@ -55,7 +69,7 @@ export const NavBar = () => {
                     }}
                 />
             </div>
-            <div className="w-8 h-full aspect-square flex justify-center items-center text-white hover:cursor-pointer" onClick={() => navigate(Router.login)}>
+            <div className="w-8 h-full aspect-square flex justify-center items-center text-white hover:cursor-pointer" onClick={() => handleIconClick()}>
                 <img className="w-3/4 aspect-square hover:scale-110" src={User} />
             </div>
             <div className="w-8 h-full aspect-square flex justify-center items-center text-white hover:cursor-pointer" onClick={() => navigate(Router.carrito)}>

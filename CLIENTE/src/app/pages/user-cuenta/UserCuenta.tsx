@@ -25,7 +25,7 @@ export const UserCuenta = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ id_usuario: 123123 })
+                    body: JSON.stringify({ id_usuario: user?.id_usuario })
                 });
         
                 if (response.ok) {
@@ -85,7 +85,7 @@ export const UserCuenta = () => {
                 <div className="ml-7 my-2">
                     <span className="">Administra tu información personal, direcciones y pedidos</span>
                 </div>
-                <div className=" flex">
+                <div className="flex">
                     <div className="">
                         <div className="ml-7 my-10">
                             <span className="text-marron font-bold underline cursor-pointer">Información personal</span>
@@ -94,24 +94,23 @@ export const UserCuenta = () => {
                             <span className="font-bold text-marron cursor-pointer">Nombre completo</span>
                         </div>
                         <div className="ml-7 my-3">
-                            <input type="text" placeholder="Nombre completo" className=" outline-slate-400" />
+                            <input type="text" placeholder="Nombre completo" className="outline-slate-400" value={usuario?.nombre} />
                         </div>
                         <div className="ml-7">
                             <span className="font-bold text-marron cursor-pointer">Correo</span>
                         </div>
                         <div className="ml-7 my-3">
-                            <input type="text" placeholder="maria@example.com" className=" outline-slate-400" />
+                            <input type="text" placeholder="maria@example.com" className="outline-slate-400" value={usuario?.correo_electronico} />
                         </div>
                         <div className="ml-7">
                             <span className="font-bold text-marron cursor-pointer">Teléfono</span>
                         </div>
                         <div className="ml-7 my-3">
-                            <input type="text" placeholder="+57 300 0000000" className=" outline-slate-400" />
+                            <input type="text" placeholder="+57 300 0000000" className="outline-slate-400" value={usuario?.telefono} />
                         </div>
                         <div className="m-7">
                             <button className="text-white font-semibold p-2 text-sm bg-marron rounded-full hover:bg-slate-300 hover:text-black">Actualizar</button>
                         </div>
-
                     </div>
                     <div>
                         <div className=" ml-24 my-10">
