@@ -1,5 +1,6 @@
 
 //import Footer from "@/components/Footer"
+import Footer from "@/components/Footer"
 import SearchBar from "./components/SearchBarMain"
 import SwipeCards from "./components/SwipeCards"
 
@@ -8,7 +9,7 @@ export const Principal = () => {
 
     return (
 
-        <div>
+        <div className="">
             <div className="relative w-screen h-96 bg-auth bg-cover flex items-center justify-center">
                 <div className="absolute inset-0 bg-white bg-opacity-50"></div>
                 <div className="z-10 text-center">
@@ -108,6 +109,7 @@ export const Principal = () => {
                     </section>
                 </div>
             </div>
+            <Footer/>
 
         </div>
 
