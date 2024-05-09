@@ -22,4 +22,5 @@ export const Router = {
     "historialCompra": "/historialCompra",
     "userCuenta": "/user-cuenta",
     "userFavoritos": "/user-favoritos",
+    "userPedidos": "/user-pedidos",
 }

@@ -99,7 +99,7 @@ const SwipeCards: React.FC = () => {
       {
         id: 4,
         image: `https://madecentro.com/cdn/shop/products/AMH3505-MesaAuxiliarRecibidorAureli-CaobayMiel-Ambientada-C_801x601.jpg?v=1666215660`,
-        title: 'Helado de lulo',
+        title: 'Mesa Aureli',
         description: 'Añade un toque de elegancia y funcionalidad a la entrada de tu hogar con la mesa auxiliar "Aureli" en miel y blanco',
         price: '460.000',
         link: ''
@@ -177,6 +177,14 @@ const SwipeCards: React.FC = () => {
       swipeCardsElement.removeEventListener('mousemove', handleMouseMove);
     };
   }, [isDown, startX, scrollLeft]);
+
+  /*const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+    }).format(price);
+  } */
   
   return (
     <div className="swipe-cards overflow-x-scroll scrollbar-hide mb-4 relative px-0.5">
