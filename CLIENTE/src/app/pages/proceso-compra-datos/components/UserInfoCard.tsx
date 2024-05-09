@@ -1,5 +1,6 @@
-//import React from 'react';
-//import { useNavigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from "react";
 
 interface Usuario {
@@ -12,8 +13,14 @@ interface Usuario {
 
 const UserInfoCard = () => {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
+    const user = useAuth(s => s.user);
+    const navigate = useNavigate();
 
     useEffect(() => {
+
+        if(!user){
+            navigate('/login');
+        }
         const obtenerUsuarioPorId = async () => {
             try {
                 const response = await fetch('http://localhost:3000/usuario/obtenerPorId', {
@@ -21,7 +28,7 @@ const UserInfoCard = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ id_usuario: "1097490756" })
+                    body: JSON.stringify({ id_usuario: user.id_usuario })
                 });
         
                 if (response.ok) {

@@ -2,6 +2,9 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Button } from "@material-tailwind/react";
 import { useState, useEffect } from 'react';
 //import { FaCheckCircle } from 'react-icons/fa';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '@/hooks/useAuth';
+import { Router } from "@/app/router/Router";
 
 interface Factura {
     id_factura: number;
@@ -16,11 +19,18 @@ interface Factura {
 export const HistorialCompra = () => {
 
     const [facturas, setFacturas] = useState<Factura[]>([]); // Tipo Factura[] para facturas
+    const navigate = useNavigate();
+
+    const user = useAuth(s => s.user);
+    
+    if(!user){
+        navigate(Router.login);
+    }
 
     useEffect(() => {
         const fetchFacturas = async () => {
             try {
-                const facturaResponse = await fetch('http://localhost:3000/usuario/historialCompra?id_usuario=1097490756');
+                const facturaResponse = await fetch(`http://localhost:3000/usuario/historialCompra?id_usuario${user.id_usuario}`);
                 if (facturaResponse.ok) {
                     const facturaData = await facturaResponse.json();
                     setFacturas(facturaData);
@@ -68,12 +78,21 @@ export const HistorialCompra = () => {
         return totalFormateado;
     }
 
+    
+
     const Opcion = ({
-        nombre, className
-    }: { nombre: string, className?: string }) => {
+        nombre,
+        className,
+        onClick
+    }: {
+        nombre: string,
+        className?: string,
+        onClick?: () => void
+    }) => {
         return (
             <div
-                className={`${className} text-lg hover:text-gray-300 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat`}
+                className={`text-lg hover:text-gray-300 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat ${className}`}
+                onClick={onClick}
             >
                 <strong>{nombre}</strong>
             </div>
@@ -84,10 +103,10 @@ export const HistorialCompra = () => {
         <div className="container flex p-4">
             <div className="m-5 bg-marron shadow-xl rounded-large w-60 h-auto">
                 <div className="grid-cols-1 m-5 grid gap-y-8 text-white my-10">
-                    <Opcion nombre="Cuenta" className="bg-userw" />
-                    <Opcion nombre="Pedidos" className="bg-pedidos" />
-                    <Opcion nombre="Favoritos" className="bg-fav" />
-                    <Opcion nombre="Historial" className="bg-historial" />
+                <Opcion nombre="Cuenta" className="bg-userw" onClick={() => navigate('/user-cuenta') }/>
+                    <Opcion nombre="Pedidos" className="bg-pedidos" onClick={() => navigate('') }/>
+                    <Opcion nombre="Favoritos" className="bg-fav" onClick={() => navigate('/user-favoritos') }/>
+                    <Opcion nombre="Historial" className="bg-historial" onClick={() => navigate('/historialCompra') }/>
                 </div>
             </div>
             <div className="bg-white shadow-xl w-full h-auto rounded-xl m-5">
@@ -109,14 +128,14 @@ export const HistorialCompra = () => {
                             <TableBody>
                                 {facturas.map((factura) => (
                                     <TableRow key={factura.id_factura}>
-                                        <TableCell className="border border-gray-400 px-4 py-2">
+                                        <TableCell className="border border-gray-800 px-1 py-2">
                                             {/* Display factura.fecha without any formatting */}
                                             {factura.fecha.slice(0, 10)}
                                         </TableCell>
 
                                         <TableCell className="border border-gray-400 px-4 py-2">{formatTotal(factura.total)}</TableCell>
                                         <TableCell className="border border-gray-400 px-4 py-2">
-                                            <Button onClick={() => handleDescargarFactura(factura.id_factura)}>Descargar</Button>
+                                            <Button onClick={() => handleDescargarFactura(factura.id_factura)}className="text-white font-semibold p-4 text-sm bg-marron rounded-full hover:bg-slate-300 hover:text-black">Descargar</Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}

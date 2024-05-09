@@ -5,14 +5,20 @@ import { useNavigate } from "react-router-dom"
 import { Router } from "../../router/Router"
 import { useState } from "react";
 import axios from 'axios'; 
+import { useAuth } from '@/hooks/useAuth';
 
 export const ProcesoCompraDatos = () => {
 
     const navigate = useNavigate();
+    const user = useAuth(s => s.user);
+    
+    if(!user){
+        navigate(Router.login);
+    }
 
     // Estado para almacenar los datos del formulario
     const [formData, setFormData] = useState<{[key: string]: string}>({
-        ID_Usuario: "1097490756", 
+        ID_Usuario: user ? user.id_usuario : "", // Chequeo de nulabilidad
         Calle: "",
         Ciudad: "",
         Codigo_Postal: "",
@@ -143,7 +149,7 @@ export const ProcesoCompraDatos = () => {
 
                     <div className="flex-1 flex justify-evenly items-center">
                         <span onClick={() => navigate(Router.procesoCompraConfirmar)} className="hover:cursor-pointer hover:underline" >Volver al carrito</span>
-                        <Button type="submit" onClick={handleSubmit}>Continuar al Pago</Button>
+                        <Button type="submit" onClick={handleSubmit} className="text-white font-semibold p-4 text-sm bg-marron rounded-full hover:bg-slate-300 hover:text-black">Continuar al Pago</Button>
                     </div>
                 </div>
 

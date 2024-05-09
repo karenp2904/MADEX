@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Button } from "@material-tailwind/react";
 import { Tarjeta } from "../../../components/Tarjeta";
 //import UserInfoCard from "../proceso-compra-datos/components/UserInfoCard";
 import { useNavigate } from "react-router-dom";
 import { Router } from "../../router/Router";
 import { useAuth } from '@/hooks/useAuth';
+import { Button } from "@material-tailwind/react";
 
 export const ProcesoCompraPago = () => {
     const user = useAuth(s => s.user);
@@ -62,8 +62,7 @@ export const ProcesoCompraPago = () => {
                     <Tarjeta />
                     <div className="flex-1 flex justify-evenly items-center">
                         <span onClick={() => navigate(Router.procesoCompraDatos)} className="hover:cursor-pointer hover:underline">Volver al carrito</span>
-                        <Button onClick={handleContinuarPago}>Continuar al Pago</Button>
-                    </div>
+                        <Button onClick={handleContinuarPago} className="text-white font-semibold p-4 text-sm bg-marron rounded-full hover:bg-slate-300 hover:text-black">Continuar al Pago</Button>                    </div>
                 </div>
             </div>
             {pagoExitoso && (

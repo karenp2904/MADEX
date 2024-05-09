@@ -2,6 +2,9 @@
 import { Button } from "@material-tailwind/react";
 import { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from "react-router-dom";
+import { Router } from "@/app/router/Router";
 
 interface Factura {
     id_factura: number;
@@ -13,45 +16,38 @@ interface Factura {
 export const ProcesoFactura = () => {
     
     const [factura, setFactura] = useState<Factura[]>([]); // Tipo Factura[] para facturas
+    const user = useAuth(s => s.user);
+    const navigate = useNavigate();
+
+   
+    if(!user){
+        navigate(Router.login);
+    }
 
     useEffect(() => {
-        // Función para cargar las facturas al iniciar la ventana
-        const handleFacturas = async () => {
+        const fetchFacturas = async () => {
             try {
-                const facturaResponse = await fetch('http://localhost:3000/usuario/historialCompra?id_usuario=1097490756', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
+                const facturaResponse = await fetch(`http://localhost:3000/usuario/historialCompra?id_usuario=${user.id_usuario}`);
                 if (facturaResponse.ok) {
                     const facturaData = await facturaResponse.json();
                     console.log('Factura de compra:', facturaData);
                     console.log('Factura de compra:', facturaData[facturaData.length]);
-                    setFactura(facturaData[facturaData.length]);
-                    console.log(factura)
+                    setFactura(facturaData);
                 } else {
-                    console.error('Error al obtener la factura de compra:', facturaResponse.statusText);
+                    console.error('Error al obtener las facturas:', facturaResponse.statusText);
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
             }
         };
 
-        // Llama a la función para cargar las facturas al montar el componente
-        handleFacturas();
-    }, []); 
+        fetchFacturas();
+    }, []);
 
-    const handleDescargarFactura = async (facturaId) => {
+    const handleDescargarFactura = async (id_factura) => {
         try {
-            const response = await fetch(`http://localhost:3000/factura/generar?idFactura=${facturaId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-    
+            console.log(id_factura);
+            const response = await fetch(`http://localhost:3000/factura/generar?idFactura=${id_factura}`);
             if (response.ok) {
                 const pdfBlob = await response.blob();
                 const pdfUrl = URL.createObjectURL(pdfBlob);
@@ -67,7 +63,7 @@ export const ProcesoFactura = () => {
             console.error('Error en la solicitud:', error);
         }
     };
-    
+
     
 
     return (
@@ -80,15 +76,12 @@ export const ProcesoFactura = () => {
                         <FaCheckCircle className="w-24 h-24 text-green-600 mb-4" />
                         <p className="text-center text-2xl font-semibold mb-8">¡Gracias por su compra!</p>
                         <div className="flex justify-center">
-                        <Button onClick={() => handleDescargarFactura(factura[0].id_factura)}>Descargar Factura</Button>
+                        <Button onClick={() => handleDescargarFactura(factura[0].id_factura)} className="text-white font-semibold p-4 text-sm bg-marron rounded-full hover:bg-slate-300 hover:text-black">Descargar Factura</Button>                    </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    
-
-
     
     );
     

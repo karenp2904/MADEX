@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
       if(!user) {
          //alert("El usuario no esta logeado");
          //navigate(Router.login)
-         return
+        return
       }
       axios.get(`http://localhost:3000/usuario/historialCompra?id_usuario=${user.id_usuario}`)
         .then((res) => {
@@ -34,9 +34,9 @@ import { useNavigate } from "react-router-dom";
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Factura</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Cantidad</TableHead>
+            <TableHead>Usuario</TableHead>
+            <TableHead>Fecha</TableHead>
+            <TableHead className="text-right">Total</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -44,7 +44,7 @@ import { useNavigate } from "react-router-dom";
             <TableRow key={invoice.id_factura}>
               <TableCell className="font-medium">{invoice.id_factura}</TableCell>
               <TableCell>{invoice.id_usuario}</TableCell>
-              <TableCell>{invoice.fecha}</TableCell>
+              <TableCell>{invoice.fecha ? new Date(invoice.fecha).toISOString().split('T')[0] : ""}</TableCell>
               <TableCell className="text-right">${invoice.total}</TableCell>
             </TableRow>
           ))}

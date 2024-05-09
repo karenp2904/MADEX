@@ -1,31 +1,84 @@
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '@/hooks/useAuth';
+import { useEffect, useState } from "react";
 
-
+interface Usuario {
+    nombre: string;
+    id_usuario: string;
+    correo_electronico: string;
+    telefono: string;
+}
 
 export const UserCuenta = () => {
 
+    const [usuario, setUsuario] = useState<Usuario | null>(null);
+    const user = useAuth(s => s.user);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        if(!user){
+            navigate('/login');
+        }
+        const obtenerUsuarioPorId = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/usuario/obtenerPorId', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id_usuario: user.id_usuario })
+                });
+        
+                if (response.ok) {
+                    const usuario = await response.json();
+                    console.log('Información del usuario:', usuario);
+                    setUsuario(usuario[0]);
+                    // Aquí puedes hacer algo con los datos del usuario, como mostrarlos en la interfaz
+                } else {
+                    console.error('Error al obtener usuario por ID:', response.statusText);
+                    // Aquí puedes manejar el caso en que la solicitud no sea exitosa
+                }
+            } catch (error) {
+                console.error('Error al obtener usuario por ID:', error);
+                // Aquí puedes manejar errores de red, etc.
+            }
+        };
+
+        obtenerUsuarioPorId();
+    }, []); // Se ejecuta solo una vez al montar el componente
 
     const Opcion = ({
-        nombre, className
-    }: { nombre: string, className?: string }) => {
+        nombre,
+        className,
+        onClick
+    }: {
+        nombre: string,
+        className?: string,
+        onClick?: () => void
+    }) => {
         return (
             <div
-                className={`${className} text-lg hover:text-gray-300 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat`}
+                className={`text-lg hover:text-gray-300 hover:cursor-pointer indent-10 bg-[length:1.5rem] bg-[10px] bg-no-repeat ${className}`}
+                onClick={onClick}
             >
                 <strong>{nombre}</strong>
             </div>
-        )
-    }
+        );
+    };
+
+
 
 
     return (
         <div className="container flex p-4">
             <div className="m-5 bg-marron shadow-xl rounded-large w-60 h-auto">
                 <div className="grid-cols-1 m-5 grid gap-y-8 text-white my-10">
-                    <Opcion nombre="Cuenta" className="bg-userw" />
-                    <Opcion nombre="Pedidos" className="bg-pedidos" />
-                    <Opcion nombre="Favoritos" className="bg-fav" />
-                    <Opcion nombre="Historial" className="bg-historial" />
-                </div>
+                    <Opcion nombre="Cuenta" className="bg-userw" onClick={() => navigate('/user-cuenta') }/>
+                    <Opcion nombre="Pedidos" className="bg-pedidos" onClick={() => navigate('') }/>
+                    <Opcion nombre="Favoritos" className="bg-fav" onClick={() => navigate('/user-favoritos') }/>
+                    <Opcion nombre="Historial" className="bg-historial" onClick={() => navigate('/historialCompra') }/>
+                    </div>
             </div>
             <div className="bg-white shadow-xl w-full h-auto rounded-xl m-5">
                 <div className=" ml-7  mt-10 ">
