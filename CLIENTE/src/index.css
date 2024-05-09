@@ -9,3 +9,7 @@
   --color-ardilla: #866349;
   --color-marron: #92725b;
 }
+
+body {
+  overflow-x: hidden;
+}

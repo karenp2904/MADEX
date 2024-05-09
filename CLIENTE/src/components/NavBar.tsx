@@ -28,7 +28,7 @@ export const NavBar = () => {
             <div className="h-full aspect-square flex justify-center items-center hover:cursor-pointer">
                 <img className="w-1/2 aspect-square" src={Menu} />
             </div>
-            <div className="flex-[1 flex p-1">
+            <div className="w-64 flex p-1">
                 <img className="w-1/2 aspect-square" src={Logo} />
             </div>
             <div
