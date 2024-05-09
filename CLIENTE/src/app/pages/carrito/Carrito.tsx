@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import Item from "./components/Item";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-<<<<<<< HEAD
 import { Router } from '@/app/router/Router';
-=======
-import { Router } from "@/app/router/Router";
->>>>>>> FrontEnd
+
 
 export const Carrito = () => {
     
